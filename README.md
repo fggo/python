@@ -545,15 +545,14 @@ print("The alien is now " + alien_0['color'] + ".")
 
 # change position
 print("Original x-position: " + str(alien_0['x_position']))
-
 if alien_0['speed'] == 'slow':
     x_increment = 1
 elif alien_0['speed'] == 'medium':
     x_increment = 2
 elif alien_0['speed'] == 'fast':
     x_increment = 3
-
 alien_0['x_position'] += x_increment
+# Python variables are scoped to the innermost function or module; control blocks like if and while blocks don't count. (IIUC, this is also how JavaScript's var-declared variables work.)
 print("New x-position: " + str(alien_0['x_position']))
 ```
 
@@ -585,5 +584,324 @@ print("Sarah's favorite language is " +
 
 Looping Through a Dictionary
 ```python
+# 1. Looping through all Key-Value pairs
+# Notice again that the key-value pairs are not returned in the order in which they were stored, even when looping through a dictionary. Python doesn’t care about the order in which key-value pairs are stored; it tracks only the connections between individual keys and their values.
+user_0 = {
+    'username': 'raboof',
+    'first': 'foo',
+    'last': 'bar',
+}
+for key, value in user_0.items():
+    print('\nKey: ' + key)
+    print('Value: ' + value)
 
+favorite_languages = {
+    'jen': 'python',
+    'sarah': 'c',
+    'edward': 'ruby',
+    'phil': 'python',
+}
+for name, language in favorite_languages.items():
+    print(name.title() + "'s favorite language is " + language.title() + ".")
+
+# 2-1. Looping Through All the Keys in a Dictionary
+for name in favorite_languages.keys():
+    print(name.title())
+
+for name in favorite_languages: # is actually the default behavior when looping through a dictionary
+    print(name.title())
+
+friends = ['phil', 'sarah']
+for name in favorite_languages.keys():
+    print(name.title())
+    if name in friends:
+        print(" Hi " + name.title() 
+        + ", I see your favorite language is " 
+        + favorite_languages[name].title() + "!")
+
+if 'erin' not in favorite_languages.keys():
+    print("Erin, please take our poll!")
+
+# 2-2. Looping Through a Dictionary’s Keys in Order
+for name in sorted(favorite_languages.keys()):
+    print(name.title() + ", thank you for taking the poll.")
+
+# 3-1. Looping Through All Values in a Dictionary
+# This approach pulls all the values from the dictionary without checking for repeats.
+print("The following languages have been mentioned:")
+for language in favorite_languages.values():
+    print(language.title())
+
+# 3-2. To see each language chosen without repetition, we can use a set. A set is similar to a list except that each item in the set must be unique:
+print("The following languages have been mentioned:")
+for language in set(favorite_languages.values()):
+    print(language.title())
 ```
+
+Nesting
+
+1. A List of Dictionaries
+```python
+# A List of Dictionaries
+alien_0 = {'color': 'green', 'points': 5}
+alien_1 = {'color': 'yellow', 'points': 10}
+alien_2 = {'color': 'red', 'points': 15}
+aliens = [alien_0, alien_1, alien_2]
+for alien in aliens:
+    print(alien)
+
+# Make an empty list for storing aliens.
+aliens = []
+# Make 30 green aliens.
+for alien_number in range(30):
+    new_alien = {'color': 'green', 'points': 5, 'speed': 'slow'}
+    aliens.append(new_alien)
+# Show the first 5 aliens:
+for alien in aliens[:5]:
+    print(alien)
+print("...")
+# Show how many aliens have been created.
+print("Total number of aliens: " + str(len(aliens)))
+
+# Imagine that one aspect of a game has some aliens changing color and moving faster as the game progresses. When it’s time to change colors, we can use a for loop and an if statement to change the color of aliens.
+aliens = []
+
+for i in range(30):
+    alien = {
+        'color': 'green',
+        'speed': 'slow',
+        'point': 5,
+    }
+    aliens.append(alien)
+
+for alien in aliens[:3]:
+    if alien['color'] == 'green':
+        alien['color'] = 'yellow'
+        alien['speed'] = 'medium'
+        alien['point'] = 10
+    elif alien['color'] == 'yellow':
+        alien['color'] = 'red'
+        alien['speed'] = 'fast'
+        alien['point'] = 15
+for alien in aliens[:5]:
+    print(alien)
+```
+
+2. A List in a Dictionary
+```python
+pizza = {
+    'crust': 'thick',
+    'toppings': ['mushroom', 'extra cheese'],
+}
+print('You ordered a ' + pizza['crust'] + '-crust pizza with the following toppings: ')
+for topping in pizza['toppings']:
+    print('\t' + topping)
+
+favorite_languages = {
+    'jen': ['python', 'ruby'],
+    'sarah': ['c'],
+    'edward': ['ruby', 'go'],
+    'phil': ['python', 'haskell'],
+}
+for name, languages in favorite_languages.items():
+    print('\n' + name.title() + "'s favorite languages are: ")
+    for lang in languages:
+        print('\t' + lang)
+```
+You should not nest lists and dictionaries too deeply. If you’re nesting items much deeper than what you see in the preceding examples or you’re working with someone else’s code with significant levels of nesting, most likely a simpler way to solve the problem exists.
+
+
+3. Dictionary in a Dictionary
+```python
+users = {
+    'aeinstein': {
+        'first' : 'albert',
+        'last': 'einstein',
+        'location': 'princeton',
+    },
+    'mcurie': {
+        'first': 'marie',
+        'last': 'curie',
+        'location': 'paris',
+    }
+}
+
+for username, user_info in users.items():
+    print('\nUsername: ' + username)
+    full_name = user_info['first'] + user_info['last']
+    
+    print('\tFull name: ' + full_name.title())
+    print('\tLocation: ' + user_info['location'].title())
+```
+
+```python
+# 6-9
+favorite_places = {
+    'foo': ['los angeles', 'house', 'home'],
+    'bar': ['new york', 'mama', 'lalala'],
+    'fugu': ['san francisco', 'dadada', 'wiwiwi'],
+}
+for key in favorite_places.keys():
+    print(key + "'s favorite place: ")
+    for place in favorite_places[key]:
+        print('\t' + place)
+```
+# User Input and while loops
+```python
+prompt = "If you tell us who you are, we can personalize the messages you see."
+prompt += "\nWhat is your first name? "
+name = input(prompt)
+print("\nHello, " + name + "!")
+```
+
+int()
+```python
+height = input("How tall are you, in inches? ") # store string value '71' 
+height = int(height) # converted to integer 71 
+if height >= 36:
+    print("\nYou're tall enough to ride!")
+else:
+    print("\nYou'll be able to ride when you're a little older.")
+```
+
+The Modulo Operator
+```python
+number = input("Enter a number, and I'll tell you if it's even or odd: ")
+number = int(number)
+if number % 2 == 0:
+    print("\nThe number " + str(number) + " is even.")
+else:
+    print("\nThe number " + str(number) + " is odd.")
+```
+
+Accepting Input in Python 2.7
+- If you’re using Python 2.7, you should use the raw_input() function when prompting for user input. This function interprets all input as a string, just as input() does in Python 3.
+
+Introducing while loops
+```python
+current_number = 1
+while current_number <= 5:
+    print(current_number)
+    current_number += 1
+
+prompt = '\nTell me something, and I will repeat it back to you: '
+prompt += "\nEnter 'quit' or 'q' to end the program."
+message = ""
+while message != 'quit' and message != 'q':
+    message = input(prompt)
+    if message != 'quit' and message != 'q':
+        print(message)
+```
+
+Using a Flag
+```python
+flag = True
+while flag:
+    message = input("\nEnter anything. 'q' to quit: ")
+    if  message == 'q':
+        flag = False
+    else:
+        print(message)
+```
+
+Use break to Exit a Loop
+```python
+while True:
+    city = input("\nEnter a city you would like to visit. 'q' to quit: ")
+    if city == 'q':
+        break
+    else:
+        print('I would like to visit ' + city.title() + '!')
+```
+
+Use continue in a Loop
+```python
+# Rather than breaking out of a loop entirely without executing the rest of its code, you can use the continue statement to return to the beginning of the loop based on the result of a conditional test.
+current_number = 0
+while current_number < 10:
+    current_number += 1
+    if current_number % 2 == 0:
+        continue
+    print(current_number)
+```
+
+Avoiding Infinite Loops
+```python
+# This loop runs forever!
+x = 1
+while x <= 5:
+    print(x)
+    # x += 1
+```
+
+
+Using a while Loop with Lists and Dictionaries
+
+Moving Items from One List to Another
+```python
+# Start with users that need to be verified,	
+# and an empty list to hold confirmed users.
+unconfirmed_users = ['alice', 'brian', 'candace']
+confirmed_users = []
+
+# Verify each user until there are no more unconfirmed users.
+# Move each verified user into the list of confirmed users.
+while unconfirmed_users:
+    current_user = unconfirmed_users.pop()
+    
+    print("Verifying user: " + current_user.title())
+    confirmed_users.append(current_user)
+
+# Display all confirmed users.
+print("\nThe following users have been confirmed:")
+for confirmed_user in confirmed_users:
+    print(confirmed_user.title())
+```
+
+Removing All Instances of Specific Values from a List
+```python
+pets = ['dog', 'cat', 'dog', 'goldfish', 'cat', 'rabbit', 'cat']
+print(pets)
+
+while 'cat' in pets:
+    pets.remove('cat')
+
+print(pets)
+```
+
+Filling a Dictionary with User Input
+```python
+responses = {}
+active = True
+while active:
+    name = input("\nWhat's your name? ")
+    mountain = input('Which mountain do you want to climb? ')
+    responses[name] = mountain
+    answer = input('do you want us to add another person? (yes/no) ')
+    if answer.lower() == 'no':
+        active = False
+print('\nPolling result >>>>>>')
+for name, mountain in responses.items():
+    print(name + ' would like to climb ' + mountain + '.')
+```
+
+```python
+sandwich_orders = ['peanut', 'pastrami', 'cheese', 'pastrami',
+                   'burrito', 'pastrami']
+
+print('Sorry guys but, we ran out of pastrami sandwiches.')
+while 'pastrami' in sandwich_orders:
+    sandwich_orders.remove('pastrami')
+
+finished_sandwiches = []
+
+while sandwich_orders:
+    order = sandwich_orders.pop()
+    print("we're making your " + order + ' sandwich. Please Wait.')
+    finished_sandwiches.append(order)
+
+print('\nFinished dishes : ')
+print('\t' + str(finished_sandwiches))
+```
+
+# Functions
