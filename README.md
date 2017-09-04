@@ -85,12 +85,11 @@ Integers in python2
 Comments
 ```python
 # this is a python line comment
-```
-
-```
+"""
 this is a
 python block
 comment
+"""
 ```
 
 The Zen of Python
@@ -710,7 +709,6 @@ for name, languages in favorite_languages.items():
 ```
 You should not nest lists and dictionaries too deeply. If you’re nesting items much deeper than what you see in the preceding examples or you’re working with someone else’s code with significant levels of nesting, most likely a simpler way to solve the problem exists.
 
-
 3. Dictionary in a Dictionary
 ```python
 users = {
@@ -905,3 +903,294 @@ print('\t' + str(finished_sandwiches))
 ```
 
 # Functions
+- pass information to functions.
+- write certain functions whose job is to display information or process data and return a value or set of values. 
+- store functions in separate files called modules to help organize your main program files.
+
+```python
+def greet_user():
+    """Display a simple greeting"""
+    print("Hello!")
+greet_user()
+
+# Docstrings are enclosed in triple quotes, which Python looks for when it generates documentation for the functions in your programs.
+```
+
+Arguments and Parameters
+```python
+# the argument 'jesse' was passed to the function greet_user(), and the value was stored in the parameter username.
+def greet_user(username):
+    print("Hello, " + username.title() + "!")
+greet_user('jesse')
+```
+
+Positional Arguments
+```python
+# Order Matters in Positional Arguments
+def describe_pet(animal_type, pet_name):
+    print("\nI have a " + animal_type + ".")
+    print("My " + animal_type + "'s name is " + pet_name.title() + ".")
+
+describe_pet('hamster', 'harry')
+describe_pet('dog', 'willie')
+```
+
+Keyword arguments
+```python
+# keyword arguments free you from having to worry about correctly ordering your arguments in the function call, and they clarify the role of each value in the function call. When you use keyword arguments, be sure to use the exact names of the parameters in the function’s definition.
+def describe_pet(animal_type, pet_name):
+    print("\nI have a " + animal_type + ".")
+    print("My " + animal_type + "'s name is " + pet_name.title() + ".")
+
+describe_pet(animal_type='hamster', pet_name='harry')
+describe_pet(pet_name='harry', animal_type='hamster') # same result
+```
+
+Default Values
+```python
+# When writing a function, you can define a default value for each parameter. If an argument for a parameter is provided in the function call, Python uses the argument value. If not, it uses the parameter’s default value. So when you define a default value for a parameter, you can exclude the corresponding argument you’d usually write in the function call. Using default values can simplify your function calls and clarify the ways in which your functions are typically used.
+def describe_pet(pet_name, animal_type='dog'):
+    print("\nI have a " + animal_type + ".")
+    print("My " + animal_type + "'s name is " + pet_name.title() + ".")
+
+describe_pet(pet_name = 'willie')
+
+# Python still interprets this as a positional argument, so if the function is called with just a pet’s name, that argument will match up with the first parameter listed in the function’s definition. This is the reason the first parameter needs to be pet_name.
+
+# The simplest way to use this function now is to provide just a dog’s name in the function call:
+describe_pet('willie')
+
+# To describe an animal other than a dog, you could use a function call like this:
+describe_pet(pet_name='harry', animal_type='hamster')
+
+# When you use default values, any parameter with a default value needs to be listed after all the parameters that don’t have default values. This allows Python to continue interpreting positional arguments correctly.
+```
+
+Equivalent Function Calls
+```python
+def describe_pet(pet_name, animal_type='dog'):
+    print("\nI have a " + animal_type + ".")
+    print("My " + animal_type + "'s name is " + pet_name.title() + ".")
+
+# A dog named Willie.
+describe_pet('willie')
+describe_pet(pet_name='willie')
+
+# A hamster named Harry.
+describe_pet('harry', 'hamster')
+describe_pet(pet_name='harry', animal_type='hamster')
+describe_pet(animal_type='hamster', pet_name='harry')
+```
+
+Avoiding Argument Errors
+```python
+def describe_pet(pet_name, animal_type='dog'):
+    print("\nI have a " + animal_type + ".")
+    print("My " + animal_type + "'s name is " + pet_name.title() + ".")
+describe_pet() # ERROR!
+```
+
+Return Values
+```python
+def get_formatted_name(first_name, last_name):	
+    """Return a full name, neatly formatted."""
+    full_name = first_name + ' ' + last_name
+    return full_name.title()
+musician = get_formatted_name('jimi', 'hendrix')
+print(musician)
+```
+
+```python
+def get_formatted_name(first_name, last_name, middle_name=''):
+    """Return a full name, neatly formatted."""
+    if middle_name:
+        full_name = first_name + ' ' + middle_name + ' ' + last_name
+    else:
+        full_name = first_name + ' ' + last_name
+    return full_name.title()
+
+musician = get_formatted_name('jimi', 'hendrix')
+print(musician)
+musician = get_formatted_name('john', 'hooker', 'lee')
+print(musician)
+```
+
+Returning a Dictionary
+```python
+# This function takes in simple textual information and puts it into a more meaningful data structure that lets you work with the information beyond just printing it
+def build_person(first_name, last_name, age=''):
+    """Return a dictionary of information about a person."""
+    person = {'first': first_name, 'last': last_name}
+    if age:
+        person['age'] = age
+    return person
+musician = build_person('jimi', 'hendrix', age=27)
+print(musician)
+```
+
+Using a Function with a while Loop
+```python
+def get_formatted_name(first_name, last_name):
+    """Return a full name, neatly formatted."""
+    full_name = first_name + ' ' + last_name
+    return full_name.title()
+while True:
+    print("\nPlease tell me your name:")
+    print("(enter 'q' at any time to quit)")
+    f_name = input("First name: ")
+    if f_name == 'q':
+        break
+    l_name = input("Last name: ")
+    if l_name == 'q':
+        break
+    formatted_name = get_formatted_name(f_name, l_name)
+    print("\nHello, " + formatted_name + "!")
+```
+
+Passing a List
+```python
+def greet_users(names):
+    """Print a simple greeting to each user in the list."""
+    for name in names:
+        msg = "Hello, " + name.title() + "!"
+        print(msg)
+usernames = ['hannah', 'ty', 'margot']
+greet_users(usernames)
+```
+
+Modifying a List in a Function
+```python
+ # Start with some designs that need to be printed.
+unprinted_designs = ['iphone case', 'robot pendant', 'dodecahedron']
+completed_models = []
+# Simulate printing each design, until none are left.
+# Move each design to completed_models after printing.
+while unprinted_designs:
+    current_design = unprinted_designs.pop()
+    # Simulate creating a 3D print from the design.
+    print("Printing model: " + current_design)
+    completed_models.append(current_design)
+
+# Display all completed models.
+print("\nThe following models have been printed:")
+for completed_model in completed_models:
+    print(completed_model)
+```
+
+Reorganize this code by writing two functions, each of which does one specific job
+```python
+# This example also demonstrates the idea that every function should have one specific job.
+def print_models(unprinted_designs, completed_models):
+    while unprinted_designs:
+        current_design = unprinted_designs.pop()
+        # Simulate creating a 3D print from the design.
+        print("Printing model: " + current_design)
+        completed_models.append(current_design)
+
+def show_completed_models(completed_models):
+    """Show all the models that were printed."""
+    print("\nThe following models have been printed:")
+    for completed_model in completed_models:
+        print(completed_model)
+
+unprinted_designs = ['iphone case', 'robot pendant', 'dodecahedron']
+completed_models = []
+
+print_models(unprinted_designs, completed_models)
+show_completed_models(completed_models)
+```
+
+Preventing a Function from Modifying a List
+```python
+def print_models(unprinted_designs, completed_models):
+    # same
+def show_completed_models(completed_models):
+    # same
+unprinted_designs = ['iphone case', 'robot pendant', 'dodecahedron']
+completed_models = []
+
+# In this case, you can address this issue by passing the function a copy of the list, not the original. Any changes the function makes to the list will affect only the copy, leaving the original list intact.
+print_models(unprinted_designs[:], completed_models)
+show_completed_models(completed_models)
+```
+
+Passing an Arbitrary Number of Arguments
+```python
+# The asterisk in the parameter name *toppings tells Python to make an empty tuple called toppings and pack whatever values it receives into this tuple.
+def make_pizza(*toppings):
+    """Print the list of toppings that have been requested."""
+    print(toppings)
+
+make_pizza('pepperoni')
+make_pizza('mushrooms', 'green peppers', 'extra cheese')
+
+# Mixing Positional and Arbitrary Arguments
+def make_pizza(size, *toppings):
+    """Summarize the pizza we are about to make."""
+    print("\nMaking a " + str(size) +
+          "-inch pizza with the following toppings:")
+    for topping in toppings:
+        print("- " + topping)
+
+make_pizza(16, 'pepperoni')
+make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
+```
+
+Using Arbitrary Keyword Arguments
+```python
+# Sometimes you’ll want to accept an arbitrary number of arguments, but you won’t know ahead of time what kind of information will be passed to the function. In this case, you can write functions that accept as many key-value pairs as the calling statement provides.
+def build_profile(first, last, **user_info):
+    """Build a dictionary containing everything we know about a user."""
+    profile = {}
+    profile['first_name'] = first
+    profile['last_name'] = last
+    for key, value in user_info.items():
+        profile[key] = value
+    return profile
+
+user_profile = build_profile('albert', 'einstein', 
+    location='princeton', 
+    field='physics')
+print(user_profile)
+
+# The definition of build_profile() expects a first and last name, and then it allows the user to pass in as many name-value pairs as they want. The double asterisks before the parameter **user_info cause Python to create an empty dictionary called user_info and pack whatever name-value pairs it receives into this dictionary.
+```
+
+Storing Your Functions in Modules
+```python
+# By using descriptive names for your functions, your main program will be much easier to follow. You can go a step further by storing your functions in a separate file called a module and then importing that module into your main program.
+
+# To start importing functions, we first need to create a module. A module is a file ending in .py that contains the code you want to import into your program. Let’s make a module that contains the function make_pizza(). To make this module, we’ll remove everything from the file pizza.py except the function make_pizza():
+
+# pizza.py
+def make_pizza(size, *toppings):
+    print("\nMaking a " + str(size) + 
+        "-inch pizza with the following toppings:")
+    for topping in toppings:
+        print("- " + topping)
+```
+
+Importing an Entire Module
+```python
+# making_pizzas.py
+import pizza # tells python to open the file pizza.py and copy all the functions from it into this program
+pizza.make_pizza(16, 'pepperoni')
+pizza.make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
+
+# This first approach to importing, in which you simply write import followed by the name of the module, makes every function from the module available in your program. 
+
+# module_name.function_name()
+```
+
+Importing Specific Functions
+```python
+from module_name import function_name
+from module_name import function_0, function_1, function_2
+```
+
+```python
+# With this syntax, you don’t need to use the dot notation when you call a function.
+from pizza import make_pizza
+make_pizza(16, 'pepperoni')
+make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
+```
