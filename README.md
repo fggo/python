@@ -1174,23 +1174,216 @@ Importing an Entire Module
 ```python
 # making_pizzas.py
 import pizza # tells python to open the file pizza.py and copy all the functions from it into this program
+
+# module_name.function_name()
 pizza.make_pizza(16, 'pepperoni')
 pizza.make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
 
 # This first approach to importing, in which you simply write import followed by the name of the module, makes every function from the module available in your program. 
-
-# module_name.function_name()
 ```
 
 Importing Specific Functions
 ```python
-from module_name import function_name
-from module_name import function_0, function_1, function_2
-```
-
-```python
 # With this syntax, you don’t need to use the dot notation when you call a function.
+# from module_name import function_name
+# from module_name import function_0, function_1, function_2
+
 from pizza import make_pizza
 make_pizza(16, 'pepperoni')
 make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
 ```
+
+Using as to Give a Function an Alias
+```python
+# If the name of a function you’re importing might conflict with an existing name in your program or if the function name is long, you can use a short, unique alias—an alternate name similar to a nickname for the function.
+from pizza import make_pizza as mp
+mp(16, 'pepperoni')
+mp(12, 'mushrooms', 'green peppers', 'extra cheese')
+```
+
+Using as to Give a Module an Alias
+```python
+# You can also provide an alias for a module name. Giving a module a short alias, like p for pizza
+# import module_name as mn
+
+import pizza as p
+p.make_pizza(16, 'pepperoni')
+p.make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
+```
+
+Importing All Functions in a Module
+```python
+# You can tell Python to import every function in a module by using the asterisk (*) operator:
+# Because every function is imported, you can call each function by name without using the dot notation. 
+# However, it’s best not to use this approach when you’re working with larger modules that you didn’t write: if the module has a function name that matches an existing name in your project, you can get some unexpected results.
+# The best approach is to import the function or functions you want, or import the entire module and use the dot notation. This leads to clear code that’s easy to read and understand
+# from module_name import *
+
+from pizza import *
+make_pizza(16, 'pepperoni')
+make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
+```
+
+Styling Functions
+- descriptive function name with only lowercase and underscore
+- comment should appear immediately after the function definition and use the docstring format.
+- default value for a parameter: no spaces should be used on either side of the equal sign. e.g. param='default value'
+- also same convention for arguments in function call. e.g. func(val_0, param='value')
+```python
+def function_name(
+        parameter_0, parameter_1, parameter_2,
+        parameter_3, parameter_4, parameter_5):
+function body...
+```
+- If your program or module has more than one function, you can separate each by two blank lines to make it easier to see where one function ends and the next one begins
+- All import statements should be written at the beginning of a file. (exceptions are comments at the beginning of the file to describe the overall program)
+
+# Classes
+- create objects with unique traits
+- instantiate; make an object from a class
+- actions and information for an object
+- write classes that extends the functionality of existing classes
+- store classes in modules and import classes written by other programmers into your own program files
+
+```python
+# The __init__() method runs automatically whenever we create a new instance based on the Dog class
+# The self parameter is required in the method definition, and it must come first before the other parameters
+# it gives the individual instance access to the attributes and methods in the class.
+# Variables (name, age) that are accessible through instances like this (self.name and selft.age) are called attributes.
+
+class Dog():
+    """A simple attempt to model a dog."""
+    
+    def __init__(self, name, age):
+        """Initialize name and age attributes."""
+        self.name = name
+        self.age = age
+    
+    def sit(self):
+        """Simulate a dog sitting in response to a command."""
+        print(self.name.title() + " is now sitting.")
+    
+    def roll_over(self):
+        """Simulate rolling over in response to a command."""
+        print(self.name.title() + " rolled over!")
+```
+
+python 2.7 class definition
+```python
+class ClassName(object):
+    # methods
+```
+
+Making an Instance from a Class
+```python
+class Dog():
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+    
+    def sit(self):
+        print(self.name.title() + " is now sitting.")
+    
+    def roll_over(self):
+        print(self.name.title() + " rolled over!")
+
+my_dog = Dog('willie', 6)
+
+# Accessing attributes
+print("My dog's name is " + my_dog.name.title() + ".")
+print("My dog is " + str(my_dog.age) + " years old.")
+
+# Calling Methods
+my_dog.sit()
+my_dog.roll_over()
+
+# Creating Multiple Instances
+your_dog = Dog('lucy', 3)
+print("\nYour dog's name is " + your_dog.name.title() + ".")
+print("Your dog is " + str(your_dog.age) + " years old.")
+your_dog.sit()
+```
+
+Working with Classes and Instances
+```python
+class Car():
+    """A simple attempt to represent a car."""
+
+    def __init__(self, make, model, year):
+        """Initialize attributes to describe a car."""
+        self.make = make
+        self.model = model
+        self.year = year
+        # Setting a Default Value for an Attribute
+        self.odometer_reading = 0
+
+    def get_descriptive_name(self):
+        """Return a neatly formatted descriptive name."""
+        long_name = str(self.year) + ' ' + self.make + ' ' + self.model
+        return long_name.title()
+
+    def read_odometer(self):
+        """Print a statement showing the car's mileage."""
+        print("This car has " + str(self.odometer_reading) + " miles on it.")
+
+my_new_car = Car('audi', 'a4', 2016)
+print(my_new_car.get_descriptive_name())
+my_new_car.read_odometer()
+```
+
+Modifying Attribute Values
+1. Modifying an attribute’s Value Directly
+```python
+from car import Car
+
+my_new_car = Car('audi', 'a4', 2017)
+my_new_car.odometer_reading = 23 # modify 1
+```
+
+2. Modifying an attribute’s Value through a Method
+```python
+class Car():
+    def __init__(self, make, model, year):
+        """Initialize attributes to describe a car."""
+        self.make = make
+        self.model = model
+        self.year = year
+        # Setting a Default Value for an Attribute
+        self.odometer_reading = 0
+    
+    def update_odometer(self, mileage):
+        """
+        Set the odometer reading to the given value.
+        Reject the change if it attempts to roll the odometer back.
+        """
+        if mileage >= self.odometer_reading:
+            self.odometer_reading = mileage
+        else:
+            print("You can't roll back an odometer!")
+
+my_new_car = Car('audi', 'a4', 2017)
+my_new_car.update_odometer(23) # modify 2
+```
+
+3. Incrementing an attribute’s Value through a Method
+```python
+# Sometimes you’ll want to increment an attribute’s value by a certain amount rather than set an entirely new value
+# You can easily modify this method to reject negative increments so no one uses this function to roll back an odometer
+class Car():
+    def __init__(self, make, model, year):
+        """Initialize attributes to describe a car."""
+        self.make = make
+        self.model = model
+        self.year = year
+        # Setting a Default Value for an Attribute
+        self.odometer_reading = 0
+    
+    def increment_odometer(self, miles):
+        """Add the given amount to the odometer reading."""
+        self.odometer_reading += miles
+
+my_used_car = Car('subaru', 'outback', 2013)
+my_used_car.increment_odometer(100) # modify 3
+```
+
+
