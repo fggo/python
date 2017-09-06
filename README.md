@@ -1271,7 +1271,7 @@ class Dog():
 python 2.7 class definition
 ```python
 class ClassName(object):
-    # methods
+    # put object inside parentheses
 ```
 
 Making an Instance from a Class
@@ -1387,3 +1387,66 @@ my_used_car.increment_odometer(100) # modify 3
 ```
 
 
+## Inheritance
+When one class inherits from another, it(child) automatically takes on all the attributes and methods of the first class(parent.) The child class inherits every attribute and method from its parent class but is also free to define new attributes and methods of its own.
+```python
+from car import Car
+
+class ElectricCar(Car):
+    """Represent aspects of a car, specific to electric vehicles."""
+
+    def __init__(self, make, model, year):
+        """Initialize attributes of the parent class."""
+        super().__init__(make, model, year)
+
+my_tesla = ElectricCar('tesla', 'model s', 2016)
+print(my_tesla.get_descriptive_name())
+```
+
+Inheritance in Python 2.7
+```python
+# The super() function needs two arguments: a reference to the child class and the self object.
+from car import Car
+
+class ElectricCar(Car):
+    def __init__(self, make, model, year):
+        """Initialize attributes of the parent class."""
+        super(ElectricCar, self).__init__(make, model, year)
+```
+
+Defining Attributes and Methods for the Child Class
+```python
+from car import Car
+
+
+class ElectricCar(Car):
+    def __init__(self, make, model, year):
+        super().__init__(make, model, year)
+        self.battery_size = 70
+    
+    def describe_battery(self):
+        print('battery: ' + str(self.battery_size) + '-kWh')
+
+my_tesla = ElectricCar('tesla', 'model s', 2016)
+print(my_tesla.get_descriptive_name())
+my_tesla.describe_battery()
+```
+
+Overriding Methods from the Parent Class
+```python
+from car import Car
+
+class ElectricCar(Car):
+    """
+    define a method in the child class with the same name as the method you want to override in the parent class.
+    Now if someone tries to call fill_gas_tank() with an electric car, 
+    Python will ignore the method fill_gas_tank() in Car and run this code instead
+    """
+    
+    def fill_gas_tank(self):
+        print('Electric Car does not need Gas!')
+```
+
+Instances as Attributes
+```python
+```
