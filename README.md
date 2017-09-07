@@ -1660,3 +1660,13 @@ Styling Classes
 
 # Files and Exceptions
 
+## reading from a file
+```python
+# Save the text file (pi_digits.txt) in the same directory where you’ll store this chapter’s programs.
+# Here’s a program that opens this file, reads it, and prints the contents of the file to the screen:
+with open('pi_digits.txt') as file_object:
+    contents = file_object.read()
+    print(contents)
+```
+
+
