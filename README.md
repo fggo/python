@@ -1332,6 +1332,7 @@ my_new_car.read_odometer()
 ```
 
 Modifying Attribute Values
+
 1. Modifying an attribute’s Value Directly
 ```python
 from car import Car
@@ -1386,9 +1387,8 @@ my_used_car = Car('subaru', 'outback', 2013)
 my_used_car.increment_odometer(100) # modify 3
 ```
 
-
 ## Inheritance
-When one class inherits from another, it(child) automatically takes on all the attributes and methods of the first class(parent.) The child class inherits every attribute and method from its parent class but is also free to define new attributes and methods of its own.
+When one class inherits from another, it automatically takes on all the attributes and methods of the first class. The child class inherits every attribute and method from its parent class but is also free to define new attributes and methods of its own.
 ```python
 from car import Car
 
@@ -1417,7 +1417,6 @@ class ElectricCar(Car):
 Defining Attributes and Methods for the Child Class
 ```python
 from car import Car
-
 
 class ElectricCar(Car):
     def __init__(self, make, model, year):
@@ -1449,4 +1448,215 @@ class ElectricCar(Car):
 
 Instances as Attributes
 ```python
+from car import Car
+
+class Battery():
+    
+    def __init__(self, battery_size=70):
+        self.battery_size = battery_size
+    
+    def describe_battery(self):
+        print('battery: ' + str(self.battery_size) + '-kWh')
+
+    def get_range(self):
+        """Print a statement about the range this battery provides."""
+        if self.battery_size == 70:
+            range = 240
+        elif self.battery_size == 85:
+            range = 270
+        
+        message = "This car can go approximately " + str(range)
+        message += " miles on a full charge."
+        print(message)
+
+class ElectricCar(Car):
+    def __init__(self, make, model, year):
+        super().__init__(make, model, year)
+        self.battery = Battery()
+
+my_tesla = ElectricCar('tesla', 'model s', 2016)
+print(my_tesla.get_descriptive_name())
+
+my_tesla.battery.describe_battery()
+my_tesla.battery.get_range()
+
+my_tesla.battery.upgrade_battery()
+my_tesla.battery.get_range()
 ```
+
+Modeling Real-World Objects
+- As you begin to model more complicated items like electric cars, you’ll wrestle with interesting questions. Is the range of an electric car a property of the battery or of the car?
+
+Importing Classes
+```python
+# store classes (e.g. Car, User) in modules (e.g car.py, user.py) 
+# and then import the classes you need into your main program.
+# any program that uses this module will need a more specific filename, 
+# e.g. my_car.py. my_user.py
+
+# 1. Importing a Single Class
+# my_car.py
+from car import Car
+
+
+my_new_car = Car('audi', 'a4', 2016)
+print(my_new_car.get_descriptive_name())
+```
+
+```python
+# 2. Storing Multiple Classes in a Module
+# You can store as many classes as you need in a single module, 
+# although each class in a module should be related somehow.
+# car.py
+class Car():
+
+class Battery():
+
+class ElectricCar():
+```
+
+```python
+# my_electric_car.py
+from car import ElectricCar
+
+my_tesla = ElectricCar('tesla', 'model s', 2016)
+
+print(my_tesla.get_descriptive_name())
+my_tesla.battery.describe_battery()
+my_tesla.battery.get_range()
+```
+
+```python
+# 3. Importing Multiple Classes from a Module
+# my_cars.py
+from car import Car, ElectricCar
+
+
+my_beetle = Car('volkswagen', 'beetle', 2016)
+print(my_beetle.get_descriptive_name())
+
+my_tesla = ElectricCar('tesla', 'roadster', 2016)
+print(my_tesla.get_descriptive_name())
+```
+
+```python
+# 4. Importing an Entire Module
+import car
+
+
+my_beetle = car.Car('volkswagen', 'beetle', 2016)
+print(my_beetle.get_descriptive_name())
+
+my_tesla = car.ElectricCar('tesla', 'roadster', 2016)
+print(my_tesla.get_descriptive_name())
+```
+
+```python
+# 5. Importing All Classes from a Module
+# This method is not recommended for two reasons. First, it’s helpful
+# to be able to read the import statements at the top of a file and get a clear
+# sense of which classes a program uses. Secondly, this approach can lead to confusion 
+# with names in the file. If you accidentally import a class with the same name as 
+# something else in your program file, you can create errors that are hard to diagnose. 
+from module_name import *
+```
+
+```python
+# 6. Importing a Module into a Module
+# When you store your classes in several modules, you may find that a class 
+# in one module depends on a class in another module. When this happens, 
+# you can import the required class into the first module.
+
+# electric_car.py
+from car import Car
+
+
+class Battery():
+    
+class ElectricCar(Car):
+```
+
+```python
+# my_cars.py
+from car import Car
+from electric_car import ElectricCar
+
+
+my_beetle = Car('volkswagen', 'beetle', 2016)
+print(my_beetle.get_descriptive_name())
+
+my_tesla = ElectricCar('tesla', 'roadster', 2016)
+print(my_tesla.get_descriptive_name())
+```
+
+Finding Your Own Workflow
+```python
+# When you’re starting out, keep your code structure simple. Try
+# doing everything in one file and moving your classes to separate modules
+# once everything is working.
+```
+
+The Python Standard Library
+```python
+# If you’re creating a dictionary and want to keep track of the order in which key-value 
+# pairs are added, you can use the OrderedDict class from the collections module.
+# You can also download modules from external sources. You’ll see a number of these
+# examples in Part II, where we’ll need external modules to complete each project.
+from collections import OrderedDict
+
+
+# OrderedDict() creates an empty ordered dictionary
+# Instances of the OrderedDict class behave almost exactly like dictionaries
+# except they keep track of the order in which key-value pairs are added.
+favorite_languages = OrderedDict()
+
+favorite_languages['jen'] = 'python'
+favorite_languages['sarah'] = 'c'
+favorite_languages['edward'] = 'ruby'
+favorite_languages['phil'] = 'python'
+
+for name, language in favorite_languages.items():
+    print(name.title() + "'s favorite language is " 
+        + language.title() + '.')
+```
+
+```python
+# die.py
+from random import randint
+
+
+class Die():
+    def __init__(self, sides):
+        self.sides = sides
+
+    def roll_die(self):
+        # prints a random number between 1 and the number of sides
+        x = randint(1, self.sides)
+        print(str(self.sides) + '-side die result = ' + str(x))
+
+die_6 = Die(6)
+die_10 = Die(10)
+die_20 = Die(20)
+
+for i in range(10):
+    die_6.roll_die()
+    die_10.roll_die()
+    die_20.roll_die()
+    print()
+``` 
+
+Go to [python module of the week](http://pymotw.com/) and look at the table of contents . Find a module that looks interesting to you and read about it, or explore the documentation of the collections and random module
+
+Styling Classes
+- Class names should be written in CamelCaps and should not use underscores
+- Instance and module names should be written in lowercase with underscores between words
+- Every class should have a docstring immediately following the class definition 
+- same formatting conventions you used for writing docstrings in functions
+- Each module should also have a docstring describing what the classes in a module can be used for 
+- Within a class you can use one blank line between methods
+- Within a module you can use two blank lines to separate classes
+- Place the import statement for the standard library module first. 
+- Then add a blank line and the import statement for the module you wrote. 
+
+# Files and Exceptions
+
