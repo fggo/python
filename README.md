@@ -1643,30 +1643,35 @@ for i in range(10):
     die_10.roll_die()
     die_20.roll_die()
     print()
-``` 
+```
 
 Go to [python module of the week](http://pymotw.com/) and look at the table of contents . Find a module that looks interesting to you and read about it, or explore the documentation of the collections and random module
 
 Styling Classes
 - Class names should be written in CamelCaps and should not use underscores
 - Instance and module names should be written in lowercase with underscores between words
-- Every class should have a docstring immediately following the class definition 
-- same formatting conventions you used for writing docstrings in functions
+- Every class/function should have a docstring immediately following the class/function definition 
 - Each module should also have a docstring describing what the classes in a module can be used for 
-- Within a class you can use one blank line between methods
-- Within a module you can use two blank lines to separate classes
+- Within a class, one blank line between methods
+- Within a module, two blank lines to separate classes
 - Place the import statement for the standard library module first. 
 - Then add a blank line and the import statement for the module you wrote. 
 
 # Files and Exceptions
 
-## reading from a file
+## Reading from a File
 ```python
 # Save the text file (pi_digits.txt) in the same directory where you’ll store this chapter’s programs.
-# Here’s a program that opens this file, reads it, and prints the contents of the file to the screen:
+# 'with' keyword closes the file once access to it is no longer needed.
+# read() reads newline, resulting in contents without a new line at the end
 with open('pi_digits.txt') as file_object:
-    contents = file_object.read()
-    print(contents)
+    contents = file_object.read() # returns an empty string when it reaches the end of the file
+    print(contents) # resulting in an additional empty line at the end
+    print(contents.rstrip()) # remove the empty line
 ```
 
-
+File Paths
+```python
+with open('text_files/filename.txt') as file_object: # relative path
+with open('/home/user/workspace/python/text_files/filename.txt') as file_object: # absolute path
+```
