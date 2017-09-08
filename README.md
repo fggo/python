@@ -1664,6 +1664,7 @@ Styling Classes
 # Save the text file (pi_digits.txt) in the same directory where you’ll store this chapter’s programs.
 # 'with' keyword closes the file once access to it is no longer needed.
 # read() reads newline, resulting in contents without a new line at the end
+# open(): an object representing the file and its contents is stored in the variable
 with open('pi_digits.txt') as file_object:
     contents = file_object.read() # returns an empty string when it reaches the end of the file
     print(contents) # resulting in an additional empty line at the end
@@ -1675,3 +1676,17 @@ File Paths
 with open('text_files/filename.txt') as file_object: # relative path
 with open('/home/user/workspace/python/text_files/filename.txt') as file_object: # absolute path
 ```
+
+Reading Line by Line
+```python
+# an invisible newline character is at the end of each line in the text file
+# also print statements adds its own newline
+# , resulting in two blank lines between lines
+filename = 'pi_digits.txt'
+with open(filename) as file_object:
+    for line in file_object:
+        print(line)
+```
+
+
+
