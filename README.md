@@ -15,15 +15,13 @@
 
 # Getting Started
 ```
-# python is pre-installed in Ubuntu Gnome 16.04; Check versions by typing
-/*use python interpreter*/
+# python is pre-installed in Ubuntu Gnome 16.04; Run python interpreter and check versions by typing
 python
 python3
->>> print("Hello Python interpreter!")
 ```
 
-Running a python program
 ```
+# Running a python program
 /*compile*/
 python3 -m py_compile "%f"
 
@@ -33,14 +31,13 @@ python3 "%f"
 
 # Variables and Simple Data Types
 ```python
-full_name = 'ada lovelace'
-print(full_name.upper())
-print(full_name.lower())
-print(full_name.title())
-```
+# Data types example
+str_0 = 'ada lovelace'
+print(str_0.upper())
+print(str_0.lower())
+print(str_0.title())
 
-White space 
-```python
+# White spaces
 '\tHello'
 '\nHello'
 
@@ -48,26 +45,25 @@ name = '  python  '
 name.rstrip()
 name.lstrip()
 name.strip()
-```
 
-Quote inside quote
-```python
-msg = "monty's best friend" # ok
-msg2 = 'Albert Einstein once said, \'A person who never made a mistake never tried anything new.\'' # ok
+# Quote inside quote
+ok_msg = "monty's best friend"
+ok_msg2 = 'Albert Einstein once said, \'A person who never made a mistake never tried anything new.\''
 # wrong_msg = 'monty's best friend' # Error!
 ```
 
-Arithmetic + - * / exponential **
+## operator
 ```python
-booleanVal = (9 == 3 ** 2) # True
-```
+# Arithmetic operator + - * /
+# Exponential operator **
+bool_0 = (1 + 1 == 3) # False
+bool_1 = (9 == 3 ** 2) # True
 
-Floating number
-```python
+# Floating number
 .1 + .1 # .2000000000001
 ```
 
-Avoid type errors
+## Avoid type errors
 ```python
 age = 23
 message = "Happy " + str(age) + "rd Birthday!"
@@ -177,10 +173,10 @@ print('Original List: ')
 print(cars)
 ```
 
-sorted(list, reverse = True) in reverse order
+sorted(list, reverse = True)
 ```python
 loc = ['tokyo', 'los angeles', 'new york', 'seoul']
-print(sorted(loc, reverse = True))
+print(sorted(loc, reverse = True)) # in reverse order
 print(loc)
 ```
 
