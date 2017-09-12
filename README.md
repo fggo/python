@@ -192,26 +192,8 @@ print("Thank you, everyone. That was a great magic show!")
 ```
 
 Avoiding Indentation Errors
-```python
-# missing an indent
-magicians = ['alice', 'david', 'carolina']
-for magician in magicians:
-    print(magician)
-print("show me next trick, " + magician.title() + ".\n") # error!
-
-# unnecessary indent
-message = 'Hello world!'
-    print(message) # error!
-
-for magician in magicians:
-    print(magician)
-
-    print("Thank you, everyone. That was a great magic show!") # considered as inside for loop
-
-# missing the colons
-for magician in magicians # error!
-    print(magician)
-```
+- missing or unnecessary indentation
+- missing colons
 
 ## Numerical Lists
 ```python
@@ -233,9 +215,9 @@ print(squares) # [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
 
 # min(list) max(list) sum(list)
 digits = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
-minVal = min(digits)
-maxVal = max(digits)
-sumVal = sum(digits)
+min_val = min(digits)
+max_val = max(digits)
+sum_val = sum(digits)
 ```
 
 ## List Comprehensions
@@ -436,14 +418,13 @@ Try it yourself
 current_users = ['foo', 'bar']
 new_users = ['FOo', 'baR', 'AAa', 'Bbb', 'ccc']
 for user in new_users:
-    if user.upper() in [cur_user.upper() for cur_user in current_users]:
+    if user.upper() in [user.upper() for user in current_users]:
         print("Hey! Your username, " + user + " is already in use!")
     else:
         print("Your username, " + user + " is available to use!")
 
 # 5-11
 numbers = range(1, 11)
-read = ''
 for num in numbers:
     if num == 1:
         read = '1st'
@@ -459,64 +440,53 @@ print(read)
 # Dictionaries
 collection of key-value pairs. Each key is connected to a value, and you can use a key to access the value associated with that key. In fact, you can use any object that you can create in Python as a value in a dictionary.
 ```python
-alien_0 = {'color': 'green', 'points': 5}
-print(alien_0['color'])
-print(alien_0['points'])
+alien = {'color': 'green', 'points': 5}
+print(alien) # {'color': 'green', 'points': 5}
+print(alien['color'])
+print(alien['points'])
 
-new_points = alien_0['points']
+new_points = alien['points']
 print("You just earned " + str(new_points) + " points!")
-```
 
-Adding New Key-Value pairs
-```python
-alien_0 = {'color': 'green', 'points': 5}
-print(alien_0) # {'color': 'green', 'points': 5}
-alien_0['x_position'] = 0
-alien_0['y_position'] = 25
-print(alien_0) # {'color': 'green', 'points': 5, 'y_position': 25, 'x_position': 0}
-```
+""" Adding New Key-Value pairs """
+alien['x_position'] = 0
+alien['y_position'] = 25
+print(alien) # {'color': 'green', 'points': 5, 'y_position': 25, 'x_position': 0}
 
-Starting with an empty dictionary
-```python
-alien_0 = {}
-alien_0['color'] = 'green'
-alien_0['points'] = 5
-print(alien_0) # {'color': 'green', 'points': 5}
-```
+""" Starting with an empty dictionary """
+alien = {}
+alien['color'] = 'green'
+alien['points'] = 5
+print(alien) # {'color': 'green', 'points': 5}
 
-Modifying Values in a dictionary
-```python
-alien_0 = {'x_position' : 0, 'y_position' : 25, 'speed' : 'medium', 'color' : 'green'}
+""" Modifying Values in a dictionary """
+alien = {'x_position' : 0, 'y_position' : 25, 'speed' : 'medium', 'color' : 'green'}
 
 # modify color value
-alien_0['color'] = 'yellow'
+alien['color'] = 'yellow'
 
 # modify position value
 print("Original x-position: " + str(alien_0['x_position']))
-if alien_0['speed'] == 'slow':
+if alien['speed'] == 'slow':
     x_increment = 1
-elif alien_0['speed'] == 'medium':
+elif alien['speed'] == 'medium':
     x_increment = 2
-elif alien_0['speed'] == 'fast':
+elif alien['speed'] == 'fast':
     x_increment = 3
 
-alien_0['x_position'] += x_increment
+alien['x_position'] += x_increment
 # Python variables are scoped to the innermost function or module; 
 # control blocks like if and while blocks don't count. 
 # (IIUC, this is also how JavaScript's var-declared variables work.)
-print("New x-position: " + str(alien_0['x_position']))
-```
+print("New x-position: " + str(alien['x_position']))
 
-Removing Key-Value pairs
-```python
-alien_0 = {'color': 'green', 'points': 5}
-print(alien_0)
-del alien_0['points'] # remove key-value pair
-print(alien_0)
-```
+""" Removing Key-Value pairs """
+alien = {'color': 'green', 'points': 5}
+print(alien)
+del alien['points'] # remove key-value pair
+print(alien)
 
-A Dictionary of Similar Objects
-```python
+""" A Dictionary of Similar Objects """
 # When you know you’ll need more than one line to define a dictionary
 favorite_languages = {
     'jen': 'python',
@@ -529,7 +499,7 @@ print("Sarah's favorite language is " +
       ".")
 ```
 
-Looping Through a Dictionary
+## Looping Through a Dictionary
 ```python
 # 1. Looping through all Key-Value pairs
 # Notice again that the key-value pairs are not returned in the order in which they were stored, even when looping through a dictionary. Python doesn’t care about the order in which key-value pairs are stored; it tracks only the connections between individual keys and their values.
@@ -541,6 +511,7 @@ user_0 = {
 for key, value in user_0.items():
     print('\nKey: ' + key)
     print('Value: ' + value)
+
 
 favorite_languages = {
     'jen': 'python',
@@ -585,7 +556,7 @@ for language in set(favorite_languages.values()):
     print(language.title())
 ```
 
-Nesting
+## Nesting
 ```python
 # 1. A List of Dictionaries
 alien_0 = {'color': 'green', 'points': 5}
@@ -715,8 +686,7 @@ while current_number <= 5:
     print(current_number)
     current_number += 1
 
-prompt = '\nTell me something, and I will repeat it back to you: '
-prompt += "\nEnter 'quit' or 'q' to end the program."
+prompt = "\nTell me something ('quit' or 'q' to end the program.)"
 message = ""
 while message != 'quit' and message != 'q':
     message = input(prompt)
@@ -746,8 +716,8 @@ while True:
 ```
 
 ## Use continue in a Loop
-```python
-# Rather than breaking out of a loop entirely without executing the rest of its code, you can use the continue statement to return to the beginning of the loop based on the result of a conditional test.
+```python 
+# return to the beginning of the loop based on the result of a conditional test
 current_number = 0
 while current_number < 10:
     current_number += 1
@@ -766,40 +736,26 @@ while x <= 5:
 ```
 
 ## Using a while Loop with Lists and Dictionaries
-Moving Items from One List to Another
 ```python
-# Start with users that need to be verified,	
-# and an empty list to hold confirmed users.
+""" Moving Items from One List to Another """
 unconfirmed_users = ['alice', 'brian', 'candace']
 confirmed_users = []
-
-# Verify each user until there are no more unconfirmed users.
-# Move each verified user into the list of confirmed users.
 while unconfirmed_users:
     current_user = unconfirmed_users.pop()
-    
     print("Verifying user: " + current_user.title())
     confirmed_users.append(current_user)
 
-# Display all confirmed users.
 print("\nThe following users have been confirmed:")
 for confirmed_user in confirmed_users:
     print(confirmed_user.title())
-```
 
-Removing All Instances of Specific Values from a List
-```python
+""" Removing All Instances of Specific Values from a List """
 pets = ['dog', 'cat', 'dog', 'goldfish', 'cat', 'rabbit', 'cat']
-print(pets)
-
 while 'cat' in pets:
     pets.remove('cat')
-
 print(pets)
-```
 
-Filling a Dictionary with User Input
-```python
+""" Filling a Dictionary with User Input """
 responses = {}
 active = True
 while active:
@@ -824,7 +780,6 @@ while 'pastrami' in sandwich_orders:
     sandwich_orders.remove('pastrami')
 
 finished_sandwiches = []
-
 while sandwich_orders:
     order = sandwich_orders.pop()
     print("we're making your " + order + ' sandwich. Please Wait.')
@@ -836,7 +791,7 @@ print('\t' + str(finished_sandwiches))
 
 # Functions
 - pass information to functions.
-- write certain functions whose job is to display information or process data and return a value or set of values. 
+- write functions whose job is to display information or process data and return a value or set of values. 
 - store functions in separate files called modules to help organize your main program files.
 
 ```python
@@ -848,27 +803,25 @@ greet_user()
 # Docstrings are enclosed in triple quotes, which Python looks for when it generates documentation for the functions in your programs.
 ```
 
-Arguments and Parameters
+## Arguments and Parameters
 ```python
 # the argument 'jesse' was passed to the function greet_user(), and the value was stored in the parameter username.
 def greet_user(username):
     print("Hello, " + username.title() + "!")
 greet_user('jesse')
-```
 
-Positional Arguments
-```python
+
+""" Positional Arguments """
 # Order Matters in Positional Arguments
 def describe_pet(animal_type, pet_name):
     print("\nMy " + animal_type + "'s name is " + pet_name.title() + ".")
 
 describe_pet('hamster', 'harry')
 describe_pet('dog', 'willie')
-```
 
-Keyword arguments
-```python
-# free from having to worry about correctly ordering your arguments in the function call 
+
+""" Keyword arguments """
+# Order does Not matter in Keyword Arguments 
 # be sure to use the exact names of the parameters in the function’s definition.
 def describe_pet(animal_type, pet_name):
     print("\nI have a " + animal_type + ".")
@@ -876,52 +829,42 @@ def describe_pet(animal_type, pet_name):
 
 describe_pet(animal_type='hamster', pet_name='harry')
 describe_pet(pet_name='harry', animal_type='hamster') # same result
-```
 
-Default Values
-```python
-# When writing a function, you can define a default value for each parameter. If an argument for a parameter is provided in the function call, Python uses the argument value. If not, it uses the parameter’s default value. So when you define a default value for a parameter, you can exclude the corresponding argument you’d usually write in the function call. Using default values can simplify your function calls and clarify the ways in which your functions are typically used.
+
+""" Default Values """
+# When writing a function, you can define a default value for each parameter.  
+# When you use default values, any parameter with a default value needs to be listed 
+# after all the parameters that don’t have default values. 
+# This allows Python to continue interpreting positional arguments correctly.
 def describe_pet(pet_name, animal_type='dog'):
     print("\nI have a " + animal_type + ".")
     print("My " + animal_type + "'s name is " + pet_name.title() + ".")
 
 describe_pet(pet_name = 'willie')
+describe_pet('willie') # simpler way 
+describe_pet(pet_name='harry', animal_type='hamster') # an animal other than a dog
 
-# Python still interprets this as a positional argument, so if the function is called with just a pet’s name, that argument will match up with the first parameter listed in the function’s definition. This is the reason the first parameter needs to be pet_name.
-
-describe_pet('willie') # simplest way 
-
-# To describe an animal other than a dog, you could use a function call like this:
-describe_pet(pet_name='harry', animal_type='hamster')
-
-# When you use default values, any parameter with a default value needs to be listed after all the parameters that don’t have default values. This allows Python to continue interpreting positional arguments correctly.
-```
-
-Equivalent Function Calls
-```python
+""" Equivalent Function Calls """
 def describe_pet(pet_name, animal_type='dog'):
     print("\nI have a " + animal_type + ".")
     print("My " + animal_type + "'s name is " + pet_name.title() + ".")
 
-# A dog named Willie.
-describe_pet('willie')
+describe_pet('willie') # A dog named Willie.
 describe_pet(pet_name='willie')
 
-# A hamster named Harry.
-describe_pet('harry', 'hamster')
+describe_pet('harry', 'hamster') # A hamster named Harry.
 describe_pet(pet_name='harry', animal_type='hamster')
 describe_pet(animal_type='hamster', pet_name='harry')
-```
 
-Avoiding Argument Errors
-```python
+
+""" Avoiding Argument Errors """
 def describe_pet(pet_name, animal_type='dog'):
     print("\nI have a " + animal_type + ".")
     print("My " + animal_type + "'s name is " + pet_name.title() + ".")
 describe_pet() # ERROR!
 ```
 
-Return Values
+## Return Values
 ```python
 def get_formatted_name(first_name, last_name):	
     """Return a full name, neatly formatted."""
@@ -929,9 +872,9 @@ def get_formatted_name(first_name, last_name):
     return full_name.title()
 musician = get_formatted_name('jimi', 'hendrix')
 print(musician)
-```
 
-```python
+
+""" Making an Argument Optional """
 def get_formatted_name(first_name, last_name, middle_name=''):
     """Return a full name, neatly formatted."""
     if middle_name:
@@ -944,10 +887,9 @@ musician = get_formatted_name('jimi', 'hendrix')
 print(musician)
 musician = get_formatted_name('john', 'hooker', 'lee')
 print(musician)
-```
 
-Returning a Dictionary
-```python
+
+""" Returning a Dictionary """
 # This function takes in simple textual information and puts it into a more meaningful data structure that lets you work with the information beyond just printing it
 def build_person(first_name, last_name, age=''):
     """Return a dictionary of information about a person."""
@@ -959,7 +901,7 @@ musician = build_person('jimi', 'hendrix', age=27)
 print(musician)
 ```
 
-Using a Function with a while Loop
+## Using a Function with a while Loop
 ```python
 def get_formatted_name(first_name, last_name):
     """Return a full name, neatly formatted."""
@@ -978,48 +920,38 @@ while True:
     print("\nHello, " + formatted_name + "!")
 ```
 
-Passing a List
+## Passing a List
 ```python
 def greet_users(names):
-    """Print a simple greeting to each user in the list."""
     for name in names:
         msg = "Hello, " + name.title() + "!"
         print(msg)
-usernames = ['hannah', 'ty', 'margot']
-greet_users(usernames)
+user_names = ['hannah', 'ty', 'margot']
+greet_users(user_names)
 ```
 
-Modifying a List in a Function
 ```python
- # Start with some designs that need to be printed.
 unprinted_designs = ['iphone case', 'robot pendant', 'dodecahedron']
 completed_models = []
-# Simulate printing each design, until none are left.
-# Move each design to completed_models after printing.
 while unprinted_designs:
     current_design = unprinted_designs.pop()
-    # Simulate creating a 3D print from the design.
     print("Printing model: " + current_design)
     completed_models.append(current_design)
 
-# Display all completed models.
 print("\nThe following models have been printed:")
 for completed_model in completed_models:
     print(completed_model)
 ```
 
-Reorganize this code by writing two functions, each of which does one specific job
 ```python
-# This example also demonstrates the idea that every function should have one specific job.
+""" Modifying a List in a Function """
 def print_models(unprinted_designs, completed_models):
     while unprinted_designs:
         current_design = unprinted_designs.pop()
-        # Simulate creating a 3D print from the design.
         print("Printing model: " + current_design)
         completed_models.append(current_design)
 
 def show_completed_models(completed_models):
-    """Show all the models that were printed."""
     print("\nThe following models have been printed:")
     for completed_model in completed_models:
         print(completed_model)
@@ -1029,10 +961,9 @@ completed_models = []
 
 print_models(unprinted_designs, completed_models)
 show_completed_models(completed_models)
-```
 
-Preventing a Function from Modifying a List
-```python
+
+""" Preventing a Function from Modifying a List """
 def print_models(unprinted_designs, completed_models):
     # same
 def show_completed_models(completed_models):
@@ -1040,22 +971,22 @@ def show_completed_models(completed_models):
 unprinted_designs = ['iphone case', 'robot pendant', 'dodecahedron']
 completed_models = []
 
-# In this case, you can address this issue by passing the function a copy of the list, not the original. Any changes the function makes to the list will affect only the copy, leaving the original list intact.
+# pass the function a copy of the list, not the original. 
+# The copied list will be modified, leaving the original intact.
 print_models(unprinted_designs[:], completed_models)
 show_completed_models(completed_models)
 ```
 
-Passing an Arbitrary Number of Arguments
+## Passing an Arbitrary Number of Arguments
 ```python
-# The asterisk in the parameter name *toppings tells Python to make an empty tuple called toppings and pack whatever values it receives into this tuple.
+# make an empty tuple called toppings and pack whatever values it receives into this tuple.
 def make_pizza(*toppings):
-    """Print the list of toppings that have been requested."""
     print(toppings)
-
 make_pizza('pepperoni')
 make_pizza('mushrooms', 'green peppers', 'extra cheese')
 
-# Mixing Positional and Arbitrary Arguments
+
+""" Mixing Positional and Arbitrary Arguments """
 def make_pizza(size, *toppings):
     """Summarize the pizza we are about to make."""
     print("\nMaking a " + str(size) +
@@ -1065,11 +996,12 @@ def make_pizza(size, *toppings):
 
 make_pizza(16, 'pepperoni')
 make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
-```
 
-Using Arbitrary Keyword Arguments
-```python
-# Sometimes you’ll want to accept an arbitrary number of arguments, but you won’t know ahead of time what kind of information will be passed to the function. In this case, you can write functions that accept as many key-value pairs as the calling statement provides.
+
+""" Using Arbitrary Keyword Arguments """
+# to accept an arbitrary number of arguments, but you won’t know what kind of information will be passed to the function. 
+# In this case, you can write functions that accept as many key-value pairs as the calling statement provides.
+# The definition of build_profile() expects a first and last name, and then it allows the user to pass in as many name-value pairs as they want. The double asterisks before the parameter **user_info cause Python to create an empty dictionary called user_info and pack whatever name-value pairs it receives into this dictionary.
 def build_profile(first, last, **user_info):
     """Build a dictionary containing everything we know about a user."""
     profile = {}
@@ -1083,15 +1015,12 @@ user_profile = build_profile('albert', 'einstein',
     location='princeton', 
     field='physics')
 print(user_profile)
-
-# The definition of build_profile() expects a first and last name, and then it allows the user to pass in as many name-value pairs as they want. The double asterisks before the parameter **user_info cause Python to create an empty dictionary called user_info and pack whatever name-value pairs it receives into this dictionary.
 ```
 
-Storing Your Functions in Modules
+## Storing Your Functions in Modules
 ```python
-# By using descriptive names for your functions, your main program will be much easier to follow. You can go a step further by storing your functions in a separate file called a module and then importing that module into your main program.
-
-# To start importing functions, we first need to create a module. A module is a file ending in .py that contains the code you want to import into your program. Let’s make a module that contains the function make_pizza(). To make this module, we’ll remove everything from the file pizza.py except the function make_pizza():
+# store your functions in a separate file called a module and then import that module into your main program.
+# A module is a file ending in .py that contains the code you want to import into your program. 
 
 # pizza.py
 def make_pizza(size, *toppings):
@@ -1099,10 +1028,9 @@ def make_pizza(size, *toppings):
         "-inch pizza with the following toppings:")
     for topping in toppings:
         print("- " + topping)
-```
 
-Importing an Entire Module
-```python
+
+""" Importing an Entire Module """
 # making_pizzas.py
 import pizza # tells python to open the file pizza.py and copy all the functions from it into this program
 
@@ -1111,10 +1039,9 @@ pizza.make_pizza(16, 'pepperoni')
 pizza.make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
 
 # This first approach to importing, in which you simply write import followed by the name of the module, makes every function from the module available in your program. 
-```
 
-Importing Specific Functions
-```python
+
+""" Importing Specific Functions """
 # With this syntax, you don’t need to use the dot notation when you call a function.
 # from module_name import function_name
 # from module_name import function_0, function_1, function_2
@@ -1122,34 +1049,31 @@ Importing Specific Functions
 from pizza import make_pizza
 make_pizza(16, 'pepperoni')
 make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
-```
 
-Using as to Give a Function an Alias
-```python
+
+""" Using as to Give a Function an Alias """
 # If the name of a function you’re importing might conflict with an existing name in your program or if the function name is long, you can use a short, unique alias—an alternate name similar to a nickname for the function.
 from pizza import make_pizza as mp
 mp(16, 'pepperoni')
 mp(12, 'mushrooms', 'green peppers', 'extra cheese')
-```
 
-Using as to Give a Module an Alias
-```python
+
+""" Using as to Give a Module an Alias """
 # You can also provide an alias for a module name. Giving a module a short alias, like p for pizza
 # import module_name as mn
-
 import pizza as p
 p.make_pizza(16, 'pepperoni')
 p.make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
-```
 
-Importing All Functions in a Module
-```python
+
+""" Importing All Functions in a Module """
+# this apporach is NOT recommended
 # You can tell Python to import every function in a module by using the asterisk (*) operator:
-# Because every function is imported, you can call each function by name without using the dot notation. 
-# However, it’s best not to use this approach when you’re working with larger modules that you didn’t write: if the module has a function name that matches an existing name in your project, you can get some unexpected results.
+# Because every function is imported, you can call each function by name without using the dot notation.
+ 
+# However, it's best not to use this approach when you’re working with larger modules that you didn't write: if the module has a function name that matches an existing name in your project, you can get some unexpected results.
 # The best approach is to import the function or functions you want, or import the entire module and use the dot notation. This leads to clear code that’s easy to read and understand
 # from module_name import *
-
 from pizza import *
 make_pizza(16, 'pepperoni')
 make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
@@ -1166,8 +1090,9 @@ def function_name(
         parameter_3, parameter_4, parameter_5):
 function body...
 ```
-- If your program or module has more than one function, you can separate each by two blank lines to make it easier to see where one function ends and the next one begins
-- All import statements should be written at the beginning of a file. (exceptions are comments at the beginning of the file to describe the overall program)
+- if a module has more than 1 function, you can separate by 2 blank lines between functions
+- all import statements should be at the beginning of a file.
+- exceptions are comments at the beginning of the file to describe the overall program
 
 # Classes
 - create objects with unique traits
@@ -1177,8 +1102,8 @@ function body...
 - store classes in modules and import classes written by other programmers into your own program files
 
 ```python
-# The __init__() method runs automatically whenever we create a new instance based on the Dog class
-# The self parameter is required in the method definition, and it must come first before the other parameters
+# __init__() method runs automatically whenever we create a new instance based on the Dog class
+# self parameter is required in the method definition, and it must come first before the other parameters
 # it gives the individual instance access to the attributes and methods in the class.
 # Variables (name, age) that are accessible through instances like this (self.name and selft.age) are called attributes.
 
