@@ -22,16 +22,15 @@ python3
 
 ```
 # Running a python program
-/*compile*/
+# compile
 python3 -m py_compile "%f"
 
-/*execute*/
+# execute
 python3 "%f"
 ```
 
 # Variables and Simple Data Types
 ```python
-# Data types example
 str_0 = 'ada lovelace'
 print(str_0.upper())
 print(str_0.lower())
@@ -96,102 +95,81 @@ import this
 # Introducing Lists
 ```python
 bicycles = ['trek', 'cannondale', 'redline', 'specialized']
-print(bicycles) # ['trek', 'cannondale', 'redline', 'specialized']
+print(bicycles) # print entire list
 print(bicycles[0].title()) # 'Trek'
 print(bicycles[-1]) # 'specialized'
+
+bicycles[2] = 'electric bike' # change an element
 ```
 
-append(str)
+## list methods
 ```python
+""" append(str) """
 fruit = ['apple', 'orange', 'grapes', 'blueberry', 'watermelon']
-fruit[2] = 'grapefruit' # change
-fruit.append('strawberry') # add
-```
+fruit.append('strawberry') # append at the end
 
-insert(i, str)
-```python
-fruit = ['apple', 'orange', 'grapes', 'blueberry', 'watermelon']
+""" insert(i, str) """
 fruit.insert(0, 'banana') # add at the beginning
 fruit.insert(len(fruit) - 1, 'melon') # add at the end
-```
 
-del list[i]
-```python
+""" del list[i] """
 fruit = ['apple', 'orange', 'grapes', 'blueberry', 'watermelon']
-del fruit[1] # remove 1st element
-```
+del fruit[1] # remove first element
 
-pop() removes and returns the last element 
-```python
+""" pop() """
 motorcycles = ['honda', 'yamaha', 'suzuki']
-last_owned = motorcycles.pop()
+last_owned = motorcycles.pop() # remove and return the last element
 print("The last motorcycle I owned was a " + last_owned.title() + ".") # 'suzuki'
 print(motorcycles)
-```
 
-pop(i) removes and returns the i th element
-```python
-motorcycles = ['honda', 'yamaha', 'suzuki']
+""" pop(i) removes and returns the i th element """"
 first_owned = motorcycles.pop(0)
 print('The first motorcycle I owned was a ' + first_owned.title() + '.')
-```
 
-remove(str) remove item by specifying the value
-```python
-motorcycles = ['honda', 'yamaha', 'suzuki', 'ducati']
+""" remove(str) remove item by specifying the value.
+remove(str) deletes only the first occurrence of the value you specify.
+use a loop to determine if all occurrences have been removed. """
 motorcycles.remove('honda')
 print(motorcycles)
-    
+
 too_expensive = 'ducati'
 motorcycles.remove(too_expensive)
 print(motorcycles)
 print("\nA " + too_expensive.title() + " is too expensive for me.")
-```
 
-The remove(str) deletes only the first occurrence of the value you specify. If there’s a possibility the value appears more than once in the list, you’ll need to use a loop to determine if all occurrences of the value have been removed. You’ll learn how to do this in Chapter 7.
-
-sort()
-```python
+""" sort() """
 cars = ['bmw', 'audi', 'toyota', 'subaru']
 cars.sort()
 print(cars)
-```
 
-sort(reverse = True)
-```python
+""" sort(reverse = True) """
 cars = ['bmw', 'audi', 'toyota', 'subaru']
 cars.sort(reverse = True) # sort and reverse
 print(cars)
-```
 
-sorted(list) for sorting temporarily
-```python
+""" sorted(list) for sorting temporarily """
 cars = ['bmw', 'audi', 'toyota', 'subaru']
 print('Sorted List: ')
 print(sorted(cars))
 print('Original List: ')
 print(cars)
-```
 
-sorted(list, reverse = True)
-```python
+""" sorted(list, reverse = True) """
 loc = ['tokyo', 'los angeles', 'new york', 'seoul']
 print(sorted(loc, reverse = True)) # in reverse order
 print(loc)
-```
 
-Sorting a list alphabetically is a bit more complicated when all the values are not in lowercase. There are several ways to interpret capital letters when you’re deciding on a sort order, and specifying the exact order can be more complex than we want to deal with at this time. However, most approaches to sorting will build directly on what you learned in this section.
+""" sorting alphabetically when some values are not in lowercase. """
+loc = ['tokyo', 'los angeles', 'New York', 'Seoul'] # reassign
+sorted(loc, key=str.lower) # sorted disregarding lower/uppercase preferences
 
-reverse()
-```python
+""" reverse() """
 cars = ['bmw', 'audi', 'toyota', 'subaru']
 print(cars)
 cars.reverse() # reverse only, but it does not sort
 print(cars)
-```
 
-len()
-```python
+""" len() """
 cars = ['bmw', 'audi', 'toyota', 'subaru']
 len(cars)
 ```
@@ -215,28 +193,27 @@ print("Thank you, everyone. That was a great magic show!")
 
 Avoiding Indentation Errors
 ```python
-# forget to indent
+# missing an indent
 magicians = ['alice', 'david', 'carolina']
 for magician in magicians:
     print(magician)
 print("show me next trick, " + magician.title() + ".\n") # error!
 
-# unnecessarily indent
+# unnecessary indent
 message = 'Hello world!'
     print(message) # error!
 
-# unnecessarily indent 2
 for magician in magicians:
     print(magician)
 
     print("Thank you, everyone. That was a great magic show!") # considered as inside for loop
 
-# forgotten the colon
+# missing the colons
 for magician in magicians # error!
     print(magician)
 ```
 
-Numerical Lists
+## Numerical Lists
 ```python
 for value in range(1, 6):
     print(value) # 1\n2\n3\n4\n5
@@ -252,17 +229,16 @@ squares = []
 for value in range(1, 11):
     squares.append(value ** 2)
 print(squares) # [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
-```
 
-min(list) max(list) sum(list)
-```python
+
+# min(list) max(list) sum(list)
 digits = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
 minVal = min(digits)
 maxVal = max(digits)
 sumVal = sum(digits)
 ```
 
-List Comprehensions
+## List Comprehensions
 ```python
 # allows you to generate the same list in just one line of code.
 squares = [value ** 2 for value in range(1, 11)]
@@ -272,7 +248,7 @@ cubes = [value ** 3 for value in range(1, 11)]
 print(cubes) # [1, 8, 27, 64, 125, 216, 343, 512, 729, 1000]
 ```
 
-Slicing a list
+## Slicing a list
 ```python
 players = ['charles', 'martina', 'michael', 'florence', 'eli']
 print(players[0:3]) # ['charles', 'martina', 'michael']
@@ -283,7 +259,7 @@ for player in players[:3]:
     print(player.title()) # Charles Martina Michael
 ```
 
-Copying a list
+## Copying a list
 ```python
 my_foods = ['pizza', 'falafel', 'carrot cake']
 friend_foods = my_foods[:]
@@ -291,30 +267,26 @@ friend_foods = my_foods[:]
 my_foods.append('cannoli')
 friend_foods.append('ice cream')
 
-print("My favorite foods are:")
 print(my_foods) # ['pizza', 'falafel', 'carrot cake', 'cannoli']
-print("\nMy friend's favorite foods are:")
 print(friend_foods) # ['pizza', 'falafel', 'carrot cake', 'ice cream']
 ```
 
-Copying a list using assignment (not working as expected) 
+Copying a list using assignment (not working as expected)
 ```python
 my_foods = ['pizza', 'falafel', 'carrot cake']
-friend_foods = my_foods # this does not work because now both variables points to the same list
+friend_foods = my_foods # both variables point to the same list
 
 my_foods.append('cannoli')
 friend_foods.append('ice cream')
 
-print("My favorite foods are:")
 print(my_foods) # ['pizza', 'falafel', 'carrot cake', 'cannoli', 'ice cream']
-print("\nMy friend's favorite foods are:")
 print(friend_foods) # ['pizza', 'falafel', 'carrot cake', 'cannoli', 'ice cream']
 ```
 
-Tuples
+## Tuples
 ```python
-# However, sometimes you’ll want to create a list of items that cannot change. Tuples allow you to do just that.
-# Python refers to values that cannot change as immutable, and an immutable list is called a tuple.
+# sometimes you’ll want to create a list of items that cannot change.
+# tuple is an immutable(values that cannot change) list;
 dimensions = (200, 50)
 for dimension in dimensions:
     print(dimension)
@@ -324,22 +296,20 @@ dimensions[0] = 250 # error! immutable!
 assign new tuples
 ```python
 dimensions = (200, 50)
-print("Original dimensions:")
 for dimension in dimensions:
     print(dimension) # 200 50
 
 dimensions = (400, 100)
-print("\nModified dimensions:")
 for dimension in dimensions:
     print(dimension) # 400 100
 ```
 When compared with lists, tuples are simple data structures. Use them when you want to store a set of values that should not be changed throughout the life of a program.
 
-## Styling Your Code
-1. indent four spaces with tab key to avoid unpredictable errors
+Styling Your Code
+1. indent 4 spaces with tab key to avoid unpredictable errors
 2. line length less than 72 or 80 
-3. it’s appropriate to place a blank line between the two sections (no more than two blank lines)
-4. PEP8 style guide (https://python.org/dev/peps/pep-0008/)
+3. place a blank line between the two sections (no more than 2 blank lines)
+4. [PEP8 style guide](https://python.org/dev/peps/pep-0008/)
 
 # if Statements
 ```python
@@ -354,22 +324,8 @@ for car in cars:
 Conditional Tests
 ```python
 car = 'Audi'
-car == 'bmw'.upper() # False
-car.lower() == 'audi' # True
-
-requested_topping = 'mushrooms'
-if requested_topping != 'anchovies':
-    print("Hold the anchovies!")
-
-age = 18
-if age == 18:
-    print("You're 18 years old")
-if age > 18:
-    print("You're old")
-if age < 18:
-    print("You're too young")
-if age <= 18:
-    print("You're 18 years old or younger")
+test_0 = car.upper() == 'bmw'.upper() # False
+test_1 = car.lower() == 'audi' # True
 
 age_0 = 22
 age_1 = 18
@@ -407,7 +363,7 @@ else:
 print("Your admission cost is $" + str(price) + ".")
 ```
 
-Omitting the else block; Python does not require an else block at the end of an if- elif chain. Sometimes an else block is useful; sometimes it is clearer to use an additional elif statement that catches the specific condition of interest
+Omitting the else block; Sometimes it is clearer to use an additional elif statement 
 ```python
 age = 12
 if age < 4:
@@ -422,10 +378,9 @@ elif age >= 65:
 print("Your admission cost is $" + str(price) + ".")
 ```
 
-
 Testing Multiple conditions
 ```python
-# Sometimes it’s important to check all of the conditions of interest, rather than checking one specific condition
+# check all of the conditions of interest, rather than checking one specific condition
 requested_toppings = ['mushrooms', 'extra cheese']
 
 if 'mushrooms' in requested_toppings:
@@ -502,7 +457,7 @@ print(read)
 ```
 
 # Dictionaries
-A dictionary in Python is a collection of key-value pairs. Each key is connected to a value, and you can use a key to access the value associated with that key. In fact, you can use any object that you can create in Python as a value in a dictionary.
+collection of key-value pairs. Each key is connected to a value, and you can use a key to access the value associated with that key. In fact, you can use any object that you can create in Python as a value in a dictionary.
 ```python
 alien_0 = {'color': 'green', 'points': 5}
 print(alien_0['color'])
@@ -523,7 +478,7 @@ print(alien_0) # {'color': 'green', 'points': 5, 'y_position': 25, 'x_position':
 
 Starting with an empty dictionary
 ```python
-alien_0 = {} # alien_0 = dict()
+alien_0 = {}
 alien_0['color'] = 'green'
 alien_0['points'] = 5
 print(alien_0) # {'color': 'green', 'points': 5}
@@ -533,12 +488,10 @@ Modifying Values in a dictionary
 ```python
 alien_0 = {'x_position' : 0, 'y_position' : 25, 'speed' : 'medium', 'color' : 'green'}
 
-# change color
-print("The alien is " + alien_0['color'] + ".")
+# modify color value
 alien_0['color'] = 'yellow'
-print("The alien is now " + alien_0['color'] + ".")
 
-# change position
+# modify position value
 print("Original x-position: " + str(alien_0['x_position']))
 if alien_0['speed'] == 'slow':
     x_increment = 1
@@ -546,8 +499,11 @@ elif alien_0['speed'] == 'medium':
     x_increment = 2
 elif alien_0['speed'] == 'fast':
     x_increment = 3
+
 alien_0['x_position'] += x_increment
-# Python variables are scoped to the innermost function or module; control blocks like if and while blocks don't count. (IIUC, this is also how JavaScript's var-declared variables work.)
+# Python variables are scoped to the innermost function or module; 
+# control blocks like if and while blocks don't count. 
+# (IIUC, this is also how JavaScript's var-declared variables work.)
 print("New x-position: " + str(alien_0['x_position']))
 ```
 
@@ -561,11 +517,7 @@ print(alien_0)
 
 A Dictionary of Similar Objects
 ```python
-# When you know you’ll need more than one line to define a dictionary, 
-# press enter after the opening brace. Then indent the next line one level 
-# (four spaces), and write the first key-value pair, followed by a comma. 
-# This example also shows how you can break up a long print statement
-# over several lines.
+# When you know you’ll need more than one line to define a dictionary
 favorite_languages = {
     'jen': 'python',
     'sarah': 'c',
@@ -582,7 +534,7 @@ Looping Through a Dictionary
 # 1. Looping through all Key-Value pairs
 # Notice again that the key-value pairs are not returned in the order in which they were stored, even when looping through a dictionary. Python doesn’t care about the order in which key-value pairs are stored; it tracks only the connections between individual keys and their values.
 user_0 = {
-    'username': 'raboof',
+    'username': 'foobar12341',
     'first': 'foo',
     'last': 'bar',
 }
@@ -634,10 +586,8 @@ for language in set(favorite_languages.values()):
 ```
 
 Nesting
-
-1. A List of Dictionaries
 ```python
-# A List of Dictionaries
+# 1. A List of Dictionaries
 alien_0 = {'color': 'green', 'points': 5}
 alien_1 = {'color': 'yellow', 'points': 10}
 alien_2 = {'color': 'red', 'points': 15}
@@ -651,24 +601,11 @@ aliens = []
 for alien_number in range(30):
     new_alien = {'color': 'green', 'points': 5, 'speed': 'slow'}
     aliens.append(new_alien)
-# Show the first 5 aliens:
-for alien in aliens[:5]:
-    print(alien)
-print("...")
-# Show how many aliens have been created.
+
 print("Total number of aliens: " + str(len(aliens)))
 
-# Imagine that one aspect of a game has some aliens changing color and moving faster as the game progresses. When it’s time to change colors, we can use a for loop and an if statement to change the color of aliens.
-aliens = []
-
-for i in range(30):
-    alien = {
-        'color': 'green',
-        'speed': 'slow',
-        'point': 5,
-    }
-    aliens.append(alien)
-
+# aliens are changing color and moving faster as the game progresses. 
+# we can use a for loop and an if statement to change the color of aliens.
 for alien in aliens[:3]:
     if alien['color'] == 'green':
         alien['color'] = 'yellow'
@@ -680,10 +617,8 @@ for alien in aliens[:3]:
         alien['point'] = 15
 for alien in aliens[:5]:
     print(alien)
-```
 
-2. A List in a Dictionary
-```python
+# 2. A List in a Dictionary
 pizza = {
     'crust': 'thick',
     'toppings': ['mushroom', 'extra cheese'],
@@ -703,10 +638,10 @@ for name, languages in favorite_languages.items():
     for lang in languages:
         print('\t' + lang)
 ```
-You should not nest lists and dictionaries too deeply. If you’re nesting items much deeper than what you see in the preceding examples or you’re working with someone else’s code with significant levels of nesting, most likely a simpler way to solve the problem exists.
+You should not nest lists and dictionaries too deeply.
 
-3. Dictionary in a Dictionary
 ```python
+# 3. Dictionary in a Dictionary
 users = {
     'aeinstein': {
         'first' : 'albert',
@@ -728,6 +663,7 @@ for username, user_info in users.items():
     print('\tLocation: ' + user_info['location'].title())
 ```
 
+Try it yourself
 ```python
 # 6-9
 favorite_places = {
@@ -740,6 +676,7 @@ for key in favorite_places.keys():
     for place in favorite_places[key]:
         print('\t' + place)
 ```
+
 # User Input and while loops
 ```python
 prompt = "If you tell us who you are, we can personalize the messages you see."
@@ -769,9 +706,9 @@ else:
 ```
 
 Accepting Input in Python 2.7
-- If you’re using Python 2.7, you should use the raw_input() function when prompting for user input. This function interprets all input as a string, just as input() does in Python 3.
+- you should use the raw_input() function when prompting for user input.
 
-Introducing while loops
+## Introducing while loops
 ```python
 current_number = 1
 while current_number <= 5:
@@ -798,7 +735,7 @@ while flag:
         print(message)
 ```
 
-Use break to Exit a Loop
+## Use break to Exit a Loop
 ```python
 while True:
     city = input("\nEnter a city you would like to visit. 'q' to quit: ")
@@ -808,7 +745,7 @@ while True:
         print('I would like to visit ' + city.title() + '!')
 ```
 
-Use continue in a Loop
+## Use continue in a Loop
 ```python
 # Rather than breaking out of a loop entirely without executing the rest of its code, you can use the continue statement to return to the beginning of the loop based on the result of a conditional test.
 current_number = 0
@@ -828,9 +765,7 @@ while x <= 5:
     # x += 1
 ```
 
-
-Using a while Loop with Lists and Dictionaries
-
+## Using a while Loop with Lists and Dictionaries
 Moving Items from One List to Another
 ```python
 # Start with users that need to be verified,	
@@ -879,6 +814,7 @@ for name, mountain in responses.items():
     print(name + ' would like to climb ' + mountain + '.')
 ```
 
+Try it yourself
 ```python
 sandwich_orders = ['peanut', 'pastrami', 'cheese', 'pastrami',
                    'burrito', 'pastrami']
@@ -924,8 +860,7 @@ Positional Arguments
 ```python
 # Order Matters in Positional Arguments
 def describe_pet(animal_type, pet_name):
-    print("\nI have a " + animal_type + ".")
-    print("My " + animal_type + "'s name is " + pet_name.title() + ".")
+    print("\nMy " + animal_type + "'s name is " + pet_name.title() + ".")
 
 describe_pet('hamster', 'harry')
 describe_pet('dog', 'willie')
@@ -933,7 +868,8 @@ describe_pet('dog', 'willie')
 
 Keyword arguments
 ```python
-# keyword arguments free you from having to worry about correctly ordering your arguments in the function call, and they clarify the role of each value in the function call. When you use keyword arguments, be sure to use the exact names of the parameters in the function’s definition.
+# free from having to worry about correctly ordering your arguments in the function call 
+# be sure to use the exact names of the parameters in the function’s definition.
 def describe_pet(animal_type, pet_name):
     print("\nI have a " + animal_type + ".")
     print("My " + animal_type + "'s name is " + pet_name.title() + ".")
@@ -953,8 +889,7 @@ describe_pet(pet_name = 'willie')
 
 # Python still interprets this as a positional argument, so if the function is called with just a pet’s name, that argument will match up with the first parameter listed in the function’s definition. This is the reason the first parameter needs to be pet_name.
 
-# The simplest way to use this function now is to provide just a dog’s name in the function call:
-describe_pet('willie')
+describe_pet('willie') # simplest way 
 
 # To describe an animal other than a dog, you could use a function call like this:
 describe_pet(pet_name='harry', animal_type='hamster')
@@ -1683,6 +1618,4 @@ with open(filename) as file_object:
     for line in file_object:
         print(line)
 ```
-
-
 
