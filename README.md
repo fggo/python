@@ -15,13 +15,10 @@
 
 # Getting Started
 ```
-# python is pre-installed in Ubuntu Gnome 16.04; Run python interpreter and check versions by typing
+# python is pre-installed in Ubuntu 16.04; Run python interpreter and check versions by typing
 python
 python3
-```
 
-```
-# Running a python program
 # compile
 python3 -m py_compile "%f"
 
@@ -1101,12 +1098,12 @@ function body...
 - write classes that extends the functionality of existing classes
 - store classes in modules and import classes written by other programmers into your own program files
 
+## Creating and Using a Class
 ```python
 # __init__() method runs automatically whenever we create a new instance based on the Dog class
 # self parameter is required in the method definition, and it must come first before the other parameters
 # it gives the individual instance access to the attributes and methods in the class.
 # Variables (name, age) that are accessible through instances like this (self.name and selft.age) are called attributes.
-
 class Dog():
     """A simple attempt to model a dog."""
     
@@ -1160,7 +1157,7 @@ print("Your dog is " + str(your_dog.age) + " years old.")
 your_dog.sit()
 ```
 
-Working with Classes and Instances
+## Working with Classes and Instances
 ```python
 class Car():
     """A simple attempt to represent a car."""
@@ -1188,17 +1185,16 @@ my_new_car.read_odometer()
 ```
 
 Modifying Attribute Values
-
-1. Modifying an attribute’s Value Directly
 ```python
+""" 1. Modifying an attribute’s Value Directly """
 from car import Car
 
 my_new_car = Car('audi', 'a4', 2017)
 my_new_car.odometer_reading = 23 # modify 1
 ```
 
-2. Modifying an attribute’s Value through a Method
 ```python
+""" 2. Modifying an attribute’s Value through a Method """
 class Car():
     def __init__(self, make, model, year):
         """Initialize attributes to describe a car."""
@@ -1222,8 +1218,8 @@ my_new_car = Car('audi', 'a4', 2017)
 my_new_car.update_odometer(23) # modify 2
 ```
 
-3. Incrementing an attribute’s Value through a Method
 ```python
+""" 3. Incrementing an attribute’s Value through a Method """
 # Sometimes you’ll want to increment an attribute’s value by a certain amount rather than set an entirely new value
 # You can easily modify this method to reject negative increments so no one uses this function to roll back an odometer
 class Car():
@@ -1328,7 +1324,7 @@ class Battery():
 class ElectricCar(Car):
     def __init__(self, make, model, year):
         super().__init__(make, model, year)
-        self.battery = Battery()
+        self.battery = Battery() # battery instance as an attribute
 
 my_tesla = ElectricCar('tesla', 'model s', 2016)
 print(my_tesla.get_descriptive_name())
@@ -1343,50 +1339,43 @@ my_tesla.battery.get_range()
 Modeling Real-World Objects
 - As you begin to model more complicated items like electric cars, you’ll wrestle with interesting questions. Is the range of an electric car a property of the battery or of the car?
 
-Importing Classes
+## Importing Classes
+
+1. Importing a Single Class
 ```python
 # store classes (e.g. Car, User) in modules (e.g car.py, user.py) 
 # and then import the classes you need into your main program.
-# any program that uses this module will need a more specific filename, 
-# e.g. my_car.py. my_user.py
+# any program that uses this module will need a more specific filename, e.g. my_car.py
 
-# 1. Importing a Single Class
 # my_car.py
 from car import Car
-
 
 my_new_car = Car('audi', 'a4', 2016)
 print(my_new_car.get_descriptive_name())
 ```
 
+2. Storing Multiple Classes in a Module
 ```python
-# 2. Storing Multiple Classes in a Module
-# You can store as many classes as you need in a single module, 
-# although each class in a module should be related somehow.
 # car.py
-class Car():
-
+class Car(): # each class in a module should be related somehow.
 class Battery():
-
 class ElectricCar():
 ```
-
 ```python
 # my_electric_car.py
 from car import ElectricCar
 
 my_tesla = ElectricCar('tesla', 'model s', 2016)
-
 print(my_tesla.get_descriptive_name())
+
 my_tesla.battery.describe_battery()
 my_tesla.battery.get_range()
 ```
 
+3. Importing Multiple Classes from a Module
 ```python
-# 3. Importing Multiple Classes from a Module
 # my_cars.py
 from car import Car, ElectricCar
-
 
 my_beetle = Car('volkswagen', 'beetle', 2016)
 print(my_beetle.get_descriptive_name())
@@ -1395,20 +1384,18 @@ my_tesla = ElectricCar('tesla', 'roadster', 2016)
 print(my_tesla.get_descriptive_name())
 ```
 
+4. Importing an Entire Module
 ```python
-# 4. Importing an Entire Module
 import car
-
 
 my_beetle = car.Car('volkswagen', 'beetle', 2016)
 print(my_beetle.get_descriptive_name())
-
 my_tesla = car.ElectricCar('tesla', 'roadster', 2016)
 print(my_tesla.get_descriptive_name())
 ```
 
+5. Importing All Classes from a Module
 ```python
-# 5. Importing All Classes from a Module
 # This method is not recommended for two reasons. First, it’s helpful
 # to be able to read the import statements at the top of a file and get a clear
 # sense of which classes a program uses. Secondly, this approach can lead to confusion 
@@ -1417,18 +1404,20 @@ print(my_tesla.get_descriptive_name())
 from module_name import *
 ```
 
+6. Importing a Module into a Module
 ```python
-# 6. Importing a Module into a Module
 # When you store your classes in several modules, you may find that a class 
 # in one module depends on a class in another module. When this happens, 
 # you can import the required class into the first module.
 
+# car.py
+class Car():
+```
+```python
 # electric_car.py
 from car import Car
 
-
 class Battery():
-    
 class ElectricCar(Car):
 ```
 
@@ -1436,7 +1425,6 @@ class ElectricCar(Car):
 # my_cars.py
 from car import Car
 from electric_car import ElectricCar
-
 
 my_beetle = Car('volkswagen', 'beetle', 2016)
 print(my_beetle.get_descriptive_name())
@@ -1447,9 +1435,8 @@ print(my_tesla.get_descriptive_name())
 
 Finding Your Own Workflow
 ```python
-# When you’re starting out, keep your code structure simple. Try
-# doing everything in one file and moving your classes to separate modules
-# once everything is working.
+# When you’re starting out, keep your code structure simple. Try doing everything 
+# in one file and moving your classes to separate modules once everything is working.
 ```
 
 The Python Standard Library
@@ -1459,7 +1446,6 @@ The Python Standard Library
 # You can also download modules from external sources. You’ll see a number of these
 # examples in Part II, where we’ll need external modules to complete each project.
 from collections import OrderedDict
-
 
 # OrderedDict() creates an empty ordered dictionary
 # Instances of the OrderedDict class behave almost exactly like dictionaries
@@ -1475,11 +1461,9 @@ for name, language in favorite_languages.items():
     print(name.title() + "'s favorite language is " 
         + language.title() + '.')
 ```
-
 ```python
 # die.py
 from random import randint
-
 
 class Die():
     def __init__(self, sides):
@@ -1516,31 +1500,191 @@ Styling Classes
 # Files and Exceptions
 
 ## Reading from a File
+
+Reading an Entire File
 ```python
 # Save the text file (pi_digits.txt) in the same directory where you’ll store this chapter’s programs.
-# 'with' keyword closes the file once access to it is no longer needed.
-# read() reads newline, resulting in contents without a new line at the end
+# 'with' keyword closes the file once access to it is no longer needed
+# 'with' lets Python open and close the file properly
+# read() reads the entire contents of the file
+# read() returns an empty string when it reaches the end of the file
 # open(): an object representing the file and its contents is stored in the variable
 with open('pi_digits.txt') as file_object:
     contents = file_object.read() # returns an empty string when it reaches the end of the file
-    print(contents) # resulting in an additional empty line at the end
-    print(contents.rstrip()) # remove the empty line
+    print(contents) # results in an additional empty line at the end
+    # print(contents.rstrip()) # remove the empty line at the end
 ```
 
 File Paths
 ```python
-with open('text_files/filename.txt') as file_object: # relative path
-with open('/home/user/workspace/python/text_files/filename.txt') as file_object: # absolute path
+# relative path
+with open('text_files/filename.txt') as file_object:
+    contents = file_object.read()
+    print(contents)
+
+# absolute path
+with open('/home/user/workspace/python/text_files/filename.txt') as file_object:
+    contents = file_object.read()
+    print(contents)
 ```
 
 Reading Line by Line
 ```python
-# an invisible newline character is at the end of each line in the text file
-# also print statements adds its own newline
-# , resulting in two blank lines between lines
+# two newlines: one from the file and one from the print statement
 filename = 'pi_digits.txt'
 with open(filename) as file_object:
     for line in file_object:
         print(line)
+
+# to avoid two new lines
+filename = 'pi_digits.txt'
+with open(filename) as file_object:
+    for line in file_object:
+        print(line.rstrip())
+```
+
+Making a List of Lines from a File
+```python
+filename = "pi_digits.txt"
+with open(filename) as file_object:
+    lines = file_object.readlines()
+
+for line in lines:
+    print(line.rstrip())
+```
+
+Working with a File’s Contents
+```python
+filename = 'pi_digits.txt'
+with open(filename) as file_object:
+    lines = file_object.readlines()
+
+pi_string = ''
+for line in lines:
+    pi_string += line.strip()
+
+print(pi_string)
+print(len(pi_string))
+```
+
+Large Files: One Million Digits
+```python
+filename = 'pi_million_digits.txt'
+with open(filename) as file_object:
+    lines = file_object.readlines()
+
+py_string = ''
+for line in lines:
+    py_string += line.strip()
+
+print(py_string[:52] + "...") # 3.14159265358979323846264338327950288419716939937510...
+print(len(py_string)) # 1000002
+```
+
+```python
+filename = 'pi_million_digits.txt'
+with open(filename) as file_object:
+    lines = file_object.readlines()
+
+pi_string = ''
+for line in lines:
+    pi_string += line.strip()
+
+birthday = input('Enter your birthday, in the form mmddyy: ')
+if birthday in pi_string:
+    print('Your birthday appears in the first million digits of pi!')
+else:
+    print('Your birthday does not appear in the first million digits of pi.')
+```
+
+## Writing to a File
+
+Writing to an Empty File
+```python
+filename = 'programming.txt'
+
+# read mode ( 'r' ), write mode ( 'w' ), append mode ( 'a' )
+with open('filename', 'w') as file_object:
+    file_object.write('I love programming.\n')
+    file_object.write('I love python language')
+
+# Python can only write strings to a text file. 
+# If you want to store numerical data in a text file, use str() function
+```
+
+Appending to a File
+```python
+filename = 'programming.txt'
+with open(filename, 'a') as file_object: #append
+    file_object.write("I also love finding meaning in large datasets.\n")
+    file_object.write("I love creating apps that can run in a browser.\n")
+```
+
+Try it yourself
+```python
+filename = 'guest_book.txt'
+flag = True
+while flag:
+    name = input("guest name('q' to quit): ")
+    if name != 'q' and name:
+        print('\tHi, ' + name + '. Welcome back!')
+        with open(filename, 'a') as file_object:
+            file_object.write(name + '\n')
+    else:
+        print()
+        break
+
+with open(filename) as file_object:
+    for line in file_object:
+        print(line.strip())
+```
+
+## Exceptions
+Whenever an error occurs during a program's execution, exceptions objects are created to manage errors. If you don’t handle the exception, the program will halt and show a traceback, which includes a report of the exception that was raised. Exceptions are handled with try - except blocks.
+
+
+ZeroDivisionError
+```python
+try:
+    print(5/0)
+except ZeroDivisionError:
+    print('You cannot divide by zero!')
+```
+
+```python
+print("Give me two numbers, and I'll divide them.")
+print("Enter 'q' to quit.")
+while True:
+    first_number = input("\nFirst number: ")
+    if first_number == 'q':
+        break
+    second_number = input("Second number: ")
+    try:
+        answer = int(first_number) / int(second_number)
+    except ZeroDivisionError:
+        print("You can't divide by 0!")
+    else:
+        print(answer)
+```
+
+FileNotFoundError
+```python
+filename = 'alice.txt'
+
+try:
+    with open(filename) as f_obj:
+        contents = f_obj.read()
+except FileNotFoundError:
+    msg = "Sorry, the file, " + filename + " does not exist."
+    print(msg)
+```
+
+Analyzing Text
+```python
+filename = 'alice.txt'
+
+try:
+    with open(filename) as f_obj:
+        contents = f_obj.read()
 ```
 
