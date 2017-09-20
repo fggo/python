@@ -1298,11 +1298,8 @@ Overriding Methods from the Parent Class
 from car import Car
 
 class ElectricCar(Car):
-    """
-    define a method in the child class with the same name as the method you want to override in the parent class.
-    Now if someone tries to call fill_gas_tank() with an electric car, 
-    Python will ignore the method fill_gas_tank() in Car and run this code instead
-    """
+    """ say fill_gas_tank() is defined both in Car and ElectricCar classes 
+    Python will ignore the method fill_gas_tank() in Car and run this code instead """
     
     def fill_gas_tank(self):
         print('Electric Car does not need Gas!')
@@ -1411,7 +1408,8 @@ print(my_tesla.get_descriptive_name())
 # sense of which classes a program uses. Secondly, this approach can lead to confusion 
 # with names in the file. If you accidentally import a class with the same name as 
 # something else in your program file, you can create errors that are hard to diagnose. 
-from module_name import *
+# from module_name import *
+from car import *
 ```
 
 6. Importing a Module into a Module
@@ -1513,19 +1511,17 @@ Styling Classes
 
 Reading an Entire File
 ```python
-# Save the text file (pi_digits.txt) in the same directory where you’ll store this chapter’s programs.
 # 'with' keyword closes the file once access to it is no longer needed
 # 'with' lets Python open and close the file properly
 # read() reads the entire contents of the file
 # read() returns an empty string when it reaches the end of the file
-# open(): an object representing the file and its contents is stored in the variable
+# open(): returns an object representing the file and its contents is stored in the variable
 with open('pi_digits.txt') as file_object:
-    contents = file_object.read() # returns an empty string when it reaches the end of the file
-    print(contents) # results in an additional empty line at the end
+    contents = file_object.read() # contains an empty string at the end
+    print(contents) # additional empty line at the end
     # print(contents.rstrip()) # remove the empty line at the end
 ```
 
-File Paths
 ```python
 # relative path
 with open('text_files/filename.txt') as file_object:
@@ -1540,17 +1536,15 @@ with open('/home/user/workspace/python/text_files/filename.txt') as file_object:
 
 Reading Line by Line
 ```python
-# two newlines: one from the file and one from the print statement
 filename = 'pi_digits.txt'
 with open(filename) as file_object:
     for line in file_object:
-        print(line)
+        print(line) # two newlines: from end of each line and print statement
 
-# to avoid two new lines
 filename = 'pi_digits.txt'
 with open(filename) as file_object:
     for line in file_object:
-        print(line.rstrip())
+        print(line.rstrip()) # to avoid two new lines
 ```
 
 Making a List of Lines from a File
@@ -1583,22 +1577,14 @@ filename = 'pi_million_digits.txt'
 with open(filename) as file_object:
     lines = file_object.readlines()
 
-py_string = ''
-for line in lines:
-    py_string += line.strip()
-
-print(py_string[:52] + "...") # 3.14159265358979323846264338327950288419716939937510...
-print(len(py_string)) # 1000002
-```
-
-```python
-filename = 'pi_million_digits.txt'
-with open(filename) as file_object:
-    lines = file_object.readlines()
-
 pi_string = ''
 for line in lines:
     pi_string += line.strip()
+
+print(pi_string[:52] + "...") # 3.14159265358979323846264338327950288419716939937510...
+print(len(pi_string)) # 1000002
+
+
 
 birthday = input('Enter your birthday, in the form mmddyy: ')
 if birthday in pi_string:
@@ -1618,8 +1604,7 @@ with open('filename', 'w') as file_object:
     file_object.write('I love programming.\n')
     file_object.write('I love python language')
 
-# Python can only write strings to a text file. 
-# If you want to store numerical data in a text file, use str() function
+# only strings can be written to a text file. use str() for storing numerical data
 ```
 
 Appending to a File
@@ -1641,7 +1626,7 @@ while flag:
         with open(filename, 'a') as file_object:
             file_object.write(name + '\n')
     else:
-        print()
+        print('Exiting the program...')
         break
 
 with open(filename) as file_object:
@@ -1650,8 +1635,7 @@ with open(filename) as file_object:
 ```
 
 ## Exceptions
-Whenever an error occurs during a program's execution, exceptions objects are created to manage errors. If you don’t handle the exception, the program will halt and show a traceback, which includes a report of the exception that was raised. Exceptions are handled with try - except blocks.
-
+Whenever an error occurs during a program's execution, exceptions objects are created to manage errors. If you don’t handle the exception, the program will halt and show a traceback, which includes a report of the exception that was raised. Exceptions are handled with try-except blocks.
 
 ZeroDivisionError
 ```python
@@ -1662,6 +1646,7 @@ except ZeroDivisionError:
 ```
 
 ```python
+# Any code that depends on the try block executing successfully goes in the else block:
 print("Give me two numbers, and I'll divide them.")
 print("Enter 'q' to quit.")
 while True:
@@ -1687,6 +1672,8 @@ try:
 except FileNotFoundError:
     msg = "Sorry, the file, " + filename + " does not exist."
     print(msg)
+else:
+    print(contents)
 ```
 
 Analyzing Text
@@ -1696,5 +1683,18 @@ filename = 'alice.txt'
 try:
     with open(filename) as f_obj:
         contents = f_obj.read()
+except:
+    msg = "Sorry, the file '" + filename + "' does not exist."
+    print(msg)
+else:
+    # count the approximate number of words in the file
+    # split() method to produce a list of all the words in the book.
+    words = contents.split()
+    num_words = len(words)
+    print("The file " + filename + " has about " + str(num_words) + " words.") 
 ```
 
+Working with Multiple Files
+```python
+
+```
