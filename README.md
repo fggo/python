@@ -1654,6 +1654,8 @@ while True:
     if first_number == 'q':
         break
     second_number = input("Second number: ")
+    if second_number == 'q':
+        break
     try:
         answer = int(first_number) / int(second_number)
     except ZeroDivisionError:
@@ -1664,37 +1666,121 @@ while True:
 
 FileNotFoundError
 ```python
-filename = 'alice.txt'
+def count_words(filename):
+    """Count the approximate number of words in a file."""
+    try:
+        with open(filename) as f_obj:
+            contents = f_obj.read()
+    except FileNotFoundError:
+        msg = "Sorry, the file '" + filename + "' does not exist."
+        print(msg)
+    else:
+        # count the approximate number of words in the file
+        words = contents.split()
+        num_words = len(words)
+        print("The file " + filename + " has about " + str(num_words) + " words.")
 
+filenames = ['alice.txt', 'siddhartha.txt', 'moby_dick.txt', 'little_women.txt']
+for filename in filenames:
+count_words(filename)
+```
+
+Failing Silently
+```python
+# you don’t need to report every exception you catch.
+def count_words(filename):
+    """Count the approximate number of words in a file."""
+    try:
+        # --snip--
+    except FileNotFoundError:
+        pass
+    else:
+        # --snip--
+```
+
+Deciding Which Errors to Report
+```python
+```
+
+Try it yourself
+```python
+# add numbers
+def add_numbers():
+    while True:
+        num1 = input("integer num1 ('q' to quit) > ")
+        if num1 == 'q':
+            break
+        num2 = input("integer num2 ('q' to quit) > ")
+        if num2 == 'q':
+            break
+        try:
+            division = int(num1) / int(num2)
+        except ValueError:
+            print('One of your inputs are not divisible; ValueError!\n')
+        except ZeroDivisionError:
+            print('Cannot be divided by 0\n')
+        else:
+            print("num1 / num2 = " + str(division) + '\n')
+
+add_numbers()
+
+# count words
+line = "Row, row, row your boat."
+print(line.count('row')) # 2
+print(line.lower().count('row')) # 3
+```
+
+## Storing Data
+The json module allows you to dump simple Python data structures into a file and load the data from that file the next time the program runs. You can also use json to share data between different Python programs. JSON(JavaScript Object Notation) data format is not specific to Python, so you can share data you store in the JSON format with people who work in many other programming languages.
+
+Using json.dump() and json.load()
+```python
+# number_writer.py
+import json
+
+numbers = [2, 3, 5, 7, 11, 13]
+
+filename = 'numbers.json'
+with open(filename, 'w') as f_obj:
+    json.dump(numbers, f_obj) # stores a piece of data to a file object
+```
+
+```python
+# number_reader.py
+import json
+
+filename = 'numbers.json'
+with open(filename) as f_obj:
+    numbers = json.load(f_obj) # reads numbers back into memory
+
+print(numbers) # [2, 3, 5, 7, 11, 13]
+```
+
+Saving and Reading User-Generated Data
+```python
+import json
+# Load the username, if it has been stored previously.
+# Otherwise, prompt for the username and store it.
+filename = 'username.json'
 try:
     with open(filename) as f_obj:
-        contents = f_obj.read()
+        username = json.load(f_obj)
 except FileNotFoundError:
-    msg = "Sorry, the file, " + filename + " does not exist."
-    print(msg)
+    username = input("What is your name? ")
+    with open(filename, 'w') as f_obj:
+        json.dump(username, f_obj)
+        print("We'll remember you when you come back, " + username + "!")
 else:
-    print(contents)
+    print("Welcome back, " + username + "!")
 ```
 
-Analyzing Text
+Refactoring
 ```python
-filename = 'alice.txt'
-
-try:
-    with open(filename) as f_obj:
-        contents = f_obj.read()
-except:
-    msg = "Sorry, the file '" + filename + "' does not exist."
-    print(msg)
-else:
-    # count the approximate number of words in the file
-    # split() method to produce a list of all the words in the book.
-    words = contents.split()
-    num_words = len(words)
-    print("The file " + filename + " has about " + str(num_words) + " words.") 
-```
-
-Working with Multiple Files
-```python
+""" Often, you’ll come to a point where your code will work, but you’ll recog-
+nize that you could improve the code by breaking it up into a series of func-
+tions that have specific jobs. This process is called refactoring. Refactoring
+makes your code cleaner, easier to understand, and easier to extend.
+We can refactor remember_me.py by moving the bulk of its logic into one
+or more functions."""
 
 ```
