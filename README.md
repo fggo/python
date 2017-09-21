@@ -1782,5 +1782,47 @@ tions that have specific jobs. This process is called refactoring. Refactoring
 makes your code cleaner, easier to understand, and easier to extend.
 We can refactor remember_me.py by moving the bulk of its logic into one
 or more functions."""
+import json
 
+def get_stored_username():
+    """Get stored username if available."""
+    filename = 'username.json'
+    try:
+        with open(filename) as f_obj:
+            username = json.load(f_obj)
+    except FileNotFoundError:
+        return None
+    else:
+        return username
+
+def get_new_username():
+    """Prompt for a new username."""
+    filename = 'username.json'
+    username = input("What is your name? ")
+    with open(filename, 'w') as f_obj:
+        json.dump(username, f_obj)
+    return username
+
+def greet_user():
+    """ Greet the user by name """
+    username = get_stored_username()
+    if verify_user(username):
+        print("Welcome back, " + username + "!")
+    else:
+        username = get_new_username()
+        print("We'll remember you, " + username + "!")
+
+def verify_user(username):
+    if username:
+        answer = input("Is username, '" + username + "' correct?(y/n)")
+        if answer.lower() == 'y':
+            return True
+        else:
+            return False
+    else:
+        return False
+
+greet_user()
 ```
+
+# Testing Your Code
