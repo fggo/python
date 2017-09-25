@@ -1826,3 +1826,149 @@ greet_user()
 ```
 
 # Testing Your Code
+
+## Testing a Function
+```python
+# name_function.py
+def get_formatted_name(first, last):
+    """ Generate a neatly formatted full name. """
+    full_name = first + ' ' + last
+    return full_name
+```
+
+```python
+# names.py
+from name_function import get_formatted_name
+
+while True:
+    print("Enter 'q' at any time to quit.")
+    first = input("Your first name >> ")
+    if first == 'q':
+        break
+    last = input("Your last name >> ")
+    if last == 'q':
+        break
+    formatted_name = get_formatted_name(first, last)
+    print("\tNeatly formatted name : " + formatted_name + ".")
+```
+
+Unit Tests and Test Cases
+```python
+""" A unit test verifies that one specific aspect of a function’s
+behavior is correct. A test case is a collection of unit tests that together prove
+that a function behaves as it’s supposed to, within the full range of situations 
+you expect it to handle """
+# test_name_function.py
+# Assert methods verify that a result you received matches the expected one
+# The method name must start with test_ so the method runs automatically when we run test_name_function.py.
+ 
+import unittest
+from name_function import get_formatted_name
+
+class NamesTestCase(unittest.TestCase):
+    """Tests for 'name_function.py'"""
+    
+    def test_first_last_name(self):
+        """Do names like 'Janis Joplin' work?"""
+        formatted_name = get_formatted_name('janis', 'joplin')
+        self.assertEqual(formatted_name, 'Janis Joplin')
+
+unittest.main()
+```
+Check error messages after changing get_formatted_name implementation, or fix the code to avoid the error
+```python
+def get_formatted_name(first, last, middle=''):
+    if middle:
+        full_name = first + ' ' + middle + ' ' + last
+    else:
+        full_name = first + ' ' + last
+    return full_name
+```
+
+Adding New Tests
+```python
+import unittest
+from name_function import get_formatted_name
+
+class NamesTestCase(unittest.TestCase):
+    """Test for 'name_function.py'"""
+    
+    def test_first_last_name(self):
+        """Do names like 'Janis Joplin' work?"""
+        formatted_name = get_formatted_name('janis', 'joplin')
+        self.assertEqual(formatted_name, 'Janis Joplin')
+        
+    def test_first_last_middle_name(self):
+        """Do names like 'Wolfgang Amadeus Mozart' work?"""
+        formatted_name = get_formatted_name('wolfgang', 'mozart', 'amadeus')
+        self.assertEqual(formatted_name, 'Wolfgang Amadeus Mozart')
+
+unittest.main()
+```
+
+Try it yourself
+```python
+# city_functions.py
+def get_city_country(city, country, population=''):
+    if population:
+        location_info = city.title() + ', ' + country.title() \
+                    + ' - population ' + str(population)
+    else:
+        location_info = city.title() + ', ' + country.title()
+    return location_info
+```
+```python
+# test_city_functions.py
+import unittest
+from city_functions import get_city_country
+
+
+class CityCountryTestCase(unittest.TestCase):
+    def test_city_country(self):
+        location = get_city_country('aaa bbb', 'ccc')
+        self.assertEqual(location, "Aaa Bbb, Ccc")
+
+    def test_city_country_population(self):
+        location = get_city_country('aaa bbb', 'ccc', 1000)
+        self.assertEqual(location, "Aaa Bbb, Ccc - population 1000")
+
+unittest.main()
+```
+
+## Testing a Class
+Python provides a number of assert methods in the unittest.TestCase class. You can use these methods only in a class that inherits from unittest.TestCase
+<table>
+    <tr>
+        <th>Method</th>
+        <th>Use</th>
+    </tr>
+    <tr>
+        <td>assertEqual(a, b)</td>
+        <td>Verify that a == b</td>
+    </tr>
+    <tr>
+        <td>assertNotEqual(a, b)</td>
+        <td>Verify that a != b</td>
+    </tr>
+    <tr>
+        <td>assertTrue(x)</td>
+        <td>Verify that x is True</td>
+    </tr>
+    <tr>
+        <td>assertFalse(x)</td>
+        <td>Verify that x is False</td>
+    </tr>
+    <tr>
+        <td>assertIn(item, list)</td>
+        <td>Verify that item is in list</td>
+    </tr>
+    <tr>
+        <td>assertNotIn(item, list)</td>
+        <td>Verify that item is not in list</td>
+    </tr>
+</table>
+
+A Class to Test
+```python
+
+```
