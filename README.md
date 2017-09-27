@@ -44,7 +44,7 @@ name.strip()
 
 # Quote inside quote
 msg_valid = "monty's best friend"
-msg2_valid = 'Albert Einstein once said, \'A person who never made a mistake never tried anything new.\''
+msg2_valid = 'I said, \'Hi Monty.\''
 # msg_invalid = 'monty's best friend' # Error!
 ```
 
@@ -101,72 +101,62 @@ bicycles[2] = 'electric bike' # change an element
 
 ## list methods
 ```python
-""" append(str) """
 fruit = ['apple', 'orange', 'grapes', 'blueberry', 'watermelon']
+
+# append(str)
 fruit.append('strawberry') # append at the end
 
-""" insert(i, str) """
+# insert(i, str)
 fruit.insert(0, 'banana') # add at the beginning
 fruit.insert(len(fruit) - 1, 'melon') # add at the end
 
-""" del list[i] """
-fruit = ['apple', 'orange', 'grapes', 'blueberry', 'watermelon']
-del fruit[1] # remove first element
+# del list[i]
+del fruit[0] # remove first element
 
-""" pop() """
+# pop()
 motorcycles = ['honda', 'yamaha', 'suzuki']
-last_owned = motorcycles.pop() # remove and return the last element
-print("The last motorcycle I owned was a " + last_owned.title() + ".") # 'suzuki'
-print(motorcycles)
+last_owned = motorcycles.pop()
+print("The last motorcycle I owned was a " + last_owned.title() + ".")
 
-""" pop(i) removes and returns the i th element """"
+# pop(i) removes and returns the i th element
 first_owned = motorcycles.pop(0)
 print('The first motorcycle I owned was a ' + first_owned.title() + '.')
 
-""" remove(str) remove item by specifying the value.
-remove(str) deletes only the first occurrence of the value you specify.
-use a loop to determine if all occurrences have been removed. """
-motorcycles.remove('honda')
-print(motorcycles)
+# remove(str) remove item (first occurrence) by specifying the value
+motorcycles.remove('honda') # use a loop to remove all occurrences
 
 too_expensive = 'ducati'
 motorcycles.remove(too_expensive)
-print(motorcycles)
 print("\nA " + too_expensive.title() + " is too expensive for me.")
+print(motorcycles)
 
-""" sort() """
+# sort()
 cars = ['bmw', 'audi', 'toyota', 'subaru']
 cars.sort()
-print(cars)
 
-""" sort(reverse = True) """
-cars = ['bmw', 'audi', 'toyota', 'subaru']
+# sort(reverse = True)
 cars.sort(reverse = True) # sort and reverse
-print(cars)
 
-""" sorted(list) for sorting temporarily """
-cars = ['bmw', 'audi', 'toyota', 'subaru']
+# sorted(list) for sorting temporarily
 print('Sorted List: ')
 print(sorted(cars))
 print('Original List: ')
 print(cars)
 
-""" sorted(list, reverse = True) """
+# sorted(list, reverse = True)
 location = ['tokyo', 'los angeles', 'new york', 'seoul']
 print(sorted(location, reverse = True)) # in reverse order
-print(location)
+print(location) # original list
 
-""" sort alphabetically when some values are not in lowercase. """
+# sort alphabetically when some values are not in lowercase
 location = ['tokyo', 'los angeles', 'New York', 'Seoul'] # reassign
-sorted(location, key=str.lower) # sorted disregarding lower/uppercase preferences
+sorted(location, key=str.lower) # disregard lower/uppercase preferences
 
-""" reverse() """
-cars = ['bmw', 'audi', 'toyota', 'subaru']
-print(cars)
-cars.reverse() # reverse only, but it does not sort
+# reverse()
+cars.reverse() # reverse only; it does not sort
 print(cars)
 
-""" len() """
+# len()
 cars = ['bmw', 'audi', 'toyota', 'subaru']
 len(cars)
 ```
@@ -184,30 +174,23 @@ print(cars[0]) # index error
 magicians = ['alice', 'david', 'carolina']
 for magician in magicians:
     print(magician.title() + ", that was a great trick!")
-    print("I can't wait to see your next trick, " + magician.title() + ".\n")
 ```
 
 Avoiding Indentation Errors
-- missing or unnecessary indentation
-- missing colons
+- missing or unnecessary indentations or colons
 
 ## Numerical Lists
 ```python
 for value in range(1, 6):
     print(value) # 1\n2\n3\n4\n5
 
-numbers = list(range(1,6))
-print(numbers) # [1, 2, 3, 4, 5]
+numbers = list(range(1,6)) # [1, 2, 3, 4, 5]
+even_numbers = list(range(2, 11, 2)) # [2, 4, 6, 8, 10]
 
-even_numbers = list(range(2,11, 2))
-print(even_numbers)# [2, 4, 6, 8, 10]
-
-# square numbers from 1 to 11 and make it as a list
+# square numbers from 1 to 11 and make it as a list [1, 4, ... , 100] 
 squares = []
 for value in range(1, 11):
     squares.append(value ** 2)
-print(squares) # [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
-
 
 # min(list) max(list) sum(list)
 digits = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
@@ -240,7 +223,7 @@ for player in players[:3]:
 ## Copying a list
 ```python
 my_foods = ['pizza', 'falafel', 'carrot cake']
-friend_foods = my_foods[:]
+friend_foods = my_foods[:] # copied list (distinct from original)
 
 my_foods.append('cannoli')
 friend_foods.append('ice cream')
@@ -251,34 +234,29 @@ print(friend_foods) # ['pizza', 'falafel', 'carrot cake', 'ice cream']
 
 Copying a list using assignment (not working as expected)
 ```python
-my_foods = ['pizza', 'falafel', 'carrot cake']
-friend_foods = my_foods # both variables point to the same list
+my_foods = ['pizza', 'carrot cake']
+friend_foods = my_foods # both variables will point to the same list
 
 my_foods.append('cannoli')
 friend_foods.append('ice cream')
 
-print(my_foods) # ['pizza', 'falafel', 'carrot cake', 'cannoli', 'ice cream']
-print(friend_foods) # ['pizza', 'falafel', 'carrot cake', 'cannoli', 'ice cream']
+print(my_foods) # ['pizza', 'carrot cake', 'cannoli', 'ice cream']
+print(friend_foods) # same result as above!
 ```
 
 ## Tuples
-When compared with lists, tuples are simple data structures. Use them when you want to store a set of values that should not be changed throughout the life of a program.
-
+tuples are simple data structures to store an immutable set of values 
 ```python
 # sometimes you’ll want to create a list of items that cannot change.
 # tuple is an immutable(values that cannot change) list;
 dimensions = (200, 50)
 for dimension in dimensions:
     print(dimension)
-dimensions[0] = 250 # error! immutable!
-```
 
-```python
+# error! immutable!
+dimensions[0] = 250
+
 # Assign new tuples
-dimensions = (200, 50)
-for dimension in dimensions:
-    print(dimension) # 200 50
-
 dimensions = (400, 100)
 for dimension in dimensions:
     print(dimension) # 400 100
@@ -302,13 +280,8 @@ for car in cars:
 
 Conditional Tests
 ```python
-car = 'Audi'
-test_0 = car.upper() == 'bmw'.upper() # False
-test_1 = car.lower() == 'audi' # True
-
 age_0 = 22
 age_1 = 18
-
 if (age_0 >= 21) and (age_1 >= 21):
     print('both of you are 21 years old or older')
 if (age_0 >= 21) or (age_1 >= 21):
@@ -340,26 +313,13 @@ else:
     price = 5
 
 print("Your admission cost is $" + str(price) + ".")
-```
-
-Omitting the else block; Sometimes it is clearer to use an additional elif statement 
-```python
-age = 12
-if age < 4:
-    price = 0
-elif age < 18:
-    price = 5
-elif age < 65:
-    price = 10
-elif age >= 65:
-    price = 5
-
-print("Your admission cost is $" + str(price) + ".")
+# Sometimes it is clearer to use an additional elif, omitting else block
+# elif age >= 65
 ```
 
 Testing Multiple conditions
 ```python
-# check all of the conditions of interest, rather than checking one specific condition
+# check all conditions of interest, rather than checking one specific
 requested_toppings = ['mushrooms', 'extra cheese']
 
 if 'mushrooms' in requested_toppings:
@@ -386,9 +346,8 @@ print("\nFinished making your pizza!")
 
 Checking that a list is not Empty
 ```python
-# Python returns True if the list contains at least one item; an empty list evaluates to False.
-requested_toppings = []
-if requested_toppings:
+requested_toppings = [] 
+if requested_toppings: # returns True if non-empty list
     for requested_topping in requested_toppings:
         print("Adding " + requested_topping + ".")
     print("\nFinished making your pizza!")
@@ -398,7 +357,7 @@ else:
 
 Using multiple lists
 ```python
-available_toppings = ['mushrooms', 'olives', 'green peppers', 'pepperoni', 'pineapple', 'extra cheese']
+available_toppings = ['mushrooms', 'olives', 'pepperoni', 'pineapple']
 requested_toppings = ['mushrooms', 'french fries', 'extra cheese']
 for requested_topping in requested_toppings:
     if requested_topping in available_toppings:
@@ -411,7 +370,6 @@ print("\nFinished making your pizza!")
 
 Try it yourself
 ```python
-# 5-10
 current_users = ['foo', 'bar']
 new_users = ['FOo', 'baR', 'AAa', 'Bbb', 'ccc']
 for user in new_users:
@@ -423,7 +381,6 @@ for user in new_users:
 
 # Dictionaries
 collection of key-value pairs. Each key is connected to a value, and you can use a key to access the value associated with that key. In fact, you can use any object that you can create in Python as a value in a dictionary.
-
 ```python
 alien = {'color': 'green', 'points': 5}
 print(alien) # {'color': 'green', 'points': 5}
@@ -433,29 +390,18 @@ print(alien['points'])
 new_points = alien['points']
 print("You just earned " + str(new_points) + " points!")
 
-""" Adding New Key-Value pairs """
-alien['x_position'] = 0
-alien['y_position'] = 25
-print(alien) # {'color': 'green', 'points': 5, 'y_position': 25, 'x_position': 0}
-
-""" Starting with an empty dictionary """
+# Starting with an empty dictionary
 alien = {}
+
+# Adding New Key-Value pairs
 alien['color'] = 'green'
 alien['points'] = 5
-print(alien) # {'color': 'green', 'points': 5}
+alien['x_position'] = 0
+alien['y_position'] = 25
 
-""" Modifying Values in a dictionary """
-alien = {
-    'x_position': 0,
-    'y_position': 25,
-    'speed': 'medium',
-    'color': 'green'
-}
-# modify color value
-alien['color'] = 'yellow'
+# Modifying Values in a dictionary
+alien['color'] = 'yellow' # modify color
 
-# modify position value
-print("Original x-position: " + str(alien['x_position']))
 if alien['speed'] == 'slow':
     x_increment = 1
 elif alien['speed'] == 'medium':
@@ -463,20 +409,16 @@ elif alien['speed'] == 'medium':
 elif alien['speed'] == 'fast':
     x_increment = 3
 
-alien['x_position'] += x_increment
+alien['x_position'] += x_increment # modify position
+print("New x-position: " + str(alien['x_position']))
 # Python variables are scoped to the innermost function or module; 
 # control blocks like if and while blocks don't count. 
 # (IIUC, this is also how JavaScript's var-declared variables work.)
-print("New x-position: " + str(alien['x_position']))
 
-""" Removing Key-Value pairs """
-alien = {'color': 'green', 'points': 5}
-print(alien)
+# Removing Key-Value pairs
 del alien['points'] # remove key-value pair
-print(alien)
 
-""" A Dictionary of Similar Objects """
-# When you know you’ll need more than one line to define a dictionary
+# A Dictionary of Similar Objects
 favorite_languages = {
     'jen': 'python',
     'sarah': 'c',
@@ -491,7 +433,9 @@ print("Sarah's favorite language is " +
 ## Looping Through a Dictionary
 ```python
 # 1. Looping through all Key-Value pairs
-# Notice again that the key-value pairs are not returned in the order in which they were stored, even when looping through a dictionary. Python doesn’t care about the order in which key-value pairs are stored; it tracks only the connections between individual keys and their values.
+
+# key-value pairs are not returned in the order they were stored 
+# Python tracks only the connections between individual keys and their values
 user_0 = {
     'username': 'foobar12341',
     'first': 'foo',
@@ -500,7 +444,6 @@ user_0 = {
 for key, value in user_0.items():
     print('\nKey: ' + key)
     print('Value: ' + value)
-
 
 favorite_languages = {
     'jen': 'python',
@@ -539,7 +482,7 @@ print("The following languages have been mentioned:")
 for language in favorite_languages.values():
     print(language.title())
 
-# 3-2. To see each language chosen without repetition, we can use a set. A set is similar to a list except that each item in the set must be unique:
+# 3-2. A set has unique items 
 print("The following languages have been mentioned:")
 for language in set(favorite_languages.values()):
     print(language.title())
@@ -681,10 +624,8 @@ while message != 'quit' and message != 'q':
     message = input(prompt)
     if message != 'quit' and message != 'q':
         print(message)
-```
 
-Using a Flag
-```python
+# Using a Flag
 flag = True
 while flag:
     message = input("\nEnter anything. 'q' to quit: ")
@@ -716,13 +657,7 @@ while current_number < 10:
 ```
 
 Avoiding Infinite Loops
-```python
-# This loop runs forever!
-x = 1
-while x <= 5:
-    print(x)
-    # x += 1
-```
+- make sure a loop does not run forever!
 
 ## Using a while Loop with Lists and Dictionaries
 ```python
@@ -793,38 +728,42 @@ def greet_user():
     print("Hello!")
 greet_user()
 
-# Docstrings are enclosed in triple quotes, which Python looks for when it generates documentation for the functions in your programs.
+# Docstrings are enclosed in triple quotes, which Python looks for 
+# when it generates documentation for the functions in your programs
 ```
 
 ## Arguments and Parameters
 ```python
-# the argument 'jesse' was passed to the function greet_user(), and the value was stored in the parameter username.
+# the argument value 'jesse' is stored in the parameter username
 def greet_user(username):
     print("Hello, " + username.title() + "!")
 greet_user('jesse')
+```
 
-
-""" Positional Arguments """
-# Order Matters in Positional Arguments
+Positional Arguments
+```python
+# order matters in Positional Arguments
 def describe_pet(animal_type, pet_name):
     print("\nMy " + animal_type + "'s name is " + pet_name.title() + ".")
 
 describe_pet('hamster', 'harry')
 describe_pet('dog', 'willie')
+```
 
-
-""" Keyword arguments """
-# Order does Not matter in Keyword Arguments 
-# be sure to use the exact names of the parameters in the function’s definition.
+Keyword arguments
+```python
+# order does Not matter in Keyword Arguments 
+# use the exact names of the parameters in the function’s definition
 def describe_pet(animal_type, pet_name):
     print("\nI have a " + animal_type + ".")
     print("My " + animal_type + "'s name is " + pet_name.title() + ".")
 
 describe_pet(animal_type='hamster', pet_name='harry')
 describe_pet(pet_name='harry', animal_type='hamster') # same result
+```
 
-
-""" Default Values """
+Default Values
+```python
 # When writing a function, you can define a default value for each parameter.  
 # When you use default values, any parameter with a default value needs to be listed 
 # after all the parameters that don’t have default values. 
@@ -836,16 +775,20 @@ def describe_pet(pet_name, animal_type='dog'):
 describe_pet(pet_name = 'willie')
 describe_pet('willie') # simpler way 
 describe_pet(pet_name='harry', animal_type='hamster') # an animal other than a dog
+```
 
-""" Equivalent Function Calls """
+Equivalent Function Calls
+```python
 def describe_pet(pet_name, animal_type='dog'):
     print("\nI have a " + animal_type + ".")
     print("My " + animal_type + "'s name is " + pet_name.title() + ".")
 
-describe_pet('willie') # A dog named Willie.
+# A dog named Willie.
+describe_pet('willie')
 describe_pet(pet_name='willie')
 
-describe_pet('harry', 'hamster') # A hamster named Harry.
+# A hamster named Harry.
+describe_pet('harry', 'hamster')
 describe_pet(pet_name='harry', animal_type='hamster')
 describe_pet(animal_type='hamster', pet_name='harry')
 ```
@@ -855,17 +798,16 @@ Avoiding Argument Errors
 def describe_pet(pet_name, animal_type='dog'):
     print("\nI have a " + animal_type + ".")
     print("My " + animal_type + "'s name is " + pet_name.title() + ".")
-describe_pet() # ERROR!
+describe_pet() # ERROR! pet_name argument value was not provided
 ```
 
 ## Return Values
 ```python
 def get_formatted_name(first_name, last_name):	
-    """Return a full name, neatly formatted."""
     full_name = first_name + ' ' + last_name
     return full_name.title()
-musician = get_formatted_name('jimi', 'hendrix')
-print(musician)
+
+musician = get_formatted_name('jimi', 'hendrix') # Jimi Hendrix
 ```
 
 Making an Argument Optional
@@ -879,14 +821,12 @@ def get_formatted_name(first_name, last_name, middle_name=''):
     return full_name.title()
 
 musician = get_formatted_name('jimi', 'hendrix')
-print(musician)
 musician = get_formatted_name('john', 'hooker', 'lee')
-print(musician)
 ```
 
 Returning a Dictionary
 ```python
-# This function takes in simple textual information and puts it into a more meaningful data structure that lets you work with the information beyond just printing it
+# takes in textual information and returns a meaningful data structure
 def build_person(first_name, last_name, age=''):
     """Return a dictionary of information about a person."""
     person = {'first': first_name, 'last': last_name}
@@ -895,6 +835,7 @@ def build_person(first_name, last_name, age=''):
     return person
 
 musician = build_person('jimi', 'hendrix', age=27)
+# {'first': 'jimi', 'last': 'hendrix', 'age': 27}
 print(musician)
 ```
 
@@ -929,6 +870,7 @@ user_names = ['hannah', 'ty', 'margot']
 greet_users(user_names)
 ```
 
+Modifying a List in a Function
 ```python
 unprinted_designs = ['iphone case', 'robot pendant', 'dodecahedron']
 completed_models = []
@@ -943,8 +885,8 @@ for completed_model in completed_models:
     print(completed_model)
 ```
 
-Modifying a List in a Function
 ```python
+# reorganize the above code
 def print_models(unprinted_designs, completed_models):
     while unprinted_designs:
         current_design = unprinted_designs.pop()
@@ -980,7 +922,8 @@ show_completed_models(completed_models)
 
 ## Passing an Arbitrary Number of Arguments
 ```python
-# make an empty tuple called toppings and pack whatever values it receives into this tuple.
+# make an empty tuple called toppings 
+# and pack whatever values it receives into this tuple.
 def make_pizza(*toppings):
     print(toppings)
 make_pizza('pepperoni')
@@ -1002,9 +945,10 @@ make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
 
 Using Arbitrary Keyword Arguments
 ```python
-# to accept an arbitrary number of arguments, but you won’t know what kind of information will be passed to the function. 
-# In this case, you can write functions that accept as many key-value pairs as the calling statement provides.
-# The definition of build_profile() expects a first and last name, and then it allows the user to pass in as many name-value pairs as they want. The double asterisks before the parameter **user_info cause Python to create an empty dictionary called user_info and pack whatever name-value pairs it receives into this dictionary.
+# to accept an arbitrary number of arguments 
+# as many key-value pairs as the calling statement provides
+# **user_info cause Python to create an empty dictionary, user_info 
+# and pack whatever name-value pairs it receives into this dictionary.
 def build_profile(first, last, **user_info):
     """Build a dictionary containing everything we know about a user."""
     profile = {}
@@ -1022,9 +966,8 @@ print(user_profile)
 
 ## Storing Your Functions in Modules
 ```python
-# store your functions in a separate file called a module and then import that module into your main program.
-# A module is a file ending in .py that contains the code you want to import into your program. 
-
+# store your functions in a separate file called a module(.py) 
+# and then import that module into your main program. 
 # pizza.py
 def make_pizza(size, *toppings):
     print("\nMaking a " + str(size) + 
@@ -1036,13 +979,13 @@ def make_pizza(size, *toppings):
 Importing an Entire Module
 ```python
 # making_pizzas.py
-import pizza # tells python to open the file pizza.py and copy all the functions from it into this program
+import pizza
 
 # module_name.function_name()
 pizza.make_pizza(16, 'pepperoni')
 pizza.make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
 
-# This first approach to importing, in which you simply write import followed by the name of the module, makes every function from the module available in your program. 
+# import module makes every function from the module available in your program 
 ```
 
 Importing Specific Functions
@@ -1050,7 +993,6 @@ Importing Specific Functions
 # With this syntax, you don’t need to use the dot notation when you call a function.
 # from module_name import function_name
 # from module_name import function_0, function_1, function_2
-
 from pizza import make_pizza
 make_pizza(16, 'pepperoni')
 make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
@@ -1058,7 +1000,7 @@ make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
 
 Using as to Give a Function an Alias
 ```python
-# If the name of a function you’re importing might conflict with an existing name in your program or if the function name is long, you can use a short, unique alias—an alternate name similar to a nickname for the function.
+# use a short, unique alias—an alternate name for the function.
 from pizza import make_pizza as mp
 mp(16, 'pepperoni')
 mp(12, 'mushrooms', 'green peppers', 'extra cheese')
@@ -1066,7 +1008,7 @@ mp(12, 'mushrooms', 'green peppers', 'extra cheese')
 
 Using as to Give a Module an Alias
 ```python
-# You can also provide an alias for a module name. Giving a module a short alias, like p for pizza
+# alias for a module name
 # import module_name as mn
 import pizza as p
 p.make_pizza(16, 'pepperoni')
@@ -1075,11 +1017,9 @@ p.make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
 
 Importing All Functions in a Module
 ```python
-# this apporach is NOT recommended
-# You can tell Python to import every function in a module by using the asterisk (*) operator:
-# Because every function is imported, you can call each function by name without using the dot notation.
-# However, it's best not to use this approach when you’re working with larger modules that you didn't write: if the module has a function name that matches an existing name in your project, you can get some unexpected results.
-# The best approach is to import the function or functions you want, or import the entire module and use the dot notation. This leads to clear code that’s easy to read and understand
+# this approach is Not recommended
+# if the module has a function name that matches an existing name 
+# in your project, you can get some unexpected results.
 # from module_name import *
 from pizza import *
 make_pizza(16, 'pepperoni')
@@ -1095,11 +1035,11 @@ Styling Functions
 def function_name(
         parameter_0, parameter_1, parameter_2,
         parameter_3, parameter_4, parameter_5):
-    function body
+    function_body
 ```
-- if a module has more than 1 function, you can separate by 2 blank lines between functions
-- all import statements should be at the beginning of a file.
-- exceptions are comments at the beginning of the file to describe the overall program
+- in a module, separate functions by 2 blank lines
+- import statements should be at the beginning of a file
+- exceptions are comments at the beginning to describe the program
 
 # Classes
 - create objects with unique traits
@@ -1110,10 +1050,10 @@ def function_name(
 
 ## Creating and Using a Class
 ```python
-# __init__() method runs automatically whenever we create a new instance based on the Dog class
-# self parameter is required in the method definition, and it must come first before the other parameters
-# it gives the individual instance access to the attributes and methods in the class.
-# Variables (name, age) that are accessible through instances like this (self.name and selft.age) are called attributes.
+# __init__() runs automatically whenever we create a new instance
+# 'self' parameter must come first before the other parameters
+# it gives the individual instance access to the attributes and methods
+# variables accessible through 'self' are called attributes (name, age)
 class Dog():
     """A simple attempt to model a dog."""
     
@@ -1133,8 +1073,8 @@ class Dog():
 
 python 2.7 class definition
 ```python
+# put object inside parentheses
 class ClassName(object):
-    # put object inside parentheses
 ```
 
 Making an Instance from a Class
@@ -1169,6 +1109,7 @@ your_dog.sit()
 
 ## Working with Classes and Instances
 ```python
+# car.py
 class Car():
     """A simple attempt to represent a car."""
 
@@ -1187,7 +1128,7 @@ class Car():
 
     def read_odometer(self):
         """Print a statement showing the car's mileage."""
-        print("This car has " + str(self.odometer_reading) + " miles on it.")
+        print("This car has " + str(self.odometer_reading) + " miles.")
 
 my_new_car = Car('audi', 'a4', 2016)
 print(my_new_car.get_descriptive_name())
@@ -1196,7 +1137,7 @@ my_new_car.read_odometer()
 
 Modifying Attribute Values
 ```python
-""" 1. Modifying an attribute’s Value Directly """
+# 1. Modifying an attribute’s Value Directly
 from car import Car
 
 my_new_car = Car('audi', 'a4', 2017)
@@ -1204,7 +1145,7 @@ my_new_car.odometer_reading = 23 # modify 1
 ```
 
 ```python
-""" 2. Modifying an attribute’s Value through a Method """
+# 2. Modifying an attribute’s Value through a Method
 class Car():
     def __init__(self, make, model, year):
         """Initialize attributes to describe a car."""
@@ -1229,9 +1170,7 @@ my_new_car.update_odometer(23) # modify 2
 ```
 
 ```python
-""" 3. Incrementing an attribute’s Value through a Method """
-# Sometimes you’ll want to increment an attribute’s value by a certain amount rather than set an entirely new value
-# You can easily modify this method to reject negative increments so no one uses this function to roll back an odometer
+# 3. Incrementing an attribute’s Value through a Method
 class Car():
     def __init__(self, make, model, year):
         """Initialize attributes to describe a car."""
@@ -1267,7 +1206,7 @@ print(my_tesla.get_descriptive_name())
 
 Inheritance in Python 2.7
 ```python
-# The super() function needs two arguments: a reference to the child class and the self object.
+# super() needs two arguments: a reference to the child class and the self object
 from car import Car
 
 class ElectricCar(Car):
@@ -1298,9 +1237,8 @@ Overriding Methods from the Parent Class
 from car import Car
 
 class ElectricCar(Car):
-    """ say fill_gas_tank() is defined both in Car and ElectricCar classes 
-    Python will ignore the method fill_gas_tank() in Car and run this code instead """
-    
+    """say fill_gas_tank() is defined both in Car and ElectricCar classes 
+    Python will ignore fill_gas_tank() in Car and run this code instead"""
     def fill_gas_tank(self):
         print('Electric Car does not need Gas!')
 ```
@@ -1310,7 +1248,6 @@ Instances as Attributes
 from car import Car
 
 class Battery():
-    
     def __init__(self, battery_size=70):
         self.battery_size = battery_size
     
@@ -1352,8 +1289,7 @@ Modeling Real-World Objects
 ```python
 # store classes (e.g. Car, User) in modules (e.g car.py, user.py) 
 # and then import the classes you need into your main program.
-# any program that uses this module will need a more specific filename, e.g. my_car.py
-
+# any program that uses this module will need a more specific filename,
 # my_car.py
 from car import Car
 
@@ -1428,7 +1364,6 @@ from car import Car
 class Battery():
 class ElectricCar(Car):
 ```
-
 ```python
 # my_cars.py
 from car import Car
@@ -1449,15 +1384,12 @@ Finding Your Own Workflow
 
 The Python Standard Library
 ```python
-# If you’re creating a dictionary and want to keep track of the order in which key-value 
-# pairs are added, you can use the OrderedDict class from the collections module.
-# You can also download modules from external sources. You’ll see a number of these
-# examples in Part II, where we’ll need external modules to complete each project.
+# dictionary that keeps track of the order in which key-value pairs are 
+# added, you can use the OrderedDict class from the collections module.
 from collections import OrderedDict
 
 # OrderedDict() creates an empty ordered dictionary
-# Instances of the OrderedDict class behave almost exactly like dictionaries
-# except they keep track of the order in which key-value pairs are added.
+# OrderedDict objects behave like dictionaries except it is ordered
 favorite_languages = OrderedDict()
 
 favorite_languages['jen'] = 'python'
@@ -1466,9 +1398,9 @@ favorite_languages['edward'] = 'ruby'
 favorite_languages['phil'] = 'python'
 
 for name, language in favorite_languages.items():
-    print(name.title() + "'s favorite language is " 
-        + language.title() + '.')
+    print(name.title() + "'s favorite language : " + language.title())
 ```
+
 ```python
 # die.py
 from random import randint
@@ -1478,7 +1410,7 @@ class Die():
         self.sides = sides
 
     def roll_die(self):
-        # prints a random number between 1 and the number of sides
+        # random number between 1 and the number of sides
         x = randint(1, self.sides)
         print(str(self.sides) + '-side die result = ' + str(x))
 
@@ -1496,10 +1428,10 @@ for i in range(10):
 Go to [python module of the week](http://pymotw.com/) and look at the table of contents . Find a module that looks interesting to you and read about it, or explore the documentation of the collections and random module
 
 Styling Classes
-- Class names should be written in CamelCaps and should not use underscores
-- Instance and module names should be written in lowercase with underscores between words
-- Every class/function should have a docstring immediately following the class/function definition 
-- Each module should also have a docstring describing what the classes in a module can be used for 
+- Class names should be written in CamelCaps with no underscores
+- Instance and module names should be written in lowercase and underscores
+- class/function should have a docstring immediately following the definition 
+- module should also have a docstring describing the classes in a module 
 - Within a class, one blank line between methods
 - Within a module, two blank lines to separate classes
 - Place the import statement for the standard library module first. 
@@ -1511,15 +1443,14 @@ Styling Classes
 
 Reading an Entire File
 ```python
-# 'with' keyword closes the file once access to it is no longer needed
 # 'with' lets Python open and close the file properly
+# 'with' keyword closes the file once access to it is no longer needed
 # read() reads the entire contents of the file
 # read() returns an empty string when it reaches the end of the file
-# open(): returns an object representing the file and its contents is stored in the variable
+# open(): returns a file object and its contents is stored in the variable
 with open('pi_digits.txt') as file_object:
     contents = file_object.read() # contains an empty string at the end
     print(contents) # additional empty line at the end
-    # print(contents.rstrip()) # remove the empty line at the end
 ```
 
 ```python
@@ -1539,12 +1470,8 @@ Reading Line by Line
 filename = 'pi_digits.txt'
 with open(filename) as file_object:
     for line in file_object:
-        print(line) # two newlines: from end of each line and print statement
-
-filename = 'pi_digits.txt'
-with open(filename) as file_object:
-    for line in file_object:
-        print(line.rstrip()) # to avoid two new lines
+        print(line) # two newlines: from end of each line and 'print'
+        # print(line.rstrip()) # avoid two new lines 
 ```
 
 Making a List of Lines from a File
@@ -1557,8 +1484,8 @@ for line in lines:
     print(line.rstrip())
 ```
 
-Working with a File’s Contents
 ```python
+# Working with a File’s Contents
 filename = 'pi_digits.txt'
 with open(filename) as file_object:
     lines = file_object.readlines()
@@ -1571,8 +1498,8 @@ print(pi_string)
 print(len(pi_string))
 ```
 
-Large Files: One Million Digits
 ```python
+# Large Files: One Million Digits
 filename = 'pi_million_digits.txt'
 with open(filename) as file_object:
     lines = file_object.readlines()
@@ -1581,16 +1508,14 @@ pi_string = ''
 for line in lines:
     pi_string += line.strip()
 
-print(pi_string[:52] + "...") # 3.14159265358979323846264338327950288419716939937510...
+print(pi_string[:52] + "...") # 3.1415926535897932384626433832795028...
 print(len(pi_string)) # 1000002
-
-
 
 birthday = input('Enter your birthday, in the form mmddyy: ')
 if birthday in pi_string:
     print('Your birthday appears in the first million digits of pi!')
 else:
-    print('Your birthday does not appear in the first million digits of pi.')
+    print('Your birthday does not appear in the first million digits.')
 ```
 
 ## Writing to a File
@@ -1599,20 +1524,21 @@ Writing to an Empty File
 ```python
 filename = 'programming.txt'
 
-# read mode ( 'r' ), write mode ( 'w' ), append mode ( 'a' )
+# read('r'), write('w'), append('a') mode
 with open('filename', 'w') as file_object:
     file_object.write('I love programming.\n')
     file_object.write('I love python language')
 
-# only strings can be written to a text file. use str() for storing numerical data
+# only strings can be written to a text file.
+# use str() for storing numerical data
 ```
 
 Appending to a File
 ```python
 filename = 'programming.txt'
 with open(filename, 'a') as file_object: #append
-    file_object.write("I also love finding meaning in large datasets.\n")
-    file_object.write("I love creating apps that can run in a browser.\n")
+    file_object.write("I love finding meaning in large data sets.\n")
+    file_object.write("I love creating apps.\n")
 ```
 
 Try it yourself
@@ -1620,17 +1546,20 @@ Try it yourself
 filename = 'guest_book.txt'
 flag = True
 while flag:
-    name = input("guest name('q' to quit): ")
-    if name != 'q' and name:
+    name = input("Type your name ('q' to quit) >> ")
+    if not name:
+        print("Empty name is not allowed, please type again...\n")
+        continue
+    elif name != 'q':
         print('\tHi, ' + name + '. Welcome back!')
-        with open(filename, 'a') as file_object:
-            file_object.write(name + '\n')
+        with open(filename, 'a') as f_obj:
+            f_obj.write(name + '\n')
     else:
-        print('Exiting the program...')
+        print("Exiting the program...")
         break
 
-with open(filename) as file_object:
-    for line in file_object:
+with open(filename) as f_obj:
+    for line in f_obj:
         print(line.strip())
 ```
 
@@ -1646,7 +1575,7 @@ except ZeroDivisionError:
 ```
 
 ```python
-# Any code that depends on the try block executing successfully goes in the else block:
+# if try block is executed successfully, else block is run
 print("Give me two numbers, and I'll divide them.")
 print("Enter 'q' to quit.")
 while True:
@@ -1678,15 +1607,16 @@ def count_words(filename):
         # count the approximate number of words in the file
         words = contents.split()
         num_words = len(words)
-        print("The file " + filename + " has about " + str(num_words) + " words.")
+        print("'" + filename + "' has " + str(num_words) + " words")
 
-filenames = ['alice.txt', 'siddhartha.txt', 'moby_dick.txt', 'little_women.txt']
+filenames = ['alice.txt', 'moby_dick.txt', 'little_women.txt']
 for filename in filenames:
-count_words(filename)
+    count_words(filename)
 ```
 
 Failing Silently
 ```python
+# Deciding Which Errors to Report
 # you don’t need to report every exception you catch.
 def count_words(filename):
     """Count the approximate number of words in a file."""
@@ -1698,13 +1628,8 @@ def count_words(filename):
         # --snip--
 ```
 
-Deciding Which Errors to Report
-```python
-```
-
 Try it yourself
 ```python
-# add numbers
 def add_numbers():
     while True:
         num1 = input("integer num1 ('q' to quit) > ")
@@ -1724,7 +1649,7 @@ def add_numbers():
 
 add_numbers()
 
-# count words
+# Count words
 line = "Row, row, row your boat."
 print(line.count('row')) # 2
 print(line.lower().count('row')) # 3
@@ -1739,7 +1664,6 @@ Using json.dump() and json.load()
 import json
 
 numbers = [2, 3, 5, 7, 11, 13]
-
 filename = 'numbers.json'
 with open(filename, 'w') as f_obj:
     json.dump(numbers, f_obj) # stores a piece of data to a file object
