@@ -15,32 +15,27 @@
 
 # Getting Started
 ```
-# python is pre-installed in Ubuntu 16.04
-# run python interpreter and check versions
-python
+# python is pre-installed in Ubuntu; check python versions
 python3
-
-# compile
+# compile and execute
 python3 -m py_compile "%f"
-
-# execute
 python3 "%f"
 ```
 
 # Variables and Simple Data Types
 ```python
-str_0 = 'ada lovelace'
-print(str_0.upper())
-print(str_0.lower())
-print(str_0.title())
+name = 'ada lovelace'
+print(name.upper())
+print(name.lower())
+print(name.title())
 
 # White spaces
-'\tHello'
-'\nHello'
-name = '  python  '
-name.rstrip()
-name.lstrip()
-name.strip()
+greeting = '\tHello\n'
+
+word = '  python  '
+word.rstrip()
+word.lstrip()
+word.strip()
 
 # Quote inside quote
 msg_valid = "monty's best friend"
@@ -50,10 +45,9 @@ msg2_valid = 'I said, \'Hi Monty.\''
 
 ## operator
 ```python
-# Arithmetic operator + - * /
-# Exponential operator **
-bool_0 = (1 + 1 == 3) # False
-bool_1 = (9 == 3 ** 2) # True
+# Arithmetic operator + - * / and Exponential operator **
+bool_0 = (10 + 2 * 3 / 3 - 5 == 7)
+bool_1 = (1024 == 2 ** 10)
 
 # Floating number
 .1 + .1 # .2000000000001
@@ -76,11 +70,10 @@ Integers in python2
 
 Comments
 ```python
-# this is a python line comment
+# python line comment
 """
-this is a
-python block
-comment
+python
+block comment
 """
 ```
 
