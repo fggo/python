@@ -2009,3 +2009,89 @@ class TestAnonymousEmployee(unittest.TestCase):
 
 unittest.main()
 ```
+
+
+# Project 1. Alien Invasion
+
+## install pip
+```
+sudo apt update
+sudo apt upgrade
+sudo apt dist-upgrade
+
+sudo apt-get -y install python3-pip
+sudo apt-get update
+
+# check version
+pip3 -V
+```
+
+## install pygame
+If you’re running Python 3, two steps are required: installing the libraries Pygame depends on, and downloading and installing Pygame.
+
+The following is for python 3.5
+```
+# libraries for pygame
+sudo apt-get install python3.5-dev mercurial
+sudo apt-get install libsdl-image1.2-dev libsdl2-dev libsdl-ttf2.0-dev
+
+# more libraries
+sudo apt-get install libsdl-mixer1.2-dev libportmidi-dev
+sudo apt-get install libswscale-dev libsmpeg-dev libavformat-dev libavcodec-dev
+sudo apt-get install python-numpy
+
+pip3 install --user hg+http://bitbucket.org/pygame/pygame
+
+# if previous commands give "freetype-config" error try the following
+sudo apt-get install libfreetype6-dev
+```
+
+To install pygame on python 3.6, check [here](https://askubuntu.com/questions/401342/how-to-download-pygame-in-python3-3)
+```
+# 1. Change to your home directory.
+cd ~
+
+# 2. Get Pygame source code.
+sudo apt-get install mercurial
+hg clone https://bitbucket.org/pygame/pygame
+cd pygame
+
+# 3. Install dependencies.
+sudo apt-get install python3-dev python3-numpy libsdl-dev libsdl-image1.2-dev \
+  libsdl-mixer1.2-dev libsdl-ttf2.0-dev libsmpeg-dev libportmidi-dev \
+  libavformat-dev libswscale-dev libjpeg-dev libfreetype6-dev
+
+# 4. Build and install Pygame.
+python3.6 setup.py build
+sudo python3.6 setup.py install
+```
+
+## Starting the Game Project
+Creating a Pygame Window and Responding to User Input
+```python
+# alien_invasion.py
+import sys
+
+import pygame
+
+
+def run_game():
+    # Initialize game and create a screen object.
+    pygame.init()
+    screen = pygame.display.set_mode((1200, 800))
+    pygame.display.set_caption("Alien Invasion")
+
+    # Start the main loop for the game
+    while True:
+
+        # Watch for keyboard and mouse events.
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+
+        # Make the most recently drawn screen visible
+        pygame.display.flip()
+
+run_game()
+```
+
