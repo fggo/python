@@ -2019,8 +2019,7 @@ sudo apt update
 sudo apt upgrade
 sudo apt dist-upgrade
 
-sudo apt-get -y install python3-pip
-sudo apt-get update
+sudo apt -y install python3-pip
 
 # check version
 pip3 -V
@@ -2066,32 +2065,257 @@ python3.6 setup.py build
 sudo python3.6 setup.py install
 ```
 
-## Starting the Game Project
-Creating a Pygame Window and Responding to User Input
-```python
-# alien_invasion.py
-import sys
+# Project 2. Data Visualization
 
-import pygame
-
-
-def run_game():
-    # Initialize game and create a screen object.
-    pygame.init()
-    screen = pygame.display.set_mode((1200, 800))
-    pygame.display.set_caption("Alien Invasion")
-
-    # Start the main loop for the game
-    while True:
-
-        # Watch for keyboard and mouse events.
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit()
-
-        # Make the most recently drawn screen visible
-        pygame.display.flip()
-
-run_game()
+## install matplotlib
+```
+sudo apt update
+sudo apt install python3-matplotlib
+sudo apt install python3.6-dev python3.6-tk tk-dev
+sudo apt install libfreetype6-dev g++
+pip3 install --user matplotlib
 ```
 
+mpl_squares.py
+```python
+import matplotlib.pyplot as plt
+
+input_values = [1, 2, 3, 4, 5]
+squares = [1, 4, 9, 16, 25]
+plt.plot(input_values, squares, linewidth=5)
+
+# Set chart title and label axes.
+plt.title("Square Numbers", fontsize=24)
+plt.xlabel("Value", fontsize=14)
+plt.ylabel("Square of Value", fontsize=14)
+
+# Set size of tick labels.
+plt.tick_params(axis='both', labelsize=14)
+
+plt.show()
+```
+
+scatter_squares.py
+```python
+import matplotlib.pyplot as plt
+
+x_values = list(range(1, 1001))
+y_values = [x**2 for x in x_values]
+
+# plt.scatter(x_values, y_values, edgecolor='none', s=40)
+# plt.scatter(x_values, y_values, c='red', edgecolor='none', s=40)
+# plt.scatter(x_values, y_values, c=(0, 0, .8), edgecolor='none', s=40)
+plt.scatter(x_values, y_values, c=y_values, cmap=plt.cm.Blues,
+            edgecolor='none', s=40)
+
+# Set chart title, and label axes.
+plt.title("Square Numbers", fontsize=24)
+plt.xlabel("Value", fontsize=14)
+plt.ylabel("Square of Value", fontsize=14)
+
+# Set size of tick labels.
+plt.tick_params(axis='both', which='major', labelsize=14)
+
+# Set the range for each axis.
+plt.axis([0, 1100, 0, 1100000])
+
+plt.savefig('squares_plot.png', bbox_inches='tight')
+
+plt.show()
+```
+
+Random Walks
+```python
+# random_walk.py
+from random import choice
+
+class RandomWalk():
+    """A class to generate random walks."""
+    
+    def __init__(self, num_points=5000):
+        """Initialize attributes of a walk."""
+        self.num_points = num_points
+        
+        # All walks start at (0, 0).
+        self.x_values = [0]
+        self.y_values = [0]
+
+    def fill_walk(self):
+        """Calculate all the points in the walk."""
+        
+        # Keep taking steps until the walk reaches the desired length.
+        while len(self.x_values) < self.num_points:
+            
+            # Decide which direction to go, and how far to go in that direction.
+            x_step = self.get_step()
+            y_step = self.get_step()
+            
+            # Reject moves that go nowhere.
+            if x_step == 0 and y_step == 0:
+                continue
+            
+            # Calculate the next x and y values.
+            next_x = self.x_values[-1] + x_step
+            next_y = self.y_values[-1] + y_step
+            
+            self.x_values.append(next_x)
+            self.y_values.append(next_y)
+            
+    def get_step(self):
+        direction = choice([1, -1])
+        distance = choice([0, 1, 2, 3, 4])
+        return direction * distance
+```
+
+```python
+# rw_visual.py
+import matplotlib.pyplot as plt
+
+from random_walk import RandomWalk
+
+# Keep making new walks, as long as the program is active.
+while True:
+    # Make a random walk, and plot the points.
+    rw = RandomWalk(50000)
+    rw.fill_walk()
+    
+    # Set the size of the plotting window.
+    plt.figure(dpi=128, figsize=(10, 6))
+    
+    point_numbers = list(range(rw.num_points))
+    plt.scatter(rw.x_values, rw.y_values, c=point_numbers,
+                cmap=plt.cm.Blues, edgecolor='none', s=1)
+    # Emphasize the first and last points.
+    plt.scatter(0, 0, c='green', edgecolors='none', s=100)
+    plt.scatter(rw.x_values[-1], rw.y_values[-1], c='red',
+                edgecolors='none', s=100)
+    
+    # Remove the axes.
+    plt.axes().get_xaxis().set_visible(False)
+    plt.axes().get_yaxis().set_visible(False)
+    
+    plt.show()
+    
+    keep_running = input("Make another walk? (y/n): ")
+    if keep_running == 'n':
+        break
+```
+
+## install Pygal
+```
+pip3 install --user pygal
+```
+
+```python
+# die.py
+from random import randint
+
+class Die():
+    def __init__(self, num_sizes=6):
+        self.num_sizes = num_sizes
+
+    def roll(self):
+        return randint(1, self.num_sizes)
+```
+
+```python
+# different_dice.py
+import pygal
+
+from die import Die
+
+die_1 = Die()
+die_2 = Die(10)
+
+results = []
+for i in range(50000):
+    result = die_1.roll() + die_2.roll()
+    results.append(result)
+
+frequencies = []
+max_result = die_1.num_sides + die_2.num_sides
+for value in range(2, max_result + 1):
+    frequency = results.count(value)
+    frequencies.append(frequency)
+
+print(frequencies)
+
+hist = pygal.Bar()
+
+hist.title = "Results of rolling D6 and D10 50000 times."
+hist.x_labels = ['2', '3', '4', '5', '6', '7', '8', '9', '10', '11',
+                 '12', '13', '14', '15', '16']
+hist.x_title = "Result"
+hist.y_title = "Frequency of Result"
+
+hist.add('D6 + D10', frequencies)
+hist.render_to_file('dice_visual.svg')
+```
+
+## Downloading Data
+You’ll download data sets from online sources and create working visualizations of that data.
+
+We’ll use Python’s csv module to process data stored in the CSV format and analyze. Then use matplotlib to generate a chart based on downloaded data to display variations in temperature in two very different environments. Later, we’ll use the json module to access data stored in the JSON format and use Pygal to draw a population map by country.
+
+At the end, you’ll be prepared to work with different types and formats of data sets, and you’ll have a deeper understanding of how to build complex visualizations. The ability to access and visualize online data of different types and formats is essential to working with a wide variety of real-world data sets.
+
+### The CSV File Format
+Python’s csv module in the standard library parses the lines in a CSV file and allows us to quickly extract the values we’re interested in. 
+```python
+# highs_lows.py
+
+import csv
+from datetime import datetime
+
+from matplotlib import pyplot as plt
+
+# filename = 'sitka_weather_2014.csv'
+filename = 'death_valley_2014.csv'
+
+try:
+    with open(filename) as f:
+        reader = csv.reader(f)
+        header_row = next(reader)
+
+        # for index, column_header in enumerate(header_row):
+        #     print(index, column_header)
+
+        # Get dates and high temperatures from file.
+        dates, highs, lows = [], [], []
+        for row in reader:
+            try:
+                current_date = datetime.strptime(row[0], "%Y-%m-%d")
+                high = int(row[1])
+                low = int(row[3])
+            except ValueError:
+                print(current_date, 'missing data')
+            else:
+                dates.append(current_date)
+                highs.append(high)
+                lows.append(low)
+
+        highs = [int((x - 32) / 1.8) for x in highs]
+        lows = [int((x - 32) / 1.8) for x in lows]
+
+except FileNotFoundError:
+    msg = "\nSorry, the file '" + filename + "' does not exist."
+    print(msg)
+else:
+    print("\nFile '" + filename + "' was successfully processed...")
+
+# Plot data using matplotlib.
+fig = plt.figure(dpi=128, figsize=(10, 6))
+plt.plot(dates, highs, c='red', alpha=.5)
+plt.plot(dates, lows, c='blue', alpha=.5)
+plt.fill_between(dates, highs, lows, facecolor='blue', alpha=.1)
+
+# Format plot.
+title = "Daily high and low temperatures - 2014\nDeath Valley, CA"
+plt.title(title, fontsize=20)
+plt.xlabel('', fontsize=12)
+fig.autofmt_xdate()
+plt.ylabel("Temperature (F)", fontsize=12)
+plt.tick_params(axis='both', which='major', labelsize=12)
+
+plt.show()
+```
