@@ -2013,7 +2013,7 @@ unittest.main()
 
 # Project 1. Alien Invasion
 
-## install pip
+## install pip in Linux
 ```
 sudo apt update
 sudo apt upgrade
@@ -2025,7 +2025,13 @@ sudo apt -y install python3-pip
 pip3 -V
 ```
 
-## install pygame
+## download and install [pip](https://bootstrap.pypa.io/get-pip.py) in Windows
+```
+python -m pip --version
+python get-pip.py
+```
+
+## install pygame Linux
 If you’re running Python 3, two steps are required: installing the libraries Pygame depends on, and downloading and installing Pygame.
 
 The following is for python 3.5
@@ -2065,15 +2071,26 @@ python3.6 setup.py build
 sudo python3.6 setup.py install
 ```
 
+## download and install [pygame](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pygame) in Windows
+```
+python -m pip install --user pygame-1.9.3-cp36-cp36m-win32.whl
+```
+
+
 # Project 2. Data Visualization
 
-## install matplotlib
+## install matplotlib in Linux
 ```
 sudo apt update
 sudo apt install python3-matplotlib
 sudo apt install python3.6-dev python3.6-tk tk-dev
 sudo apt install libfreetype6-dev g++
 pip3 install --user matplotlib
+```
+
+## download and install [matplotlib](http://www.lfd.uci.edu/~gohlke/pythonlibs/#matplotlib) in Windows
+```
+python -m pip install --user matplotlib-2.1.0-cp36-cp36m-win32.whl
 ```
 
 mpl_squares.py
@@ -2201,9 +2218,14 @@ while True:
         break
 ```
 
-## install Pygal
+## install pygal in Linux
 ```
 pip3 install --user pygal
+```
+
+## install pygal in Windows
+```
+python -m pip install --user pygal
 ```
 
 ```python
@@ -2319,3 +2341,62 @@ plt.tick_params(axis='both', which='major', labelsize=12)
 
 plt.show()
 ```
+
+
+## The JSON File Format
+```python
+# this does not works
+from pygal.i18n import COUNTRIES
+```
+
+install pygal_maps_world module
+```
+# linux
+pip3 install --user pygal_maps_world
+# windows
+python -m pip install --user pygal_maps_world
+```
+
+```python
+# world_population.py
+import json
+from country_codes import get_country_code
+
+filename = 'population_data.json'
+with open(filename) as f:
+    pop_data = json.load(f)
+
+for pop_dict in pop_data:
+    if pop_dict['Year'] == '2010':
+        country_name = pop_dict['Country Name']
+        population = int(float(pop_dict['Value']))
+        code = get_country_code(country_name)
+        if code:
+            print(code + ": " + str(population))
+        else:
+            print('ERROR - ' + country_name)
+```
+
+```python
+# countries.py
+from pygal_maps_world import i18n
+from pygal.maps.world import COUNTRIES
+
+for country_code in sorted(COUNTRIES.keys()):
+    print(country_code, COUNTRIES[country_code])
+```
+
+```python
+# country_codes.py
+from pygal_maps_world import i18n
+from pygal.maps.world import COUNTRIES
+
+
+def get_country_code(country_name):
+    """Return the Pygal 2-digit country code"""
+    for code, name in COUNTRIES.items():
+        if name == country_name:
+            return code
+    return None
+```
+
