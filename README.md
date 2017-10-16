@@ -2345,7 +2345,7 @@ plt.show()
 
 ## The JSON File Format
 ```python
-# this does not works
+# i18n was removed recently
 from pygal.i18n import COUNTRIES
 ```
 
@@ -2379,7 +2379,7 @@ for pop_dict in pop_data:
 
 ```python
 # countries.py
-from pygal_maps_world import i18n
+# from pygal_maps_world import i18n
 from pygal.maps.world import COUNTRIES
 
 for country_code in sorted(COUNTRIES.keys()):
@@ -2388,7 +2388,7 @@ for country_code in sorted(COUNTRIES.keys()):
 
 ```python
 # country_codes.py
-from pygal_maps_world import i18n
+# from pygal_maps_world import i18n
 from pygal.maps.world import COUNTRIES
 
 
@@ -2400,3 +2400,118 @@ def get_country_code(country_name):
     return None
 ```
 
+Building a World Map
+```python
+# americas.py
+from pygal.maps.world import World
+
+wm = World()
+wm.title = 'North, Central, and South America'
+
+wm.add('North America', ['ca', 'mx', 'us'])
+wm.add('Central America', ['bz', 'cr', 'gt', 'hn', 'ni', 'pa', 'sv'])
+wm.add('South America', ['ar', 'bo', 'br', 'cl', 'co', 'ec', 'gf',
+                         'gy', 'pe', 'py', 'sr', 'uy', 've'])
+wm.render_to_file('americas.svg')
+```
+
+```python
+# na_populations.py
+from pygal.maps.world import World
+
+wm = World()
+wm.title = 'Populations of Countries in North America'
+wm.add('North America',
+       {'ca': 34126000,
+        'us': 309349000,
+        'mx': 113423000})
+wm.render_to_file('na_populations.svg')
+```
+
+```python
+# world_population.py
+import json
+from country_codes import get_country_code
+from pygal.maps.world import World
+from pygal.style import LightColorizedStyle, RotateStyle
+
+
+filename = 'population_data.json'
+with open(filename) as f:
+    pop_data = json.load(f)
+
+# Build a dictionary of population data.
+cc_populations = {}
+
+for pop_dict in pop_data:
+    if pop_dict['Year'] == '2010':
+        country_name = pop_dict['Country Name']
+        population = int(float(pop_dict['Value']))
+        code = get_country_code(country_name)
+        if code:
+            cc_populations[code] = population
+
+# Group the countries into 3 population levels.
+cc_pops_1, cc_pops_2, cc_pops_3 = {}, {}, {}
+for cc, pop in cc_populations.items():
+    if pop < 10000000:
+        cc_pops_1[cc] = pop
+    elif pop < 1000000000:
+        cc_pops_2[cc] = pop
+    else:
+        cc_pops_3[cc] = pop
+
+# See how many countries are in each level
+print(len(cc_pops_1), len(cc_pops_2), len(cc_pops_3))
+
+
+# wm_style = RotateStyle('#336699')
+wm_style = RotateStyle('#336699', base_style=LightColorizedStyle)
+wm = World(style=wm_style)
+wm.title = 'World Population in 2010, by Country'
+wm.add('0-10m', cc_pops_1)
+wm.add('10m-1bn', cc_pops_2)
+wm.add('>1bn', cc_pops_3)
+
+wm.render_to_file('world_population.svg')
+```
+
+## Working with APIs
+Using a Web API
+```
+# API call example : 
+# https://api.github.com/ directs the request to the part of GitHub’s 
+# website that responds to API calls. 
+# search/repositories, tells the API to search through all repositories
+# The question mark signals passing an argument. The q stands for query  
+# language:python indicates that we want information only on 
+# repositories that have Python as the primary language. 
+# &sort=stars sorts the projects by the number of stars
+
+https://api.github.com/search/repositories?q=language:python&sort=stars
+```
+
+## install requests
+The requests package allows a Python program to easily request informa-
+tion from a website and examine the response that’s returned.
+```
+pip3 install --user requests # linux
+python -m pip install --user requests # windows
+```
+
+Processing an API Response
+```python
+# python_repos.py
+import requests
+
+# Make an API call and store the response to a response object, r
+url = 'https://api.github.com/search/repositories?q=language:python&sort=stars'
+r = requests.get(url)
+print("Status code:", r.status_code) # tells if api call was successful 
+
+# Store API response in a variable.
+response_dict = r.json()
+
+# Process results.
+print(response_dict.keys())
+```
