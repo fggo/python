@@ -2504,14 +2504,180 @@ Processing an API Response
 # python_repos.py
 import requests
 
-# Make an API call and store the response to a response object, r
+# Make an API call and store the response.
 url = 'https://api.github.com/search/repositories?q=language:python&sort=stars'
 r = requests.get(url)
-print("Status code:", r.status_code) # tells if api call was successful 
+print("Status code:", r.status_code)
 
 # Store API response in a variable.
 response_dict = r.json()
+print("Total repositories:", response_dict['total_count'])
 
-# Process results.
-print(response_dict.keys())
+repo_dicts = response_dict['items']
+print("Repositories returned:", len(repo_dicts))
+
+print("\nSelected information about each repository: ")
+for repo_dict in repo_dicts:
+    print("\nName:", repo_dict['name'])
+    print("Owner:", repo_dict['owner']['login'])
+    print("Stars:", repo_dict['stargazers_count'])
+    print("Repository:", repo_dict['html_url'])
+    print("Created:", repo_dict['created_at'])
+    print("Updated:", repo_dict['updated_at'])
+    print("Description:", repo_dict['description'])
 ```
+
+## Monitoring API Rate Limits
+Most APIs are rate-limited, which means there’s a limit to how many requests you can make in a certain amount of time. To see if you’re approaching GitHub’s limits, enter https://api.github.com/rate_limit into a web browser. You should see a response like this:
+```
+# The reset value represents the time in Unix or epoch time (the number 
+# of seconds since midnight on January 1, 1970) when quota will reset
+{
+  "resources": {
+    "core": {
+      "limit": 60,
+      "remaining": 60,
+      "reset": 1508215491
+    },
+    "search": {
+      "limit": 10,
+      "remaining": 8,
+      "reset": 1508211923
+    },
+    "graphql": {
+      "limit": 0,
+      "remaining": 0,
+      "reset": 1508215491
+    }
+  },
+  "rate": {
+    "limit": 60,
+    "remaining": 60,
+    "reset": 1508215491
+  }
+}
+```
+
+## Visualizing Repositories Using Pygal
+```python
+# python_repos.py
+import requests
+import pygal
+from pygal.style import LightColorizedStyle as LCS, LightenStyle as LS
+
+# Make an API call and store the response.
+url = 'https://api.github.com/search/repositories?q=language:python&sort=stars'
+r = requests.get(url)
+print("Status code:", r.status_code)
+
+# Store API response in a variable.
+response_dict = r.json()
+print("Total repositories:", response_dict['total_count'])
+
+repo_dicts = response_dict['items']
+
+names, plot_dicts = [], []
+for repo_dict in repo_dicts:
+    names.append(repo_dict['name'])
+
+    description = repo_dict['description']
+    if not description:
+        description = "No description provided."
+    plot_dict = {
+        'value': repo_dict['stargazers_count'],
+        'label': description,
+        'xlink': repo_dict['html_url'],
+    }
+    plot_dicts.append(plot_dict)
+
+# Make visualization.
+my_style = LS('#333366', base_style=LCS)
+
+my_config = pygal.Config()
+my_config.x_label_rotation = 45
+my_config.show_legend = False
+my_config.title_font_size = 24
+my_config.label_font_size = 14
+my_config.major_label_font_size = 18
+my_config.truncate_label = 15
+my_config.show_y_guides = False  # hide horizontal lines in the graph
+my_config.width = 1000
+
+# pygal.Bar(style=my_style, x_label_rotation=45, show_legend=False)
+chart = pygal.Bar(my_config, style=my_style)
+chart.title = 'Most-Starred Python Projects on GitHub'
+chart.x_labels = names
+
+chart.add('', plot_dicts)
+chart.render_to_file('python_repos.svg')
+```
+
+## The Hacker News API
+The following call returns information about the current top article on [Hacker's News](http://news.ycombinator.com/) as of this writing:
+```
+https://hacker-news.firebaseio.com/v0/item/9884165.json
+```
+
+The response is a dictionary of information about the article with the ID 9884165:
+```
+{
+    'url': 'http://www.bbc.co.uk/news/science-environment-33524589',
+    'type': 'story',
+    'title': 'New Horizons: Nasa spacecraft speeds past Pluto',
+    'descendants': 141,
+    'score': 230,
+    'time': 1436875181,
+    'text': '',
+    'by': 'nns',
+    'id': 9884165,
+    'kids': [9884723, 9885099, 9884789, 9885604, 9885844]
+}
+```
+
+Let’s make an API call that returns the IDs of the current top articles on Hacker News, and then examine each of the top articles:
+```python
+# hn_submissions.py
+import requests
+
+from operator import itemgetter
+
+# Make an API call and store the response.
+url = 'https://hacker-news.firebaseio.com/v0/topstories.json'
+r = requests.get(url)
+print("Status code:", r.status_code)
+
+# Process information about each submission.
+submission_ids = r.json()
+submission_dicts = []
+
+for submission_id in submission_ids[:10]:
+    # Make a separate API call for each submission.
+    url = 'https://hacker-news.firebaseio.com/v0/item/' + \
+          str(submission_id) + '.json'
+    submission_r = requests.get(url)
+    print(submission_r.status_code)
+    response_dict = submission_r.json()
+
+    submission_dict = {
+        'title': response_dict['title'],
+        'link': 'http://news.ycombinator.com/item?id=' +
+                str(submission_id),
+        'comments': response_dict.get('descendants', 0)
+    }
+    submission_dicts.append(submission_dict)
+
+submission_dicts = sorted(submission_dicts, key=itemgetter('comments'),
+                          reverse=True)
+
+for submission_dict in submission_dicts:
+    print("\nTitle:", submission_dict['title'])
+    print("Discussion link:", submission_dict['link'])
+    print("Comments:", submission_dict['comments'])
+```
+
+When you’re not sure if a key exists in a dictionary, use the dict.get() method, which returns the value associated with the given key if it exists or the value you provide if the key doesn’t exist (0 in this example).
+
+
+# Project 3. Web Applications
+Getting Started with Django
+
