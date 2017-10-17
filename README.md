@@ -2681,3 +2681,54 @@ When you’re not sure if a key exists in a dictionary, use the dict.get() metho
 # Project 3. Web Applications
 Getting Started with Django
 
+To work with Django, we’ll first set up a virtual environment to work in. A virtual environment is a place on your system where you can install packages and isolate them from all other Python packages. Separating one project’s libraries from other projects is beneficial and will be necessary when we deploy Learning Log to a server.
+
+Create a new directory for your project called learning_log, switch to that directory in a terminal, and create a virtual environment. If you’re using Python 3, you should be able to create a virtual environment with the following command:
+```
+# running venv module to create a virtual environment named ll_env
+# if this does not work, check 'Installing virtualenv' section 
+learning_log$ python3 -m venv ll_env
+```
+
+## Installing virtualenv
+```
+pip3 install --user virtualenv  # Linux. or use
+sudo apt install python-virtualenv  # Linux
+
+python -m pip install --user virtualenv  # Windows
+```
+
+Create a virtual environment
+```
+learning_log$ virtualenv ll_env
+```
+
+If you have more than one version of Python installed on your system, you should specify the version for virtualenv to use. For example, the command 
+```
+learning_log$ virtualenv ll_env --python=python3 
+```
+will create a virtual environment that uses Python 3.
+
+
+## Activating the Virtual Environment
+activate by running the script activate in ll_env/bin. Packages you install in ll_env will be available only while the environment is active.
+```
+learning_log$ source ll_env/bin/activate  # Linux
+(ll_env)learning_log$ 
+
+learning_log$ ll_env\Scripts\activate  # Windows
+```
+
+deactivate
+```
+(ll_env)learning_log$ deactivate
+learning_log$ 
+```
+
+## Installing Django
+```
+(ll_env)learning_log$ pip3 install Django
+(ll_env)learning_log$ 
+```
+
+## Creating a Project in Django
