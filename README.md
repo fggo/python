@@ -2679,76 +2679,73 @@ When you’re not sure if a key exists in a dictionary, use the dict.get() metho
 
 
 # Project 3. Web Applications
-To work with Django, we’ll first set up a virtual environment to work in. A virtual environment is a place on your system where you can install packages and isolate them from all other Python packages. Separating one project’s libraries from other projects is beneficial and will be necessary when we deploy 'Learning Log' to a server.
+To work with Django, we’ll first set up a virtual environment to work in. A virtual environment is a place on your system where you can install packages and isolate them from all other Python packages. Separating one project’s libraries from other projects is beneficial.
 
-## Install virtualenv
-```
-# Linux
-pip3 install --user virtualenv
-# Windows
-python -m pip install --user virtualenv
-
-# Linux: Use this command in case the above fails
-sudo apt install python3-virtualenv
-```
-
-## Create a virtual environment
-Create a virtual environment in a new directory, 'learning_log'  
+## Create a virtual environment in a new directory  
 ```
 mkdir learning_log && cd learning_log
-
-virtualenv ll_env --python=python3.6
-
-# or run 'venv' module to create a virtual environment named 'll_env'
 python3.6 -m venv ll_env
 ```
 
-## Activating the Virtual Environment
-activate by running the script activate in ll_env/bin. Packages you install in ll_env will be available only while the environment is active. This command runs the script activate in ll_env/bin.
+## Install virtualenv and create a virtual environment 
+if earlier version of Python does have 'venv' module, install 'virtualenv' package:
 ```
+pip3 install --user virtualenv  # in Linux, using pip3
+sudo apt install python3-virtualenv  # in Linux, using package manager
+
+python -m pip install --user virtualenv  # in Windows
+```
+
+create a virtual environment
+```
+virtualenv ll_env --python=python3.6
+```
+
+## Activating the Virtual Environment
+Packages you install in ll_env will be available only while the environment is active.
+```
+# Activate or Deactivate
 source ll_env/bin/activate  # Linux 
 ll_env\Scripts\activate  # Windows
 
-# Deactivate the Virtual Environment
 deactivate
 ```
 
 ## Installing Django
 activate virtual environment and install Django inside learning_log. Because we’re working in a virtual environment, this command is the same on all systems. There’s no need to use the --user flag, and there’s no need to use longer commands like python -m pip install package_name. Keep in mind that Django will be available only when the environment is active. 
 ```
-pip3 install Django 
+pip3 install Django
 ```
 
 ## Creating a Project in Django
-do the following while the virtual environment is activated
+Set up a new project 'learning_log' (while virtual environment is activated)
 ```
-# set up a new project 'learning_log'
 django-admin.py startproject learning_log .
+
 ls
+    learning_log  ll_env  manage.py
 ls learning_log
+    __init__.py  settings.py  urls.py  wsgi.py
 ```
 
 ## Creating the Database
 Any time we modify a database, we say we’re migrating the database. Issuing the migrate command for the first time tells Django to make sure the database matches the current state of the project. The first time we run this command in a new project using SQLite, Django will create a new database for us. SQLite is a database that runs off a single file; it’s ideal for writing simple apps because you won’t have to pay much attention to managing the database.
-
 ```
 python3.6 manage.py migrate
-ls  # db.sqlite3 learning_log ll_env manage.py
+
+ls
+    db.sqlite3 learning_log ll_env manage.py
 ```
 
 ## Viewing the Project
+Django starts a server so you can view the project on your system to see how well it works. Django checks to make sure the project is set up properly; reports the version of Django in use and the name of the settings file being used; reports the URL where the project is being served.
 ```
 python3.6 manage.py runserver
 
-    System check identified no issues (0 silenced).
-    October 18, 2017 - 05:38:54
-    Django version 1.11.6, using settings 'learning_log.settings'
-    Starting development server at http://127.0.0.1:8000/
-    Quit the server with CONTROL-C.
-
 # the project is listening for requests on port 8000 on localhost
 # enter http://localhost:8000/, or http://127.0.0.1:8000/ on a browser
-
+# localhost refers to a server that only processes requests on your 
+# system; it doesn’t allow others to see the pages you’re developing.
 # If you receive the error message That port is already in use, 
 # tell Django to use a different port by entering 
 # python manage.py runserver 8001 and cycle through higher numbers 
@@ -2756,4 +2753,57 @@ python3.6 manage.py runserver
 ```
 
 ## Starting an App
+The command startapp appname tells Django to create the infrastructure needed to build an app
+```
 
+python3.6 manage.py startapp learning_logs
+ls
+    db.sqlite3  learning_log  learning_logs  ll_env  manage.py
+ls learning_logs
+    admin.py  apps.py  __init__.py  migrations  models.py  tests.py  views.py
+```
+
+Defining Models
+```python
+# models.py
+# in order to set python interpreter to virtualenv python 3.6.3
+# go to pycharm settings>python interpreter > add local >
+# /home/foo/workspace/python/learning_log/ll_env/bin/python3.6 
+from django.db import models
+
+class Topic(models.Model):
+    """A topic the user is learning about"""
+    text = models.CharField(max_length=200)
+    date_added = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        """Return a string representation of the model."""
+        return self.text
+```
+
+Activating Models
+```python
+# settings.py
+# --snip--
+INSTALLED_APPS = (
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    # My apps
+    'learning_logs',
+)
+# --snip--
+```
+
+Tell Django to modify the database so it can store information related to the model Topic.
+```
+python3.6 manage.py makemigrations learning_logs
+```
+
+we’ll apply this migration and have Django modify the database for us:
+```
+python3.6 manage.py migrate
+```
