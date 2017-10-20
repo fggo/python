@@ -2679,25 +2679,23 @@ When you’re not sure if a key exists in a dictionary, use the dict.get() metho
 
 
 # Project 3. Web Applications
-To work with Django, we’ll first set up a virtual environment to work in. A virtual environment is a place on your system where you can install packages and isolate them from all other Python packages. Separating one project’s libraries from other projects is beneficial.
+To work with Django, first set up a virtual environment to work in. A virtual environment is a place on your system where you can install packages and isolate them from all other Python packages. Separating one project’s libraries from other projects is beneficial.
 
-## Create a virtual environment in a new directory  
+## Create virtual environment
+1. Using venv module
 ```
 mkdir learning_log && cd learning_log
 python3.6 -m venv ll_env
 ```
 
-## Install virtualenv and create a virtual environment 
-if earlier version of Python does have 'venv' module, install 'virtualenv' package:
+2. Using virtualenv package 
 ```
-pip3 install --user virtualenv  # in Linux, using pip3
-sudo apt install python3-virtualenv  # in Linux, using package manager
-
+# earlier versions of Python might not have venv module
+# use package manager: sudo apt install python3-virtualenv or
+pip3 install --user virtualenv  # in Linux
 python -m pip install --user virtualenv  # in Windows
-```
 
-create a virtual environment
-```
+# Create virtual environment
 virtualenv ll_env --python=python3.6
 ```
 
@@ -2755,7 +2753,6 @@ python3.6 manage.py runserver
 ## Starting an App
 The command startapp appname tells Django to create the infrastructure needed to build an app
 ```
-
 python3.6 manage.py startapp learning_logs
 ls
     db.sqlite3  learning_log  learning_logs  ll_env  manage.py
@@ -2763,7 +2760,7 @@ ls learning_logs
     admin.py  apps.py  __init__.py  migrations  models.py  tests.py  views.py
 ```
 
-Defining Models
+### Defining Models
 ```python
 # models.py
 # in order to set python interpreter to virtualenv python 3.6.3
@@ -2775,13 +2772,15 @@ class Topic(models.Model):
     """A topic the user is learning about"""
     text = models.CharField(max_length=200)
     date_added = models.DateTimeField(auto_now_add=True)
-    
+
     def __str__(self):
-        """Return a string representation of the model."""
+        """Return a string representation of the model. We need to tell
+        Django which attribute to use by default when it displays
+        information about a topic."""
         return self.text
 ```
 
-Activating Models
+### Activating Models
 ```python
 # settings.py
 # --snip--
@@ -2807,3 +2806,106 @@ we’ll apply this migration and have Django modify the database for us:
 ```
 python3.6 manage.py migrate
 ```
+
+
+### The Django Admin Site
+```
+# Setting Up a Superuser
+python3.6 manage.py createsuperuser
+
+```
+
+```python
+# Registering a Model with the Admin Site
+# admin.py
+from django.contrib import admin
+from learning_logs.models import Topic
+
+admin.site.register(Topic)
+```
+Now go to (http://127.0.0.1:8000/admin/). You can add topics
+
+### Defining the Entry Model
+```python
+# model.py
+from django.db import models
+
+
+class Topic(models.Model):
+    """A topic the user is learning about"""
+    text = models.CharField(max_length=200)
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        """Return a string representation of the model. We need to tell
+        Django which attribute to use by default when it displays
+        information about a topic."""
+        return self.text
+
+class Entry(models.Model):
+    """Something specific learned about a topic"""
+    topic = models.ForeignKey(Topic)
+    text = models.TextField()
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = 'entries'
+
+    def __str__(self):
+        """Return a string representation of the model."""
+        return self.text[:50] + "..."
+```
+
+
+### Migrating the Entry Model
+```
+python3.6 manage.py makemigrations learning_logs
+python3.6 manage.py migrate
+```
+
+### Registering Entry with the Admin Site
+```python
+# admin.py
+
+```
+
+
+### The Django Shell
+```
+python3.6 manage.py shell
+>>> from learning_logs.models import Topic
+>>> Topic.objects.all()
+[<Topic: Chess>, <Topic: Rock Climbing>]
+
+
+# We can loop over a queryset just as we’d loop over a list. Here’s how 
+# you can see the ID that’s been assigned to each topic object:
+>>> topics = Topic.objects.all()
+>>> for topic in topics:
+...     print(topic.id, topic)
+...
+1 Chess
+2 Rock Climbing
+
+
+# If you know the ID of a particular object, you can get that object 
+# and examine any attribute the object has. Let’s look at the text and 
+# date_added values for Chess:
+>>> t = Topic.objects.get(id=1)
+>>> t.text
+'Chess'
+>>> t.date_added
+datetime.datetime(2017, 10, 01, 4, 39, 11, 989446, tzinfo=<UTC>)
+
+# We can also look at the entries related to a certain topic. 
+# Earlier we defined the topic attribute for the Entry model. 
+# This was a ForeignKey, a connection between each entry and a topic. 
+# Django can use this connection to get every entry related to a 
+# certain topic, like this:
+>>> t.entry_set.all()
+[<Entry: The opening is the first part of the game, roughly...>, 
+<Entry: In the opening phase of the game, it's important t...>]
+```
+
+## Making Pages: The Learning Log Home Page
+
