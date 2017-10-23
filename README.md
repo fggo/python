@@ -2679,44 +2679,40 @@ When you’re not sure if a key exists in a dictionary, use the dict.get() metho
 
 
 # Project 3. Web Applications
+Django is a web framework—a set of tools designed to help you build interactive websites. Django can respond to page requests and make it easier to read and write to a database, manage users, and much more.
+
 To work with Django, first set up a virtual environment to work in. A virtual environment is a place on your system where you can install packages and isolate them from all other Python packages. Separating one project’s libraries from other projects is beneficial.
 
 ## Create virtual environment
-1. Using venv module
 ```
 mkdir learning_log && cd learning_log
+
+# 1. Create w/ venv module
 python3.6 -m venv ll_env
-```
 
-2. Using virtualenv package 
-```
-# earlier versions of Python might not have venv module
-# use package manager: sudo apt install python3-virtualenv or
+# 2. Create w/ virtualenv package. 
+# python -m pip install --user virtualenv in Windows
+# sudo apt install python3-virtualenv or
 pip3 install --user virtualenv  # in Linux
-python -m pip install --user virtualenv  # in Windows
-
-# Create virtual environment
 virtualenv ll_env --python=python3.6
 ```
 
 ## Activating the Virtual Environment
-Packages you install in ll_env will be available only while the environment is active.
+Packages in ll_env will be available while the environment is activated
 ```
-# Activate or Deactivate
+# ll_env\Scripts\activate in Windows
 source ll_env/bin/activate  # Linux 
-ll_env\Scripts\activate  # Windows
-
 deactivate
 ```
 
 ## Installing Django
-activate virtual environment and install Django inside learning_log. Because we’re working in a virtual environment, this command is the same on all systems. There’s no need to use the --user flag, and there’s no need to use longer commands like python -m pip install package_name. Keep in mind that Django will be available only when the environment is active. 
+install django inside learning_log
 ```
 pip3 install Django
 ```
 
 ## Creating a Project in Django
-Set up a new project 'learning_log' (while virtual environment is activated)
+set up a new project 'learning_log'
 ```
 django-admin.py startproject learning_log .
 
@@ -2807,12 +2803,10 @@ we’ll apply this migration and have Django modify the database for us:
 python3.6 manage.py migrate
 ```
 
-
 ### The Django Admin Site
 ```
 # Setting Up a Superuser
 python3.6 manage.py createsuperuser
-
 ```
 
 ```python
