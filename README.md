@@ -2701,18 +2701,18 @@ virtualenv ll_env --python=python3.6
 Packages in ll_env will be available while the environment is activated
 ```
 # ll_env\Scripts\activate in Windows
-source ll_env/bin/activate  # Linux 
+source ll_env/bin/activate  # Linux
 deactivate
 ```
 
 ## Installing Django
-install django inside learning_log
 ```
+# install inside 'learning_log' directory
 pip3 install Django
 ```
 
 ## Creating a Project in Django
-set up a new project 'learning_log'
+The following command tells Django to set up a new project called 'learning_log'. The dot at the end of the command creates the new project with a directory structure that will make it easy to deploy the app to a server when we’re finished developing it.
 ```
 django-admin.py startproject learning_log .
 
@@ -2723,6 +2723,8 @@ ls learning_log
 ```
 
 ## Creating the Database
+Because Django stores most of the information related to a project in a database, we need to create a database that Django can work with. Create the database for the Learning Log project.
+
 Any time we modify a database, we say we’re migrating the database. Issuing the migrate command for the first time tells Django to make sure the database matches the current state of the project. The first time we run this command in a new project using SQLite, Django will create a new database for us. SQLite is a database that runs off a single file; it’s ideal for writing simple apps because you won’t have to pay much attention to managing the database.
 ```
 python3.6 manage.py migrate
@@ -2747,7 +2749,9 @@ python3.6 manage.py runserver
 ```
 
 ## Starting an App
-The command startapp appname tells Django to create the infrastructure needed to build an app
+A Django project is organized as a group of individual apps that work together to make the project work as a whole. For now, we’ll create just one app to do most of the work for our project and we'll add another app to manage user accounts later. You should still be running runserver in the terminal window you opened earlier. Use another terminal window while server is running.
+
+The command startapp appname tells Django to create the infrastructure needed to build an app.
 ```
 python3.6 manage.py startapp learning_logs
 ls
@@ -2757,17 +2761,20 @@ ls learning_logs
 ```
 
 ### Defining Models
+Let’s think about our data for a moment. We’ll also need to store the timestamp of each entry so we can show users when they made each entry.
 ```python
-# models.py
+# learning_log/learning_logs/models.py
 # in order to set python interpreter to virtualenv python 3.6.3
 # go to pycharm settings>python interpreter > add local >
 # /home/foo/workspace/python/learning_log/ll_env/bin/python3.6 
+# A model tells Django how to work with the data that will be stored
+# in the app. Here’s the model for the topics users will store:
 from django.db import models
 
 class Topic(models.Model):
     """A topic the user is learning about"""
-    text = models.CharField(max_length=200)
-    date_added = models.DateTimeField(auto_now_add=True)
+    text = models.CharField(max_length=200) # store characters or text
+    date_added = models.DateTimeField(auto_now_add=True) # store date
 
     def __str__(self):
         """Return a string representation of the model. We need to tell
@@ -2775,6 +2782,8 @@ class Topic(models.Model):
         information about a topic."""
         return self.text
 ```
+
+To see the different kinds of fields you can use in a model, see the [Django Model Field Reference](https://docs.djangoproject.com/en/1.8/ref/models/fields/)
 
 ### Activating Models
 ```python
