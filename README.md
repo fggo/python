@@ -2679,11 +2679,12 @@ When you’re not sure if a key exists in a dictionary, use the dict.get() metho
 
 
 # Project 3. Web Applications
+
+## Getting started with Django
 Django is a web framework—a set of tools designed to help you build interactive websites. Django can respond to page requests and make it easier to read and write to a database, manage users, and much more.
 
-To work with Django, first set up a virtual environment to work in. A virtual environment is a place on your system where you can install packages and isolate them from all other Python packages. Separating one project’s libraries from other projects is beneficial.
-
-## Create virtual environment
+### Create virtual environment
+A virtual environment is a place on your system where you can install packages and isolate them from all other Python packages.
 ```
 mkdir learning_log && cd learning_log
 
@@ -2697,7 +2698,7 @@ pip3 install --user virtualenv  # in Linux
 virtualenv ll_env --python=python3.6
 ```
 
-## Activating the Virtual Environment
+### Activating the Virtual Environment
 Packages in ll_env will be available while the environment is activated
 ```
 # ll_env\Scripts\activate in Windows
@@ -2705,13 +2706,13 @@ source ll_env/bin/activate  # Linux
 deactivate
 ```
 
-## Installing Django
+### Installing Django
 ```
 # install inside 'learning_log' directory
 pip3 install Django
 ```
 
-## Creating a Project in Django
+### Creating a Project in Django
 The following command tells Django to set up a new project called 'learning_log'. The dot at the end of the command creates the new project with a directory structure that will make it easy to deploy the app to a server when we’re finished developing it.
 ```
 django-admin.py startproject learning_log .
@@ -2722,10 +2723,8 @@ ls learning_log
     __init__.py  settings.py  urls.py  wsgi.py
 ```
 
-## Creating the Database
-Because Django stores most of the information related to a project in a database, we need to create a database that Django can work with. Create the database for the Learning Log project.
-
-Any time we modify a database, we say we’re migrating the database. Issuing the migrate command for the first time tells Django to make sure the database matches the current state of the project. The first time we run this command in a new project using SQLite, Django will create a new database for us. SQLite is a database that runs off a single file; it’s ideal for writing simple apps because you won’t have to pay much attention to managing the database.
+### Creating the Database
+Because Django stores most of the information related to a project in a database, we need to create a database that Django can work with. Create the database for the Learning Log project. SQLite is a database that runs off a single file
 ```
 python3.6 manage.py migrate
 
@@ -2733,8 +2732,8 @@ ls
     db.sqlite3 learning_log ll_env manage.py
 ```
 
-## Viewing the Project
-Django starts a server so you can view the project on your system to see how well it works. Django checks to make sure the project is set up properly; reports the version of Django in use and the name of the settings file being used; reports the URL where the project is being served.
+### Viewing the Project
+Django starts a server so you can view the project on your system to see how well it works.
 ```
 python3.6 manage.py runserver
 
@@ -2748,10 +2747,8 @@ python3.6 manage.py runserver
 # until you find an open port.
 ```
 
-## Starting an App
-A Django project is organized as a group of individual apps that work together to make the project work as a whole. For now, we’ll create just one app to do most of the work for our project and we'll add another app to manage user accounts later. You should still be running runserver in the terminal window you opened earlier. Use another terminal window while server is running.
-
-The command startapp appname tells Django to create the infrastructure needed to build an app.
+### Starting an App
+We’ll create just one app to do most of the work for our project and we'll add another app to manage user accounts later. The command startapp appname tells Django to create the infrastructure needed to build an app. We’ll use models.py to define the data we want to manage in our app.
 ```
 python3.6 manage.py startapp learning_logs
 ls
@@ -2760,13 +2757,10 @@ ls learning_logs
     admin.py  apps.py  __init__.py  migrations  models.py  tests.py  views.py
 ```
 
-### Defining Models
-Let’s think about our data for a moment. We’ll also need to store the timestamp of each entry so we can show users when they made each entry.
+#### Defining Models
+We’ll need to store data; for example, the timestamp of each entry so we can show users when they made each entry.
 ```python
-# learning_log/learning_logs/models.py
-# in order to set python interpreter to virtualenv python 3.6.3
-# go to pycharm settings>python interpreter > add local >
-# /home/foo/workspace/python/learning_log/ll_env/bin/python3.6 
+# learning_logs/models.py
 # A model tells Django how to work with the data that will be stored
 # in the app. Here’s the model for the topics users will store:
 from django.db import models
@@ -2780,14 +2774,14 @@ class Topic(models.Model):
         """Return a string representation of the model. We need to tell
         Django which attribute to use by default when it displays
         information about a topic."""
-        return self.text
+        return self.text 
 ```
-
 To see the different kinds of fields you can use in a model, see the [Django Model Field Reference](https://docs.djangoproject.com/en/1.8/ref/models/fields/)
 
-### Activating Models
+#### Activating Models
+To use our models, we have to tell Django to include our app in the overall project. The following is just a tuple or a list, telling Django which apps work together to make up the project.
 ```python
-# settings.py
+# learning_log/settings.py
 # --snip--
 INSTALLED_APPS = (
     'django.contrib.admin',
@@ -2802,33 +2796,35 @@ INSTALLED_APPS = (
 # --snip--
 ```
 
-Tell Django to modify the database so it can store information related to the model Topic.
+Migration
 ```
+# Tell Django to modify the database so it can store information related to the model Topic.
 python3.6 manage.py makemigrations learning_logs
-```
-
-we’ll apply this migration and have Django modify the database for us:
-```
+# we’ll apply this migration and have Django modify the database for us:
 python3.6 manage.py migrate
 ```
 
-### The Django Admin Site
+#### The Django Admin Site
 ```
 # Setting Up a Superuser
 python3.6 manage.py createsuperuser
+Username (leave blank to use 'foo'): admin
+Email address: admin@gmail.com
+Password: 
+Password (again): 
 ```
-
 ```python
 # Registering a Model with the Admin Site
 # admin.py
 from django.contrib import admin
+
 from learning_logs.models import Topic
 
 admin.site.register(Topic)
 ```
-Now go to (http://127.0.0.1:8000/admin/). You can add topics
+Now go to [http://localhost:8000/admin/](http://localhost:8000/admin/) or http://127.0.0.1:8000/admin/ where you can add topics.
 
-### Defining the Entry Model
+#### Defining the Entry Model
 ```python
 # model.py
 from django.db import models
@@ -2859,56 +2855,124 @@ class Entry(models.Model):
         return self.text[:50] + "..."
 ```
 
-
-### Migrating the Entry Model
+#### Migrating the Entry Model
+Because we’ve added a new model, we need to migrate the database again. This process will become quite familiar: you modify models.py, run the command python manage.py makemigrations app_name, and then run the command python manage.py migrate
 ```
-python3.6 manage.py makemigrations learning_logs
-python3.6 manage.py migrate
+python manage.py makemigrations learning_logs
+python manage.py migrate
 ```
 
-### Registering Entry with the Admin Site
+#### Registering Entry with the Admin Site
 ```python
 # admin.py
+from django.contrib import admin
 
+from learning_logs.models import Topic, Entry
+
+admin.site.register(Topic)
+admin.site.register(Entry)
 ```
+Go back to http://localhost:8000/admin/ and check 'Entries' are listed
 
-
-### The Django Shell
+#### The Django Shell
+Now that we’ve entered some data, we can examine that data programmatically through an interactive terminal session, Django Shell, which is a great environment for testing and trouble­shooting your project. 
 ```
 python3.6 manage.py shell
 >>> from learning_logs.models import Topic
 >>> Topic.objects.all()
-[<Topic: Chess>, <Topic: Rock Climbing>]
+<QuerySet [<Topic: Rock Climbing>, <Topic: Chess>]>
 
 
-# We can loop over a queryset just as we’d loop over a list. Here’s how 
-# you can see the ID that’s been assigned to each topic object:
+# We can loop over a queryset just as we’d loop over a list.
 >>> topics = Topic.objects.all()
 >>> for topic in topics:
 ...     print(topic.id, topic)
 ...
-1 Chess
-2 Rock Climbing
+3 Rock Climbing
+4 Chess
 
 
-# If you know the ID of a particular object, you can get that object 
-# and examine any attribute the object has. Let’s look at the text and 
-# date_added values for Chess:
->>> t = Topic.objects.get(id=1)
+# If you know the ID(3 or 4 here) of a particular object, you can get 
+# that object and examine any attribute the object has.
+>>> t = Topic.objects.get(id=3)
 >>> t.text
-'Chess'
+'Rock Climbing'
 >>> t.date_added
-datetime.datetime(2017, 10, 01, 4, 39, 11, 989446, tzinfo=<UTC>)
+datetime.datetime(2017, 10, 27, 8, 10, 21, 573794, tzinfo=<UTC>)
 
 # We can also look at the entries related to a certain topic. 
-# Earlier we defined the topic attribute for the Entry model. 
+# Earlier we defined the 'topic' attribute for the Entry model. 
 # This was a ForeignKey, a connection between each entry and a topic. 
 # Django can use this connection to get every entry related to a 
 # certain topic, like this:
 >>> t.entry_set.all()
-[<Entry: The opening is the first part of the game, roughly...>, 
-<Entry: In the opening phase of the game, it's important t...>]
+<QuerySet [<Entry: I like Rock Climbing...>, 
+            <Entry: I want to learn Rock Climbing!...>]>
 ```
 
-## Making Pages: The Learning Log Home Page
+### Making Pages: The Learning Log Home Page
+Making web pages with Django consists of three stages: defining URLs, writing views, and writing templates. First, you must define patterns for URLs. Each URL then maps to a particular view—the view function retrieves and processes the data needed for that page. The view function often calls a template, which builds a page that a browser can read.
+ 
+Mapping a URL
+```python
+# mapping base URL, http://localhost:8000/, to Learning Log's home page
+# learning_log/urls.py
+# include admin.site.urls module and learning_logs.urls module
+from django.conf.urls import include, url
+from django.contrib import admin
+
+urlpatterns = [
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'', include('learning_logs.urls', namespace='learning_logs')),
+]
+```
+
+```python
+# learning_logs/urls.py
+"""Defines URL patterns for learning_logs."""
+from django.conf.urls import url
+
+from . import views
+
+# list of individual pages that can be requested from learning_logs app.
+# regexes r'^$' tells python to interpret as a raw string and where 
+# string begins and ends. Python ignores the base URL for the project 
+# (http://localhost:8000/), so an empty regexes matches the base URL
+# views.index tells python which view function to call
+# name='index' provides the name for this URL patterns so we can refer
+urlpatterns = [
+    # Home page
+    url(r'^$', views.index, name='index'),
+]
+```
+
+Writing a View
+```python
+# A view function takes in information from a request, prepares the 
+# data needed to generate a page, and then sends the data back to the 
+# browser, often by using a template that defines what the page will 
+# look like.
+# learning_logs/views.py
+from django.shortcuts import render
+
+def index(request):
+    """The home page for Leaning Log"""
+    return render(request, 'learning_logs/index.html')
+```
+
+Writing a Template
+```html
+<p>Leaning Log</p>
+<p>Learning Log helps you keep track of your learning, for any topic 
+you're learning about.</p>
+```
+
+Now when we request the project’s base URL, http://localhost:8000/, we’ll see the page we just built instead of the default Django page. Django will take the requested URL, and that URL will match the pattern r'^$'; then Django will call the function views.index(), and this will render the page using the template contained in index.html.
+
+Although it may seem a complicated process for creating one page, this separation between URLs, views, and templates actually works well. It allows you to think about each aspect of a project separately, and in larger projects it allows individuals to focus on the areas in which they’re strongest. For example, a database specialist can focus on the models, a programmer can focus on the view code, and a web designer can focus on the templates.
+
+
+### Building Additional Pages
+```
+```
 
