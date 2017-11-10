@@ -2916,10 +2916,8 @@ from django.conf.urls import url
 
 from . import views
 
-# The actual URL pattern is a call to the url() function, which takes 
-# three arguments.
+# The actual URL pattern is a call to url(regex, views.func, name='')
 # urlpatterns: list of pages that can be requested from learning_logs
-# url(): map urls to views
 # regexes r'^$' tells python to interpret as a raw string and empty URL
 # base project URL is ignored, so an empty regexes matches the base URL
 # views.index tells python which view function to call
@@ -3004,7 +3002,7 @@ urlpatterns = [
 
 The Topics View
 ```python
-# learning_logs/views.py
+# views.py
 from django.shortcuts import render
 
 from .models import Topic
@@ -3072,7 +3070,7 @@ urlpatterns = [
 
 The Topic View
 ```python
-# learning_logs/views.py
+# views.py
 from django.shortcuts import render
 
 from .models import Topic
@@ -3125,7 +3123,11 @@ filter linebreaks ensures that long text entries include line breaks-->
 Links from the Topics Page
 ```html
 <!--topics.html-->
-<!--modify existing topics.html to display links to each topic-->
+<!--modify existing topics.html to display links to each topic. URL 
+template tag to generate the proper link, based on the URL pattern 
+in learning_logs with the name 'topic'. This URL pattern requires a 
+topic_id argument, so we add the attribute topic.id to the URL 
+template tag-->
 {% extends 'learning_logs/base.html'  %}
 
 {% block comment %}
@@ -3146,6 +3148,8 @@ Links from the Topics Page
 ## User Accounts
 
 ### Allowing Users to Enter Data
+Before we build an authentication system for creating accounts, we’ll first add some pages that allow users to enter their own data.
+
 Currently, only a superuser can enter data through the admin site. We don’t want users to interact with the admin site, so we’ll use Django’s form-building tools to build pages that allow users to enter data.
 
 #### Adding New Topics
@@ -3153,6 +3157,8 @@ Let’s start by giving users the ability to add a new topic. Adding a form-base
 
 The Topic ModelForm
 ```python
+# nested Meta class telling Django which model to base the form on and 
+# which fields to include in the form.
 # forms.py
 from django import forms
 
@@ -3162,7 +3168,7 @@ class TopicForm(forms.ModelForm):
     class Meta:
         model = Topic
         fields = ['text']
-        labels = {'text': ''}  # do not to generate a label
+        labels = {'text': ''}  # empty label
 ```
 
 The new_topic URL
@@ -3178,8 +3184,8 @@ urlpatterns = [
 ]
 ```
 
+The new_topic() View Function
 ```python
-# The new_topic() View Function
 # handles initial requests for new_topic page(show a blank form)
 # and the processing of submitted data in the form
 # reverse() to get the URL for the topics page and pass the URL to 
