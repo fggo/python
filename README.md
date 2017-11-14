@@ -3282,6 +3282,9 @@ class EntryForm(forms.ModelForm):
 The new_entry URL
 ```python
 # learning_logs/urls.py
+# new_entry = form.save(commit=False) to tell django to create a new 
+# entry object and store it in new_entry without saving it to database
+# now set entry's topic attribute, then save it to database
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
@@ -3315,6 +3318,7 @@ The new_entry Template
 
 {% block comment %}
   <p><a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a></p>
+  
   <p>Add a new entry:</p>
   <form action="{% url 'learning_logs:new_entry' topic.id %}" method="post">
     {% csrf_token %}
@@ -3354,6 +3358,5 @@ The edit_entry URL
 
 #### The users App
 ```
-
 ```
 
