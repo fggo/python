@@ -3157,8 +3157,8 @@ Let’s start by giving users the ability to add a new topic. Adding a form-base
 
 The Topic ModelForm
 ```python
-# nested Meta class telling Django which model to base the form on and 
-# which fields to include in the form.
+# nested Meta class telling Django which model('Topic') to base
+# the form on and which fields('text') to include in the form.
 # forms.py
 from django import forms
 
@@ -3189,7 +3189,8 @@ The new_topic() View Function
 # handles initial requests for new_topic page(show a blank form)
 # and the processing of submitted data in the form
 # reverse() to get the URL for the topics page and pass the URL to 
-# HttpResponseRedirect(), which redirects the browser to topics page. 
+# HttpResponseRedirect(), which redirects the reader to topics page
+# after they submit their topic.
 # views.py
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
@@ -3218,7 +3219,7 @@ def new_topic(request):
 
 GET and POST Requests
 
-The two main types of request you’ll use when building web apps are GET requests and POST requests. You use GET requests for pages that only read data from the server. You usually use POST requests when the user needs to submit information through a form. We’ll be specifying the POST method for processing all of our forms. (A few other kinds of requests exist, but we won’t be using them in this project.) 
+The two main types of request you’ll use when building web apps are GET requests and POST requests. You use GET requests for pages that only read data from the server. You usually use POST requests when the user needs to submit information through a form. We’ll be specifying the POST method for processing all of our forms.
 
 Depending on the request, we’ll know whether the user is requesting a blank form (a GET request) or asking us to process a completed form (a POST request).
 
@@ -3226,6 +3227,11 @@ Depending on the request, we’ll know whether the user is requesting a blank fo
 The new_topic Template
 ```html
 <!--new_topic.html-->
+<!--'action' tells the server where to send the data submitted in the 
+form; in this case, we send it back to the view function new_topic()
+{% csrf_token %} prevents cross-site request forgery attack. form.as_p
+to create all fields necessary to display the form automatically.
+as_p modifier to render all form elements in paragraph format-->
 {% extends 'learning_logs/base.html' %}
 
 {% block comment %}
@@ -3259,5 +3265,95 @@ Linking to the new_topic Page
 The Entry ModelForm
 ```python
 # forms.py
+# widget is an HTML form element such as text box, text area, drop down
+# widgets attribute to overdie django's default widget choices
+# customize the input widget for the field 'text' to 80 columns wide
+from django import forms
+from .models import Topic, Entry
+# --snip--
+class EntryForm(forms.ModelForm):
+    class Meta:
+        model = Entry
+        field = ['text']
+        labels = {'text': ''}
+        widgets = {'text': forms.Textarea(attrs={'cols': 80})}
+```
+
+The new_entry URL
+```python
+# learning_logs/urls.py
+from django.shortcuts import render
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
+
+from .models import Topic
+from .forms import TopicForm, EntryForm
+# --snip--
+
+def new_entry(request, topic_id):
+    topic = Topic.objects.get(id=topic_id)
+
+    if request.method != 'POST':
+        form = EntryForm()
+    else:
+        form = EntryForm(data=request.POST)
+        if form.is_valid():
+            new_entry = form.save(commit=False)
+            new_entry.topic = topic
+            new_entry.save()
+            return HttpResponseRedirect(reverse('learning_logs:topic',
+                                                args=[topic_id]))
+
+        context = {'topic': topic, 'form': form}
+        return render(request, 'learning_logs/new_entry.html', context)
+```
+
+The new_entry Template
+```html
+<!--new_entry.html-->
+{% extends 'learning_logs/base.html' %}
+
+{% block comment %}
+  <p><a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a></p>
+  <p>Add a new entry:</p>
+  <form action="{% url 'learning_logs:new_entry' topic.id %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button name="submit">add entry</button>
+  </form>
+{% endblock comment %}
+```
+
+Linking to the new_entry Page
+```html
+<!--topic.html-->
+{% extends "learning_logs/base.html" %}
+
+{% block comment %}
+  <p>Topic: {{ topic }}</p>
+  <p>Entries:</p>
+  <p>
+    <a href="{% url 'learning_logs:new_entry' topic.id %}">add new entry</a>
+  </p>
+  <ul>
+    <!--snip-->
+  </ul>
+
+{% endblock comment %}
+```
+
+#### Editing Entries
+
+The edit_entry URL
+```python
+# learning_logs/urls.py
 
 ```
+
+### Setting Up User Accounts
+
+#### The users App
+```
+
+```
+
