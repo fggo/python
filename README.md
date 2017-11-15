@@ -3351,12 +3351,78 @@ Linking to the new_entry Page
 The edit_entry URL
 ```python
 # learning_logs/urls.py
+from django.conf.urls import url
+from . import views
 
+urlpatterns = [
+    # --snip--
+    # edit entry
+    url(r'^edit_entry/(?P<entry_id>\d+)/$', views.edit_entry,
+        name='edit_entry'),
+]
+```
+
+The edit_entry() View Function
+```python
+# views.py
+from django.shortcuts import render
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
+
+from .models import Topic, Entry
+from .forms import TopicForm, EntryForm
+# --snip--
+def edit_entry(request, entry_id):
+    entry = Entry.objects.get(id=entry_id)
+    topic = entry.topic
+
+    if request.method != 'POST':
+        # Initial request; pre-fill form with the current entry.
+        form = EntryForm(instance=entry)
+    else:
+        form = EntryForm(instance=entry, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('learning_logs:topic',
+                                                args=[topic.id]))
+
+    context = {'entry': entry, 'topic': topic, 'form': form}
+    return render(request, 'learning_logs/edit_entry.html', context)
 ```
 
 ### Setting Up User Accounts
+we’ll set up a user registration and authorization system to allow people to register an account and log in and out.
 
 #### The users App
 ```
+python manage.py startapp users
+ls users
+    admin.py apps.py __init__.py migrations models.py tests.py views.py 
 ```
 
+Adding users to settings.py
+```python
+# settings.py
+# --snip--
+INSTALLED_APPS = [
+    # --snip--
+    # My apps
+    'learning_logs',
+    'users',
+]
+```
+
+Including the URLs from users
+```python
+# urls.py
+from django.conf.urls import include, url
+from django.contrib import admin
+
+urlpatterns = [
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^users/', include('users.urls', namespace='users')),
+    url(r'', include('learning_logs.urls', namespace='learning_logs')),
+]
+```
+
+#### The Login Page
