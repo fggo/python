@@ -3396,14 +3396,12 @@ we’ll set up a user registration and authorization system to allow people to r
 #### The users App
 ```
 python manage.py startapp users
-ls users
-    admin.py apps.py __init__.py migrations models.py tests.py views.py 
+ls users 
 ```
 
 Adding users to settings.py
 ```python
 # settings.py
-# --snip--
 INSTALLED_APPS = [
     # --snip--
     # My apps
@@ -3426,3 +3424,211 @@ urlpatterns = [
 ```
 
 #### The Login Page
+```python
+# users/urls.py
+# pass a dictionary telling where to find the template, login.html
+from django.conf.urls import url
+from django.contrib.auth.views import login
+from . import views
+
+urlpatterns = [
+    # Login page
+    url(r'^login/$', login, {'template_name': 'users/login.html'},
+        name='login'),
+]
+```
+
+The login template
+```html
+<!--login.html-->
+<!--the value argument tells Django where to redirect the user after 
+they’ve logged in successfully; redirect to learning_logs home-->
+{% extends 'learning_logs/base.html' %}
+
+{% block content %}
+  {% if form.errors %}
+    <p>Your username and password didn't match. Please try again.</p>
+  {% endif %}
+  <form action="{% url 'users:login' %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button name="submit">log in</button>
+
+    <input type="hidden" name="next"
+           value="{% url 'learning_logs:index' %}" />
+  </form>
+{% endblock content %}
+```
+
+Linking to the Login Page
+```html
+<!--base.html-->
+<!--In Django’s authentication system, every template has user variable
+available, which always has an is_authenticated attribute set-->
+<p>
+  <a href="{% url 'learning_logs:index' %}">Learning Log</a> -
+  <a href="{% url 'learning_logs:topics' %}">Topics</a> -
+  {% if user.is_authenticated %}
+    Hello, {{ user.username }}.
+  {% else %}
+    <a href="{% url 'user:login' %}">log in</a>
+  {% endif %}
+</p>
+
+{% block content %}{% endblock content %}
+```
+
+#### Logging Out
+We won’t build a page for logging out; users will just click a link and be sent back to the home page.
+
+The logout URL
+```python
+# urls.py
+from django.conf.urls import url
+from django.contrib.auth.views import login
+from . import views
+
+urlpatterns = [
+    url(r'^login/$', login, {'template_name': 'users/login.html'},
+        name='login'),
+    url(r'^logout/$', views.logout_view, name='logout'),
+]
+```
+
+The logout_view() View Function
+```python
+# logout_view.py
+# import and call django's logout(), and redirect back to home page 
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
+from django.contrib.auth import logout
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('learning_logs:index'))
+```
+
+Linking to the logout View
+```html
+<!--base.html-->
+<p>
+  <a href="{% url 'learning_logs:index' %}">Learning Log</a> -
+  <a href="{% url 'learning_logs:topics' %}">Topics</a> -
+  {% if user.is_authenticated %}
+    Hello, {{ user.username }}.
+    <a href="{% url 'users:logout' %}">log out</a>
+  {% else %}
+    <a href="{% url 'users:login' %}">log in</a>
+  {% endif %}ls
+  
+</p>
+
+{% block content %}{% endblosck content %}
+```
+
+#### The Registration Page
+We'll use Django’s default UserCreationForm but write our own view function and template.
+
+The register URL
+```python
+# urls.py
+from django.conf.urls import url
+from django.contrib.auth.views import login
+from . import views
+
+urlpatterns = [
+    # --snip--
+    url(r'^register/$', views.register, name='register'),
+```
+
+The register() View Function
+```python
+# views.py
+from django.shortcuts import render
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
+from django.contrib.auth import logout, login, authenticate
+from django.contrib.auth.forms import UserCreationForm
+
+def logout_view(request):
+    # --snip--
+    
+def register(request):
+    """Register a new user."""
+    if request.method != 'POST':
+        # Display blank registration form.
+        form = UserCreationForm()
+    else:
+        # Process completed Form.
+        form = UserCreationForm(data=request.POST)
+        if form.is_valid():
+            new_user = form.save()
+            # Log the user in and then redirect to home page.
+            authenticated_user = authenticate(
+                username=new_user.username,
+                password=request.POST['password1'])
+            login(request, authenticated_user)
+            return HttpResponseRedirect(reverse('learning_logs:index'))
+
+    context = {'form': form}
+    return render(request, 'users/register.html', context)
+```
+
+The register Template
+```html
+<!--users/register.html-->
+{% extends 'learning_logs/base.html' %}
+
+{% block content %}
+  <form method="post" action="{% url 'users:register' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button name="submit">register</button>
+    <input type="hidden" name="next"
+           value="{% url 'learning_logs:index' %}"/>
+  </form>
+
+{% endblock content %}
+```
+
+Linking to the Registration Page
+```html
+<!--base.html-->
+<p>
+  <a href="{% url 'learning_logs:index' %}">Learning Log</a> -
+  <a href="{% url 'learning_logs:topics' %}">Topics</a> -
+  {% if user.is_authenticated %}
+    Hello, {{ user.username }}.
+    <a href="{% url 'users:logout' %}">log out</a>
+  {% else %}
+    <a href="{% url 'users:register' %}">register</a> -
+    <a href="{% url 'users:login' %}">log in</a>
+  {% endif %}
+</p>
+
+{% block content %}{% endblock content %}
+```
+
+### Allowing Users to Own Their Data
+Users should be able to enter data exclusive to them, so we’ll create a system to figure out which data belongs to which user, and then we’ll restrict access to certain pages so users can work with only their own data.
+
+#### Restricting Access with @login_required
+A decorator is a directive placed just before a function definition that Python applies to the function before it runs to alter how the function code behaves. @login_required decorator:
+
+Restricting Access to the Topics Page
+```python
+# views.py
+# --snip--
+from django.contrib.auth.decorators import login_required
+
+from .models import Topic, Entry
+from .forms import TopicForm, EntryForm
+
+@login_required
+def topics(request):
+    # --snip--
+```
+
+```python
+# settings.py
+```
