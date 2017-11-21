@@ -3618,7 +3618,121 @@ A decorator is a directive placed just before a function definition that Python 
 Restricting Access to the Topics Page
 ```python
 # views.py
+# Each topic will be owned by a user. Only registered users should be
+# able to request the topics page. login_required() checks to see if
+# a user is logged in, and Django will run the code in topics() only if
+# they are. If the user is not logged in, redirect to the login page.
 # --snip--
+from django.contrib.auth.decorators import login_required
+
+from .models import Topic, Entry
+from .forms import TopicForm, EntryForm
+
+# --snip--
+@login_required
+def topics(request):
+    # --snip--
+
+@login_required
+def topic(request, topic_id):
+    # --snip--
+
+@login_required
+def new_topic(request):
+    # --snip--
+
+@login_required
+def new_entry(request, topic_id):
+    # --snip--
+
+@login_required
+def edit_entry(request, entry_id):
+    # --snip
+```
+
+```python
+# settings.py
+# When an unauthenticated user requests a page protected by the 
+# @login_required decorator, Django will send the user to the URL 
+# defined by LOGIN_URL in settings.py.
+
+# --snip--
+# My sertings
+LOGIN_URL = '/users/login/'
+```
+
+#### Connecting Data to Certain Users
+Now we need to connect the data submitted to the user who submitted it. We need to connect only the data highest in the hierarchy to a user, and the lower-level data will follow.
+
+Modifying the Topic Model
+```python
+# models.py
+# add a foreign key relationship to a user
+from django.db import models
+from django.contrib.auth.models import User
+
+class Topic(models.Model):
+    text = models.CharField(max_length=200)
+    date_added = models.DateTimeField(auto_now_add=True)
+    owner = models.ForeignKey(User)
+    def __str__(self):
+        return self.text
+
+class Entry(models.Model):
+    # --snip--
+```
+
+Identifying Existing Users
+```
+python manage.py shell
+>>> from django.contrib.auth.models import User
+>>> User.objects.all()
+<QuerySet [<User: ll_admin>, <User: lopehih>, <User: abc>, <User: aaa>]>
+>>> for user in User.objects.all():
+...     print(user.username, user.id)
+... 
+ll_admin 1
+lopehih 2
+abc 3
+aaa 4
+```
+
+Migrating the Database
+```
+python manage.py makemigrations learning_logs
+
+You are trying to add a non-nullable field 'owner' to topic without a 
+default; we can't do that (the database needs something to populate 
+existing rows).
+Please select a fix:
+    1) Provide a one-off default now (will be set on all existing rows)
+    2) Quit, and let me add a default in models.py
+Select an option: 1
+Please enter the default value now, as valid Python
+>>> 1
+
+python manage.py migrate
+
+python manage.py shell
+>>> from learning_logs.models import Topic
+>>> for topic in Topic.objects.all():
+   ...     print(topic, topic.owner)
+   ...
+   Rock Climbing ll_admin
+   Chess ll_admin
+```
+
+#### Restricting Topics Access to Appropriate Users
+Currently, if you’re logged in, you’ll be able to see all the topics, no matter which user you’re logged in as. We’ll change that by showing users only the topics that belong to them.
+```python
+# views.py
+# To see if this works, log in as the user you connected all existing 
+# topics to, and go to the topics page. You should see all the topics. 
+# Now log out, and log back in as a different user. The topics page 
+# should list no topics.
+from django.shortcuts import render
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 
 from .models import Topic, Entry
@@ -3626,9 +3740,77 @@ from .forms import TopicForm, EntryForm
 
 @login_required
 def topics(request):
+    topics = Topic.objects.filter(owner=request.user).order_by('date_added')
+    context = {'topics': topics}
+    return render(request, 'learning_logs/topics.html', context)
+# --snip--
+```
+
+#### Protecting a User’s Topics
+We haven’t actually restricted access to the topic pages yet, so any registered user could try a bunch of URLs, like http://localhost:8000/topics/1/, and retrieve topic pages that happen to match. We'll fix this by performing a check before retrieving the requested entries in the topic() view function:
+```python
+# views.py
+# If the current user doesn’t own the requested topic, we raise the 
+# Http404 exception, and Django returns a 404 error page. Now if you 
+# try to view another user’s topic entries, you’ll see a Page Not Found
+# message from Django. Later, we’ll configure the project so 
+# users will see a proper error page.
+from django.shortcuts import render
+from django.http import HttpResponseRedirect, Http404
+from django.core.urlresolvers import reverse
+    # --snip--
+
+    @login_required
+    def topic(request, topic_id):
+        topic = Topic.objects.get(id=topic_id)
+        # Make sure the topic belongs to the current user.
+        if topic.owner != request.user:
+           raise Http404
+
+        entries = topic.entry_set.order_by('-date_added')
+        context = {'topic': topic, 'entries': entries}
+        return render(request, 'learning_logs/topic.html', context)
     # --snip--
 ```
 
+
+#### Protecting the edit_entry Page
 ```python
-# settings.py
+# --snip--
+@login_required
+def edit_entry(request, entry_id):
+    """Edit an existing entry."""
+    entry = Entry.objects.get(id=entry_id)
+    topic = entry.topic
+    if topic.owner != request.user:
+        raise Http404
+    if request.method != 'POST':
+        # Initial request; pre-fill form with the current entry.
+        # --snip--
 ```
+#### Associating New Topics with the Current User
+```python
+# --snip--
+
+@login_required
+def new_topic(request):
+    if request.method != 'POST':
+        form = TopicForm()
+    else:
+        form = TopicForm(request.POST)
+        if form.is_valid():
+            new_topic = form.save(commit=False)
+            new_topic.owner = request.user
+            new_topic.save()
+            return HttpResponseRedirect(reverse('learning_logs:topics'))
+
+    context = {'form': form}
+    return render(request, 'learning_logs/new_topic.html', context)
+# --snip--
+```
+
+## Styling and Deploying an App
+
+### Styling Learning Log
+
+#### The django-bootstrap3 App
