@@ -3652,12 +3652,9 @@ def edit_entry(request, entry_id):
 
 ```python
 # settings.py
-# When an unauthenticated user requests a page protected by the 
-# @login_required decorator, Django will send the user to the URL 
-# defined by LOGIN_URL in settings.py.
-
+# When unauthenticated user requests page protected by @login_required 
+# user will receive URL defined in LOGIN_URL in settings.py
 # --snip--
-# My sertings
 LOGIN_URL = '/users/login/'
 ```
 
@@ -3747,19 +3744,17 @@ def topics(request):
 ```
 
 #### Protecting a User’s Topics
-We haven’t actually restricted access to the topic pages yet, so any registered user could try a bunch of URLs, like http://localhost:8000/topics/1/, and retrieve topic pages that happen to match. We'll fix this by performing a check before retrieving the requested entries in the topic() view function:
+Any registered user could try a bunch of URLs, like http://localhost:8000/topics/1/, and retrieve topic pages that happen to match. We'll fix this by performing a check before retrieving the requested entries in topic() view function
 ```python
 # views.py
 # If the current user doesn’t own the requested topic, we raise the 
-# Http404 exception, and Django returns a 404 error page. Now if you 
-# try to view another user’s topic entries, you’ll see a Page Not Found
-# message from Django. Later, we’ll configure the project so 
-# users will see a proper error page.
+# Http404 exception. Now if you try to view another user’s topic 
+# entries, you’ll see a Page Not Found message from Django. Later, 
+# we’ll configure the project so users will see a proper error page.
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, Http404
 from django.core.urlresolvers import reverse
     # --snip--
-
     @login_required
     def topic(request, topic_id):
         topic = Topic.objects.get(id=topic_id)
@@ -3775,6 +3770,7 @@ from django.core.urlresolvers import reverse
 
 
 #### Protecting the edit_entry Page
+Any registered user can access http://localhost:8000/edit_entry/entry_id/. Let’s protect this page so no one can use the URL to gain access to someone else’s entries
 ```python
 # --snip--
 @login_required
@@ -3788,6 +3784,7 @@ def edit_entry(request, entry_id):
         # Initial request; pre-fill form with the current entry.
         # --snip--
 ```
+
 #### Associating New Topics with the Current User
 ```python
 # --snip--
@@ -3814,3 +3811,52 @@ def new_topic(request):
 ### Styling Learning Log
 
 #### The django-bootstrap3 App
+We’ll use django-bootstrap3 to integrate Bootstrap into our project.
+```
+pip3 install django-bootstrap3
+```
+
+```python
+# settings.py
+INSTALLED_APPS = [
+    # --snip--
+    'django.contrib.staticfiles',
+    # Third party apps
+    'bootstrap3',
+    # My apps
+    'learning_logs',
+    'users',
+]
+
+# My settings
+LOGIN_URL = '/users/login/'
+
+# Settings for django-bootstrap3
+BOOTSTRAP3 = {
+    'include_jquery': True,
+    }
+```
+
+#### Using Bootstrap to Style Learning Log
+
+#### Modifying base.html
+
+Defining the HTML Headers
+
+Defining the Navigation Bar
+
+Defining the Main Part of the Page
+```html
+<!--base.html-->
+<!--whenever a Learning Log page is open, the browser title bar 
+displays the site name. -->
+
+```
+
+
+#### Styling the Home Page Using a Jumbotron
+```html
+<!--index.html-->
+```
+
+#### Styling the Login Page
