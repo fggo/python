@@ -3710,6 +3710,7 @@ Please enter the default value now, as valid Python
 
 python manage.py migrate
 
+# verify that the migration worked as expected
 python manage.py shell
 >>> from learning_logs.models import Topic
 >>> for topic in Topic.objects.all():
@@ -3820,8 +3821,7 @@ pip3 install django-bootstrap3
 # settings.py
 INSTALLED_APPS = [
     # --snip--
-    'django.contrib.staticfiles',
-    # Third party apps
+    # Third party apps: include django-boostrap3 
     'bootstrap3',
     # My apps
     'learning_logs',
@@ -3831,6 +3831,9 @@ INSTALLED_APPS = [
 # My settings
 LOGIN_URL = '/users/login/'
 
+# We need django-bootstrap3 to include jQuery, a JavaScript library 
+# that enables some of the interactive elements that the Bootstrap 
+# template provides.
 # Settings for django-bootstrap3
 BOOTSTRAP3 = {
     'include_jquery': True,
@@ -3838,25 +3841,76 @@ BOOTSTRAP3 = {
 ```
 
 #### Using Bootstrap to Style Learning Log
+[Bootstrap](#http://getbootstrap.com/) is basically a large collection of styling tools. It also has a number of templates you can apply to your project to create a particular overall style.
 
 #### Modifying base.html
 
-Defining the HTML Headers
-
-Defining the Navigation Bar
-
-Defining the Main Part of the Page
 ```html
 <!--base.html-->
-<!--whenever a Learning Log page is open, the browser title bar 
-displays the site name. -->
+{% load bootstrap3 %}
 
+<!DOCTYPE html>
+<html lang="en">
+  <!--Defining the HTML Headers-->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Learning Log</title>
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+  </head>
+  <body>
+    <!--Defining the Navigation Bar-->
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container">
+
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed"
+                  data-toggle="collapse" data-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar">
+          </button>
+          <a class="navbar-brand" href="{% url 'learning_logs:index' %}">
+            Learning Log</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="{% url 'learning_logs:topics' %}">Topics</a></li>
+          </ul>
+
+          <ul class="nav navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+              <li><a>Hello, {{ user.username }}.</a></li>
+              <li><a href="{% url 'users:logout' %}">log out</a></li>
+            {% else %}
+              <li><a href="{% url 'users:register' %}">register</a></li>
+              <li><a href="{% url 'users:login' %}">log in</a></li>
+            {% endif %}
+          </ul>
+        </div><!--/.nav-collapse-->
+
+      </div>
+    </nav>
+    
+    <!--Defining the Main Part of the Page-->
+    <div class="container">
+      <div class="page-header">
+        {% block header %}{% endblock header %}
+      </div>
+      <div>
+        {% block content %}{% endblock content %}
+      </div>
+    </div>
+  </body>
+</html>
 ```
-
 
 #### Styling the Home Page Using a Jumbotron
 ```html
 <!--index.html-->
+
 ```
 
 #### Styling the Login Page
