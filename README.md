@@ -2815,6 +2815,7 @@ admin.site.register(Topic)
 Now go to [http://localhost:8000/admin/](http://localhost:8000/admin/) or http://127.0.0.1:8000/admin/ where you can not only add User or Group, but also add Topic.
 
 #### Defining the Entry Model
+read about [delete_on](https://stackoverflow.com/questions/38388423/what-does-on-delete-do-on-django-models) argument of ForeignKey()
 ```python
 # model.py
 from django.db import models
@@ -2829,7 +2830,7 @@ class Topic(models.Model):
 
 class Entry(models.Model):
     """Something specific learned about a topic"""
-    topic = models.ForeignKey(Topic)
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
     text = models.TextField()
     date_added = models.DateTimeField(auto_now_add=True)
 
@@ -2899,13 +2900,13 @@ Mapping a URL
 # learning_log/urls.py
 # map admin url http://localhost:8000/admin/
 # map base URL http://localhost:8000/ to project's home page
-# include urls for learning_logs with namespace to make it distinct
-from django.conf.urls import include, url
 from django.contrib import admin
+from django.urls import path, include
+from django.conf.urls import url
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'', include('learning_logs.urls', namespace='learning_logs')),
+    path('admin/', admin.site.urls), # url(r'^admin/', include(...)),
+    url(r'', include('learning_logs.urls')),
 ]
 ```
 
@@ -2913,9 +2914,11 @@ urlpatterns = [
 # learning_logs/urls.py
 """Defines URL patterns for learning_logs."""
 from django.conf.urls import url
+from django.urls import path
 
 from . import views
 
+app_name = 'learning_logs'
 # The actual URL pattern is a call to url(regex, views.func, name='')
 # urlpatterns: list of pages that can be requested from learning_logs
 # regexes r'^$' tells python to interpret as a raw string and empty URL
@@ -2988,8 +2991,11 @@ The Topics Page
 # learning_logs/urls.py
 """Define URL patterns for leaning_logs."""
 from django.conf.urls import url
+from django.urls import path
 
 from . import views
+
+app_name = 'learning_logs'
 
 urlpatterns = [
     # Home page
@@ -3055,8 +3061,11 @@ Individual Topic Pages
 """Defines URL patterns for learning_logs."""
 
 from django.conf.urls import url
+from django.urls import path
 
 from . import views
+
+app_name = 'learning_logs'
 
 urlpatterns = [
     # Home page
@@ -3175,7 +3184,11 @@ The new_topic URL
 ```python
 # learning_logs/urls.py
 from django.conf.urls import url
+from django.urls import path
+
 from . import views
+
+app_name = 'learning_logs'
 
 urlpatterns = [
     # --snip--
@@ -3192,9 +3205,10 @@ The new_topic() View Function
 # HttpResponseRedirect(), which redirects the reader to topics page
 # after they submit their topic.
 # views.py
+
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from .models import Topic
 from .forms import TopicForm
@@ -3287,7 +3301,7 @@ The new_entry URL
 # now set entry's topic attribute, then save it to database
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from .models import Topic
 from .forms import TopicForm, EntryForm
@@ -3352,7 +3366,11 @@ The edit_entry URL
 ```python
 # learning_logs/urls.py
 from django.conf.urls import url
+from django.urls import path
+
 from . import views
+
+app_name = 'learning_logs'
 
 urlpatterns = [
     # --snip--
@@ -3367,7 +3385,7 @@ The edit_entry() View Function
 # views.py
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from .models import Topic, Entry
 from .forms import TopicForm, EntryForm
@@ -3500,7 +3518,7 @@ The logout_view() View Function
 # logout_view.py
 # import and call django's logout(), and redirect back to home page 
 from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib.auth import logout
 
 def logout_view(request):
@@ -3546,7 +3564,7 @@ The register() View Function
 # views.py
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 
@@ -3729,7 +3747,7 @@ Currently, if you’re logged in, you’ll be able to see all the topics, no mat
 # Now log out, and log back in as a different user. The topics page 
 # should list no topics.
 from django.shortcuts import render
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 
@@ -3754,7 +3772,7 @@ Any registered user could try a bunch of URLs, like http://localhost:8000/topics
 # we’ll configure the project so users will see a proper error page.
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, Http404
-from django.core.urlresolvers import reverse
+from django.urls import reverse
     # --snip--
     @login_required
     def topic(request, topic_id):
@@ -3841,7 +3859,7 @@ BOOTSTRAP3 = {
 ```
 
 #### Using Bootstrap to Style Learning Log
-[Bootstrap](#http://getbootstrap.com/) is basically a large collection of styling tools. It also has a number of templates you can apply to your project to create a particular overall style.
+[Bootstrap](http://getbootstrap.com/) is basically a large collection of styling tools. It also has a number of templates you can apply to your project to create a particular overall style.
 
 #### Modifying base.html
 
@@ -3902,15 +3920,226 @@ BOOTSTRAP3 = {
       <div>
         {% block content %}{% endblock content %}
       </div>
-    </div>
+    </div> <!--/container-->
+    
   </body>
 </html>
 ```
 
 #### Styling the Home Page Using a Jumbotron
+Let’s update the home page using the newly defined header block and another Bootstrap element called a jumbotron—a large box that will stand out from the rest of the page and can contain anything you want. It’s typically used on home pages to hold a brief description of the overall project.
 ```html
 <!--index.html-->
+{% extends 'learning_logs/base.html' %}
 
+{% block header %}
+  <div class="jumbotron">
+    <h1>Track your learning.</h1>
+  </div>
+{% endblock header %}
+
+{% block content %}
+  <h2>
+    <a href="{% url 'users:register' %}">Register an account</a> to make
+    your own Learning Log, and list the topics you're learning about.
+  </h2>
+  <h2>
+    Whenever you learn something new about a topic, make an entry
+    summarizing what you've learned.
+  </h2>
+{% endblock content %}
 ```
 
 #### Styling the Login Page
+```html
+<!--login.html-->
+{% extends 'learning_logs/base.html' %}
+{% load bootstrap3 %}
+
+{% block header %}
+  <h2>Log in to your account.</h2>
+{% endblock header %}
+
+{% block content %}
+  <form class="form" action="{% url 'users:login' %}" method="post">
+    {% csrf_token %}
+
+    {% bootstrap_form form %}
+
+    {% buttons %}
+      <button name="submit" class="btn btn-primary">log in</button>
+    {% endbuttons %}
+
+    <input type="hidden" name="next" value="{% url 'learning_logs:index' %}" />
+  </form>
+  
+{% endblock content %}
+```
+
+#### Styling the new_topic Page
+```html
+<!--new_topic.html-->
+{% extends 'learning_logs/base.html' %}
+{% load bootstrap3 %}
+
+{% block header %}
+  <h2>Add a new topic:</h2>
+{% endblock header %}
+
+{% block content %}
+  <form class='form' action="{% url 'learning_logs:new_topic' %}" method="post">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+
+    {% buttons %}
+      <button name="submit" class="btn btn-primary">add topic</button>
+    {% endbuttons %}
+  </form>
+
+{% endblock content %}
+```
+
+#### Styling the Topics Page
+```html
+{% extends 'learning_logs/base.html' %}
+
+{% block header %}
+  <h1>Topics</h1>
+{% endblock header %}
+
+{% block content %}
+  <p>Topics:</p>
+  <ul>
+    {% for topic in topics %}
+      <li>
+        <h3>
+          <a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a>
+        </h3>
+      </li>
+    {% empty %}
+      <li>No topics added yet.</li>
+    {% endfor %}
+  </ul>
+  <h3>
+    <a href="{% url 'learning_logs:new_topic' %}">Add new topic</a>
+  </h3>
+  
+{% endblock content %}
+```
+
+#### Styling the Entries on the Topic Page
+```html
+<!--topic.html-->
+{% extends 'learning_logs/base.html' %}
+
+{% block header %}
+  <h2>{{ topic }}</h2>
+{% endblock header %}
+
+{% block content %}
+  <p>
+    <a href="{% url 'learning_logs:new_entry' topic.id %}">Add new entry</a>
+  </p>
+
+  {% for entry in entries %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3>
+          <p>{{ entry.date_added|date:'M d, Y H:i' }}</p>
+          <small>
+            <a href="{% url 'learning_logs:edit_entry' entry.id %}">Edit this entry</a>
+          </small>
+        </h3>
+      </div>
+      <div class="panel-body">
+        <p>{{ entry.text|linebreaks }}</p>
+      </div>
+    </div> <!--panel-->
+  {% empty %}
+    No entries added yet.
+  {% endfor %}
+
+{% endblock content %}
+```
+
+### Deploying Learning Log
+Now that we have a professional-looking project, let’s deploy it to a live server so anyone with an internet connection can use it. We’ll use Heroku, a web-based platform that allows you to manage the deployment of web applications. We’ll get Learning Log up and running on Heroku.
+
+#### Making a Heroku Account
+signup for [Heroku](https://heroku.com/)
+
+#### Installing the Heroku Toolbelt
+install [Heroku CLI](https://toolbelt.heroku.com/)
+```
+# replace REPLACE_ME_OS/REPLACE_ME_ARCH with values as noted below
+wget https://cli-assets.heroku.com/heroku-cli/channels/stable/heroku-cli-REPLACEME_OS-REPLACE_ME_ARCH.tar.gz -O heroku.tar.gz
+tar -xvzf heroku.tar.gz
+mkdir -p /usr/local/lib /usr/local/bin
+mv heroku-cli-v6.x.x-darwin-64 /usr/local/lib/heroku
+ln -s /usr/local/lib/heroku/bin/heroku /usr/local/bin/heroku
+
+npm install -g heroku-cli
+
+heroku --version
+```
+
+#### Installing Required Packages
+In an active virtual environment, issue the following commands:
+```
+# The package dj-database-url helps Django communicate with the 
+# database Heroku uses, dj-static and static3 help Django manage static
+# files correctly, and gunicorn is a server capable of serving apps in 
+# a live environment. (Static files contain style rules and JavaScript 
+# files.
+pip3 install dj-database-url
+pip3 install dj-static
+pip3 install static3
+pip3 install gunicorn
+```
+
+#### Creating a Packages List with a requirements.txt File
+Heroku needs to know which packages our project depends on, so we’ll use pip to generate a file listing them.
+```
+pip3 freeze > requirements.txt
+
+cat requirements.txt
+
+    dj-database-url==0.4.2
+    dj-static==0.0.6
+    Django==1.11.7
+    django-bootstrap3==9.1.0
+    gunicorn==19.7.1
+    pkg-resources==0.0.0
+    pytz==2017.3
+    static3==0.7.0
+```
+Learning Log already depends on 8 different packages with specific version numbers, so it requires a specific environment to run properly. When we deploy Learning Log, Heroku will install all the packages listed in requirements.txt, creating an environment with the same packages we’re using locally. For this reason, we can be confident the deployed project will behave the same as it does on our local system. This is a huge advantage as you start to build and maintain various projects on your system.
+
+Next, we need to add psycopg2, which helps Heroku manage the live database, to the list of packages. Open requirements.txt and add the line psycopg2>=2.6.1. This will install version 2.6.1 of psycopg2, or a newer version if it’s available:
+```
+# requirements.txt
+dj-database-url==0.4.2
+dj-static==0.0.6
+Django==1.11.7
+django-bootstrap3==9.1.0
+gunicorn==19.7.1
+pkg-resources==0.0.0
+pytz==2017.3
+static3==0.7.0
+psycopg2>=2.6.1
+```
+
+#### Specifying the Python Runtime
+Let’s make sure Heroku uses the same version(3.6.3) of Python we’re using.
+```
+python --version
+    Python 3.6.3
+
+# runtime.txt
+python-3.6.3
+```
+
+#### Modifying settings.py for Heroku
+```python
+
+```
