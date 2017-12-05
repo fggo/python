@@ -88,7 +88,6 @@ bicycles = ['trek', 'cannondale', 'redline', 'specialized']
 print(bicycles) # print entire list
 print(bicycles[0].title()) # 'Trek'
 print(bicycles[-1]) # 'specialized'
-
 bicycles[2] = 'electric bike' # change an element
 ```
 
@@ -3431,13 +3430,14 @@ INSTALLED_APPS = [
 Including the URLs from users
 ```python
 # urls.py
-from django.conf.urls import include, url
 from django.contrib import admin
+from django.urls import path, include
+from django.conf.urls import url
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^users/', include('users.urls', namespace='users')),
-    url(r'', include('learning_logs.urls', namespace='learning_logs')),
+    path('admin/', admin.site.urls),
+    url(r'^users/', include('users.urls')),
+    url(r'', include('learning_logs.urls')),
 ]
 ```
 
@@ -3448,6 +3448,8 @@ urlpatterns = [
 from django.conf.urls import url
 from django.contrib.auth.views import login
 from . import views
+
+app_name = 'users'
 
 urlpatterns = [
     # Login page
