@@ -14,7 +14,7 @@
 * [Project 3. Web Applications](#project-3-web-applications)
 
 # Getting Started
-```
+```commandline
 # python is pre-installed in Ubuntu; check python versions
 python3
 # compile and execute
@@ -3909,7 +3909,7 @@ BOOTSTRAP3 = {
               <li><a href="{% url 'users:login' %}">log in</a></li>
             {% endif %}
           </ul>
-        </div><!--/.nav-collapse-->
+        </div><!--/.navbar-collapse-->
 
       </div>
     </nav>
@@ -3955,6 +3955,7 @@ Let’s update the home page using the newly defined header block and another Bo
 #### Styling the Login Page
 ```html
 <!--login.html-->
+<!--form.errors validation check is handled by django-bootstrap3-->
 {% extends 'learning_logs/base.html' %}
 {% load bootstrap3 %}
 
@@ -4074,6 +4075,10 @@ signup for [Heroku](https://heroku.com/)
 install [Heroku CLI](https://toolbelt.heroku.com/)
 ```
 # replace REPLACE_ME_OS/REPLACE_ME_ARCH with values as noted below
+# REPLACE_ME_OS is one of “linux”, “darwin”, “windows” and 
+# REPLACE_ME_ARCH is one of “x64”, “x86”, or “arm” 
+# You also must replace “6.x.x” with the actual version.
+
 wget https://cli-assets.heroku.com/heroku-cli/channels/stable/heroku-cli-REPLACEME_OS-REPLACE_ME_ARCH.tar.gz -O heroku.tar.gz
 tar -xvzf heroku.tar.gz
 mkdir -p /usr/local/lib /usr/local/bin
@@ -4086,13 +4091,12 @@ heroku --version
 ```
 
 #### Installing Required Packages
-In an active virtual environment, issue the following commands:
+You’ll also need to install a number of packages that help serve Django projects on a live server. In an active virtual environment, issue the following commands to install packages:
 ```
-# The package dj-database-url helps Django communicate with the 
-# database Heroku uses, dj-static and static3 help Django manage static
-# files correctly, and gunicorn is a server capable of serving apps in 
-# a live environment. (Static files contain style rules and JavaScript 
-# files.
+# dj-database-url helps Django communicate with the database Heroku uses
+# dj-static and static3 help Django manage static files correctly
+# gunicorn is a server capable of serving apps in a live environment. 
+# (Static files contain style rules and JavaScript files.)
 pip3 install dj-database-url
 pip3 install dj-static
 pip3 install static3
@@ -4100,21 +4104,22 @@ pip3 install gunicorn
 ```
 
 #### Creating a Packages List with a requirements.txt File
-Heroku needs to know which packages our project depends on, so we’ll use pip to generate a file listing them.
+Heroku needs to know which packages our project depends on, so we’ll use pip to generate a file listing them. The freeze command tells pip to write the names of all the packages currently installed in the project into the file requirements.txt.
 ```
 pip3 freeze > requirements.txt
 
 cat requirements.txt
 
-    dj-database-url==0.4.2
-    dj-static==0.0.6
-    Django==1.11.7
-    django-bootstrap3==9.1.0
-    gunicorn==19.7.1
-    pkg-resources==0.0.0
-    pytz==2017.3
-    static3==0.7.0
+dj-database-url==0.4.2
+dj-static==0.0.6
+Django==2.0
+django-bootstrap3==9.1.0
+gunicorn==19.7.1
+pkg-resources==0.0.0
+pytz==2017.3
+static3==0.7.0
 ```
+
 Learning Log already depends on 8 different packages with specific version numbers, so it requires a specific environment to run properly. When we deploy Learning Log, Heroku will install all the packages listed in requirements.txt, creating an environment with the same packages we’re using locally. For this reason, we can be confident the deployed project will behave the same as it does on our local system. This is a huge advantage as you start to build and maintain various projects on your system.
 
 Next, we need to add psycopg2, which helps Heroku manage the live database, to the list of packages. Open requirements.txt and add the line psycopg2>=2.6.1. This will install version 2.6.1 of psycopg2, or a newer version if it’s available:
@@ -4122,7 +4127,7 @@ Next, we need to add psycopg2, which helps Heroku manage the live database, to t
 # requirements.txt
 dj-database-url==0.4.2
 dj-static==0.0.6
-Django==1.11.7
+Django==2.0
 django-bootstrap3==9.1.0
 gunicorn==19.7.1
 pkg-resources==0.0.0
@@ -4132,7 +4137,7 @@ psycopg2>=2.6.1
 ```
 
 #### Specifying the Python Runtime
-Let’s make sure Heroku uses the same version(3.6.3) of Python we’re using.
+Let’s make sure Heroku uses the same version(3.6.3) of Python we’re using. Create file named runtime.txt and put 'python-3.6.3'
 ```
 python --version
     Python 3.6.3
@@ -4142,6 +4147,172 @@ python-3.6.3
 ```
 
 #### Modifying settings.py for Heroku
+Now we need to add a section at the end of settings.py to define some settings specifically for the Heroku environment:
 ```python
+# settings.py
+# getcwd() gets the current working directory the file is running from. 
+#   /app in a Heroku deployment, and project folder name in local
+# import dj_database_url to help configure the database on Heroku. 
+# PostgreSQL is a more advanced database than SQLite
+# SECURE_PROXY_SSL_HEADER to support HTTPS requests 
+# ['*'] to ensure that Django will serve the project from Heroku’s URL
+# set up the project to serve static files correctly on Heroku
 
+# --snip--
+
+# Heroku settings
+if os.getcwd() == '/app':
+    import dj_database_url
+    DATABASES = {
+        'default': dj_database_url.config(default='postgres://localhost')
+    }
+
+    # Honor the 'X-Forwarded-Proto' header for request.is_secure().
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'hTTPS')
+
+    # Allow all host headers.
+    ALLOWED_HOSTS = ['*']
+
+    # Static asset configuration
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    STATIC_ROOT = 'staticfiles'
+    STATICFILES_DIRS = (
+        os.path.join(BASE_DIR, 'static')
+    )
 ```
+
+#### Making a Procfile to Start Processes
+A Procfile tells Heroku which processes to start in order to serve the project properly. This is a one-line file that you should save as 'Procfile', with an uppercase P and no file extension, in the same directory as manage.py.
+```
+web: gunicorn learning_log.wsgi --log-file -
+```
+
+#### Modifying wsgi.py for Heroku
+We also need to modify wsgi.py for Heroku, because Heroku needs a slightly different setup than what we’ve been using:
+```python
+# wsgi.py
+# We import Cling, which helps serve static files correctly, and use it 
+# to launch the application. This code will work locally as well, so we 
+# don’t need to put it in an if block.
+import os
+
+from django.core.wsgi import get_wsgi_application
+from dj_static import Cling
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "learning_log.settings")
+
+application = Cling(get_wsgi_application())
+```
+
+#### Making a Directory for Static Files
+On Heroku, Django collects all the static files and places them in one place so it can manage them efficiently. We’ll create a directory for these static files. Inside the learning_log folder we’ve been working from is another folder called learning_log. In this nested folder, make a new folder called static with the path learning_log/learning_log/static/. We also need to make a placeholder file to store in this directory for now, because empty directories won’t be included in the project when it’s pushed to Heroku. In the static/ directory, make a file called placeholder.txt:
+```text
+# placeholder.txt
+This file ensures that learning_log/static/ will be added to the project.
+Django will collect static files and place them in learning_log/static/.
+```
+
+#### Using the gunicorn Server Locally (Linux or OS X)
+If you’re using Linux or OS X, you can try using the gunicorn server locally before deploying to Heroku. From an active virtual environment, run the command 'heroku local' to start the processes defined in Procfile:
+```commandline
+# The first time you run heroku local, a number of packages from the 
+# Heroku Toolbelt will be installed. 
+# gunicorn has been started with a process id of 25525. 
+# gunicorn is listening for requests on port 5000. 
+# gunicorn has started a worker process (25528) to help it serve requests
+# http://localhost:5000/ to make sure everything is working; 
+# you should see the Learning Log home page, just as it appears when 
+# you use the Django server (runserver). Press CTRL-C to stop the 
+# processes started by heroku local. You should continue to use runserver 
+# for local development.
+
+heroku local
+
+    [WARN] No ENV file found
+    23:27:05 web.1   |  [2017-12-11 23:27:05 +0900] [25525] [INFO] Starting gunicorn 19.7.1
+    23:27:05 web.1   |  [2017-12-11 23:27:05 +0900] [25525] [INFO] Listening at: http://0.0.0.0:5000 (25525)
+    23:27:05 web.1   |  [2017-12-11 23:27:05 +0900] [25525] [INFO] Using worker: sync
+    23:27:05 web.1   |  [2017-12-11 23:27:05 +0900] [25528] [INFO] Booting worker with pid: 25528
+```
+
+#### Using Git to Track the Project’s Files
+
+Installing Git
+```commandline
+# The Heroku Toolbelt includes Git, so it should already be installed on your system.
+git --version
+    git version 2.7.4
+```
+
+Configuring Git
+```commandline
+# Git keeps track of who makes changes to a project, even in cases like 
+# this when there’s only one person working on the project. To do this, 
+# Git needs to know your username and email. You have to provide a username, 
+# but feel free to make up an email for your practice projects:
+
+git config --global user.name 'fggo'
+git config --global user.email 'jnuho@outlook.com'
+```
+
+Ignoring Files
+```
+# .gitignore
+# We don’t need Git to track every file in the project, so we’ll tell Git 
+# to ignore some files. Make a file called .gitignore in the folder that 
+# contains manage.py. Notice that this filename begins with a dot and 
+# has no file extension. Here’s what goes in .gitignore:
+
+ll_env/
+__pycache_/
+*.sqlite3
+```
+
+Committing the Project
+```commandline
+git init
+git add .
+git commit -am 'Ready for deployment to heroku.'
+git status
+```
+
+#### Pushing to Heroku
+```commandline
+heroku login
+    email: jnuho@outlook.com
+    password: 
+heroku create
+git push heroku master
+
+heroku ps
+
+heroku open
+```
+
+#### Setting Up the Database on Heroku
+
+#### Refining the Heroku Deployment
+
+Creating a Superuser on Heroku
+
+Creating a User-Friendly URL on Heroku
+
+#### Securing the Live Project
+
+#### Committing and Pushing Changes
+
+#### Creating Custom Error Pages
+
+Making Custom Templates
+
+Viewing the Error Pages Locally
+
+Pushing the Changes to Heroku
+
+Using the get_object_or_404() Method
+
+#### Ongoing Development
+
+#### The SECRET_KEY Setting
+
+#### Deleting a Project on Heroku
