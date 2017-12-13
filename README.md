@@ -4074,18 +4074,7 @@ signup for [Heroku](https://heroku.com/)
 #### Installing the Heroku Toolbelt
 install [Heroku CLI](https://toolbelt.heroku.com/)
 ```
-# replace REPLACE_ME_OS/REPLACE_ME_ARCH with values as noted below
-# REPLACE_ME_OS is one of “linux”, “darwin”, “windows” and 
-# REPLACE_ME_ARCH is one of “x64”, “x86”, or “arm” 
-# You also must replace “6.x.x” with the actual version.
-
-wget https://cli-assets.heroku.com/heroku-cli/channels/stable/heroku-cli-REPLACEME_OS-REPLACE_ME_ARCH.tar.gz -O heroku.tar.gz
-tar -xvzf heroku.tar.gz
-mkdir -p /usr/local/lib /usr/local/bin
-mv heroku-cli-v6.x.x-darwin-64 /usr/local/lib/heroku
-ln -s /usr/local/lib/heroku/bin/heroku /usr/local/bin/heroku
-
-npm install -g heroku-cli
+sudo snap install --classic heroku
 
 heroku --version
 ```
@@ -4097,6 +4086,7 @@ You’ll also need to install a number of packages that help serve Django projec
 # dj-static and static3 help Django manage static files correctly
 # gunicorn is a server capable of serving apps in a live environment. 
 # (Static files contain style rules and JavaScript files.)
+
 pip3 install dj-database-url
 pip3 install dj-static
 pip3 install static3
@@ -4110,14 +4100,14 @@ pip3 freeze > requirements.txt
 
 cat requirements.txt
 
-dj-database-url==0.4.2
-dj-static==0.0.6
-Django==2.0
-django-bootstrap3==9.1.0
-gunicorn==19.7.1
-pkg-resources==0.0.0
-pytz==2017.3
-static3==0.7.0
+    dj-database-url==0.4.2
+    dj-static==0.0.6
+    Django==2.0
+    django-bootstrap3==9.1.0
+    gunicorn==19.7.1
+    pkg-resources==0.0.0
+    pytz==2017.3
+    static3==0.7.0
 ```
 
 Learning Log already depends on 8 different packages with specific version numbers, so it requires a specific environment to run properly. When we deploy Learning Log, Heroku will install all the packages listed in requirements.txt, creating an environment with the same packages we’re using locally. For this reason, we can be confident the deployed project will behave the same as it does on our local system. This is a huge advantage as you start to build and maintain various projects on your system.
@@ -4182,7 +4172,7 @@ if os.getcwd() == '/app':
 ```
 
 #### Making a Procfile to Start Processes
-A Procfile tells Heroku which processes to start in order to serve the project properly. This is a one-line file that you should save as 'Procfile', with an uppercase P and no file extension, in the same directory as manage.py.
+A Procfile tells Heroku which processes to start in order to serve the project properly. This is a one-line file that you should save as 'Procfile', with an uppercase P and no file extension, in the same directory as manage.py. This line tells Heroku to use gunicorn as a server and to use the settings in learning_log/wsgi.py to launch the app. The log-file flag tells Heroku the kinds of events to log.
 ```
 web: gunicorn learning_log.wsgi --log-file -
 ```
@@ -4191,8 +4181,8 @@ web: gunicorn learning_log.wsgi --log-file -
 We also need to modify wsgi.py for Heroku, because Heroku needs a slightly different setup than what we’ve been using:
 ```python
 # wsgi.py
-# We import Cling, which helps serve static files correctly, and use it 
-# to launch the application. This code will work locally as well, so we 
+# import Cling, which helps serve static files correctly, and use it to 
+# launch the application. This code will work locally as well, so we 
 # don’t need to put it in an if block.
 import os
 
@@ -4277,19 +4267,37 @@ git status
 ```
 
 #### Pushing to Heroku
+'heroku create' tells Heroku to build an empty project; Heroku generates a name made up of two words and a number; you can change this later on. We then issue the command 'git push heroku master', which tells Git to push the master branch of the project to the repository Heroku just created. Heroku then builds the project on its servers using these files. Then it will show deployed URL we’ll use to access the live project.
 ```commandline
 heroku login
-    email: jnuho@outlook.com
-    password: 
+    Enter your Heroku credentials:
+    Email: jnuho@outlook.com
+    Password: 
+    Logged in as jnuho@outlook.com
 heroku create
+    Creating app... done, ⬢ lit-lowlands-35015
+    https://lit-lowlands-35015.herokuapp.com/ | https://git.heroku.com/lit-lowlands-35015.git
 git push heroku master
-
-heroku ps
-
-heroku open
 ```
 
+When you’ve issued these commands, the project is deployed but not fully configured. To check that the server process started correctly, use the heroku ps command:
+```commandline
+heroku ps
+```
+
+The output shows how much more time the project can be active in the next 24 hours. At the time of this writing, Heroku allows free deployments to be active for up to 18 hours in any 24-hour period. If a project exceeds these limits, a standard server error page will be displayed; we’ll customize this error page shortly. we see that the process defined in Procfile has been started.
+
+Now we can open the app in a browser using the command heroku open:
+```commandline
+heroku open
+```
+This command spares you from opening a browser and entering the URL Heroku showed you, but that’s another way to open the site. You should see the home page for Learning Log, styled correctly. However, you can’t use the app yet because we haven’t set up the database.
+
+
 #### Setting Up the Database on Heroku
+```commandline
+heroku run python manage.py migrate
+```
 
 #### Refining the Heroku Deployment
 
