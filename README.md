@@ -4271,18 +4271,40 @@ git status
 ```commandline
 heroku login
     Enter your Heroku credentials:
-    Email: jnuho@outlook.com
+    Email: example@mail.com
     Password: 
-    Logged in as jnuho@outlook.com
+    Logged in as example@mail.com
 heroku create
     Creating app... done, ⬢ lit-lowlands-35015
     https://lit-lowlands-35015.herokuapp.com/ | https://git.heroku.com/lit-lowlands-35015.git
 git push heroku master
 ```
 
+NOTE: 'python manage.py collectstatic --noinput command' will be timed out. Check [workaround](https://stackoverflow.com/questions/36665889/collectstatic-error-while-deploying-django-app-to-heroku) 
+```commandline
+heroku config:set DISABLE_COLLECTSTATIC=0
+git push heroku master
+
+heroku run python manage.py migrate
+
+sudo npm install -g bower
+sudo ln -s /usr/bin/nodejs /usr/bin/node
+sudo bower --version
+heroku run 'bower install --config.interactive=false;grunt prep;python manage.py collectstatic --noinput'
+
+heroku config:unset DISABLE_COLLECTSTATIC
+heroku run python manage.py collectstatic
+```
+
 When you’ve issued these commands, the project is deployed but not fully configured. To check that the server process started correctly, use the heroku ps command:
 ```commandline
 heroku ps
+    Free dyno hours quota remaining this month: 550h 0m (100%)
+    For more information on dyno sleeping and how to upgrade, see:
+    https://devcenter.heroku.com/articles/dyno-sleeping
+    
+    === web (Free): gunicorn learning_log.wsgi --log-file - (1)
+    web.1: up 20xx/xx/xx 00:00:00 +0000 (~ 1m ago)
 ```
 
 The output shows how much more time the project can be active in the next 24 hours. At the time of this writing, Heroku allows free deployments to be active for up to 18 hours in any 24-hour period. If a project exceeds these limits, a standard server error page will be displayed; we’ll customize this error page shortly. we see that the process defined in Procfile has been started.
@@ -4295,19 +4317,65 @@ This command spares you from opening a browser and entering the URL Heroku showe
 
 
 #### Setting Up the Database on Heroku
+We need to run migrate once to set up the live database and apply all the migrations we generated during development. You can run Django and Python commands on a Heroku project using the command heroku run. Here’s how to run migrate on the Heroku deployment:
 ```commandline
 heroku run python manage.py migrate
 ```
 
+Now when you visit your deployed app, you should be able to use it just as you did on your local system. However, you won’t see any of the data you entered on your local deployment, because we didn’t copy the data to the live server. This is normal practice: you don’t usually copy local data to a live deployment because the local data is usually test data.
+
 #### Refining the Heroku Deployment
+In this section we’ll refine the deployment by creating a superuser, just as we did locally. We’ll also make the project more secure by changing the setting DEBUG to False, so users won’t see any extra information in error messages that they could use to attack the server.
 
 Creating a Superuser on Heroku
+```commandline
+heroku run bash
+
+~$ ls
+~$ python manage.py createsuperuser
+        username: ll_admin
+        email: a@mail.com
+        password: 
+~$ exit 
+```
+Now you can add /admin/ to the end of the URL for the live app and log in to the admin site. For example, the URL is https://afternoon-meadow-2775.herokuapp.com/admin/
+
 
 Creating a User-Friendly URL on Heroku
+```commandline
+heroku apps:rename learning-log-1337
+```
+This deployment now lives at https://learning-log-1337.herokuapp.com/. The project is no longer available at the previous URL; the apps:rename command completely moves the project to the new URL.
+
 
 #### Securing the Live Project
+One glaring security issue exists in the way our project is currently deployed: the setting DEBUG=True in settings.py, which provides debug messages when errors occur. Django’s error pages give you vital debugging information when you’re developing a project, but they give way too much information to attackers if you leave them enabled on a live server. We also need to make sure no one can get information or redirect requests by pretending to be the project’s host.
+
+Let’s modify settings.py so we can see error messages locally but not on the live deployment:
+```python
+# settings.py
+import os
+# --snip--
+# Heroku settings
+cwd = os.getcwd()
+if cwd == '/app' or cwd[:4] == '/tmp':
+    # --snip--
+    # Only allow heroku to host the project.
+    ALLOWED_HOSTS = ['learning-log-1337.herokuapp.com']
+    DEBUG = False
+
+    # Static asset configuration
+    # --snip--
+```
 
 #### Committing and Pushing Changes
+```commandline
+git commit -am 'Set DEBUG=False for Heroku.'
+git status
+
+git push heroku master
+```
+
 
 #### Creating Custom Error Pages
 
