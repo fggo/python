@@ -2771,6 +2771,7 @@ class Topic(models.Model):
         information about a topic."""
         return self.text 
 ```
+
 To see the different kinds of fields you can use in a model, see the [Django Model Field Reference](https://docs.djangoproject.com/en/1.8/ref/models/fields/)
 
 #### Activating Models
@@ -4081,48 +4082,43 @@ heroku --version
 
 #### Installing Required Packages
 You’ll also need to install a number of packages that help serve Django projects on a live server. In an active virtual environment, issue the following commands to install packages:
-```
+```commandline
 # dj-database-url helps Django communicate with the database Heroku uses
 # dj-static and static3 help Django manage static files correctly
-# gunicorn is a server capable of serving apps in a live environment. 
+# WhiteNoise to manage static files instead of dj-static and static3
+#   also use DjangoWhiteNoise() instead of Cling() in wsgi.py
+#   and add STATICFILES_STORAGE variable in settings.py heroku settings 
 # (Static files contain style rules and JavaScript files.)
+# gunicorn is a server capable of serving apps in a live environment. 
 
-pip3 install dj-database-url
-pip3 install dj-static
-pip3 install static3
-pip3 install gunicorn
+
+pip install dj-database-url
+pip install whitenoise
+pip install gunicorn
+```
+
+```commandline
+pip uninstall dj-static
+pip uninstall static3
 ```
 
 #### Creating a Packages List with a requirements.txt File
 Heroku needs to know which packages our project depends on, so we’ll use pip to generate a file listing them. The freeze command tells pip to write the names of all the packages currently installed in the project into the file requirements.txt.
 ```
 pip3 freeze > requirements.txt
-
-cat requirements.txt
-
-    dj-database-url==0.4.2
-    dj-static==0.0.6
-    Django==2.0
-    django-bootstrap3==9.1.0
-    gunicorn==19.7.1
-    pkg-resources==0.0.0
-    pytz==2017.3
-    static3==0.7.0
 ```
 
-Learning Log already depends on 8 different packages with specific version numbers, so it requires a specific environment to run properly. When we deploy Learning Log, Heroku will install all the packages listed in requirements.txt, creating an environment with the same packages we’re using locally. For this reason, we can be confident the deployed project will behave the same as it does on our local system. This is a huge advantage as you start to build and maintain various projects on your system.
+Learning Log already depends on 7 different packages (remove the line pkg-resources==0.0.0) with specific version numbers, so it requires a specific environment to run properly. When we deploy Learning Log, Heroku will install all the packages listed in requirements.txt, creating an environment with the same packages we’re using locally. For this reason, we can be confident the deployed project will behave the same as it does on our local system. This is a huge advantage as you start to build and maintain various projects on your system.
 
 Next, we need to add psycopg2, which helps Heroku manage the live database, to the list of packages. Open requirements.txt and add the line psycopg2>=2.6.1. This will install version 2.6.1 of psycopg2, or a newer version if it’s available:
 ```
 # requirements.txt
 dj-database-url==0.4.2
-dj-static==0.0.6
 Django==2.0
 django-bootstrap3==9.1.0
 gunicorn==19.7.1
-pkg-resources==0.0.0
 pytz==2017.3
-static3==0.7.0
+whitenoise==3.3.1
 psycopg2>=2.6.1
 ```
 
@@ -4141,24 +4137,28 @@ Now we need to add a section at the end of settings.py to define some settings s
 ```python
 # settings.py
 # getcwd() gets the current working directory the file is running from. 
-#   /app in a Heroku deployment, and project folder name in local
+# /app in a Heroku deployment, and project folder name in local
 # import dj_database_url to help configure the database on Heroku. 
 # PostgreSQL is a more advanced database than SQLite
 # SECURE_PROXY_SSL_HEADER to support HTTPS requests 
 # ['*'] to ensure that Django will serve the project from Heroku’s URL
 # set up the project to serve static files correctly on Heroku
-
+# When you push a Django project to Heroku, the project is initially 
+# built from a temporary directory. If we only look for the /app 
+# directory, the project will fail to build properly.
 # --snip--
 
 # Heroku settings
-if os.getcwd() == '/app':
+cwd = os.getcwd()
+print("--- CWD ---\n", cwd, "\n---\n")
+if os.getcwd() == '/app' or cwd[:4] == '/tmp':
     import dj_database_url
     DATABASES = {
         'default': dj_database_url.config(default='postgres://localhost')
     }
 
     # Honor the 'X-Forwarded-Proto' header for request.is_secure().
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'hTTPS')
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
     # Allow all host headers.
     ALLOWED_HOSTS = ['*']
@@ -4169,6 +4169,8 @@ if os.getcwd() == '/app':
     STATICFILES_DIRS = (
         os.path.join(BASE_DIR, 'static')
     )
+    
+    STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 ```
 
 #### Making a Procfile to Start Processes
@@ -4182,16 +4184,18 @@ We also need to modify wsgi.py for Heroku, because Heroku needs a slightly diffe
 ```python
 # wsgi.py
 # import Cling, which helps serve static files correctly, and use it to 
-# launch the application. This code will work locally as well, so we 
-# don’t need to put it in an if block.
+# launch the application. CHANGE it to using django whitenoise package
 import os
 
 from django.core.wsgi import get_wsgi_application
-from dj_static import Cling
+# from dj_static import Cling
+from whitenoise.django import DjangoWhiteNoise
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "learning_log.settings")
 
-application = Cling(get_wsgi_application())
+# application = Cling(get_wsgi_application())
+application = get_wsgi_application()
+application = DjangoWhiteNoise(application)
 ```
 
 #### Making a Directory for Static Files
@@ -4242,7 +4246,7 @@ Configuring Git
 # but feel free to make up an email for your practice projects:
 
 git config --global user.name 'fggo'
-git config --global user.email 'jnuho@outlook.com'
+git config --global user.email 'a@a.com'
 ```
 
 Ignoring Files
@@ -4280,8 +4284,9 @@ heroku create
 git push heroku master
 ```
 
-NOTE: 'python manage.py collectstatic --noinput command' will be timed out. Check [workaround](https://stackoverflow.com/questions/36665889/collectstatic-error-while-deploying-django-app-to-heroku) 
+NOTE: using dj-static and static3 packages you will get an ERROR while git push command. You will not see these errors if you're using whitenoise package for handling static files. 'python manage.py collectstatic --noinput command' will be timed out Check [workaround](https://stackoverflow.com/questions/36665889/collectstatic-error-while-deploying-django-app-to-heroku) 
 ```commandline
+# FIRST delete pkg-resources==0.0.0 line from requirements.txt and then:
 heroku config:set DISABLE_COLLECTSTATIC=0
 git push heroku master
 
@@ -4343,7 +4348,7 @@ Now you can add /admin/ to the end of the URL for the live app and log in to the
 
 Creating a User-Friendly URL on Heroku
 ```commandline
-heroku apps:rename learning-log-1337
+heroku apps:rename learning-log
 ```
 This deployment now lives at https://learning-log-1337.herokuapp.com/. The project is no longer available at the previous URL; the apps:rename command completely moves the project to the new URL.
 
@@ -4358,13 +4363,13 @@ import os
 # --snip--
 # Heroku settings
 cwd = os.getcwd()
+print("--- CWD ---\n", cwd, "\n---\n")
 if cwd == '/app' or cwd[:4] == '/tmp':
     # --snip--
     # Only allow heroku to host the project.
-    ALLOWED_HOSTS = ['learning-log-1337.herokuapp.com']
+    ALLOWED_HOSTS = ['learning-log.herokuapp.com']
+    
     DEBUG = False
-
-    # Static asset configuration
     # --snip--
 ```
 
@@ -4376,19 +4381,88 @@ git status
 git push heroku master
 ```
 
-
 #### Creating Custom Error Pages
+A 404 error usually means your Django code is correct, but the object being requested doesn’t exist; a 500 error usually means there’s an error in the code you’ve written, such as an error in a function in views.py. Currently, Django returns the same generic error page in both situations, but we can write our own 404 and 500 error page templates that match the overall appearance of Learning Log. These templates must go in the root template directory.
 
 Making Custom Templates
+```html
+<!--404.html-->
+<!--in /learning_log/learning_log/templates/-->
+{% extends 'learning_logs/base.html' %}
 
-Viewing the Error Pages Locally
+{% block header %}
+  <h2>The item you requested is not available. (404)</h2>
+{% endblock header %}
+```
+```html
+<!--500.html-->
+{% extends 'learning_logs/base.html' %}
 
+{% block header %}
+  <h2>There has been an internal error. (500)</h2>
+{% endblock header %}
+```
+
+```python
+# settings.py
+# This change tells Django to look in the root template directory for 
+# the error page templates.
+# --snip--
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'learning_log/templates')],
+        'APP_DIRS': True,
+        # --snip--
+    },
+]
+```
+
+Viewing the Error Pages Locally (do not apply to Heroku Deployment)
+```python
+# settings.py
+# for example try 'localhost:8000/letmein' in browser to see error page
+# --snip--
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = False
+
+ALLOWED_HOSTS = ['localhost']
+# --snip--
+```
 Pushing the Changes to Heroku
+```commandline
+git status
+git add .
+git commit -am 'added custom 404 500 error pages'
+git push heroku master
+```
+
+At this point, if a user manually requests a topic or entry that doesn’t exist, they’ll get a 500 server error. Django tries to render the page but it doesn’t have enough information to do so, and the result is a 500 error. This situation is more accurately handled as a 404 error, and we can implement this behavior with the Django shortcut function get_object_or_404(). This function tries to get the requested object from the database, but if that object doesn’t exist, it raises a 404 exception. We’ll import this function into views.py and use it in place of get():
 
 Using the get_object_or_404() Method
+```python
+# views.py
+def topic(request, topic_id):
+    topic = get_object_or_404(Topic, id=topic_id)
+    if topic.owner != request.user:
+        raise Http404
+
+    entries = topic.entry_set.order_by('date_added')
+    context = {'topic': topic, 'entries': entries}
+    return render(request, 'learning_logs/topic.html', context)
+```
+Now when you request a topic that doesn’t exist (for example, http://localhost:8000/topics/999999/), you’ll see a 404 error page. To deploy this change, make a new commit, and then push the project to Heroku.
+```commandline
+git add .
+git commit -m '404 handling'
+git push heroku master
+```
 
 #### Ongoing Development
 
 #### The SECRET_KEY Setting
 
 #### Deleting a Project on Heroku
+```commandline
+heroku apps:destroy --app appname
+```
